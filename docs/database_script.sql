@@ -21,11 +21,13 @@ use shortlinks;
 create table link (
     short_id varchar(10) not null,
     full_uri longtext,
+    sha_uri varchar(128),
     cust_id int(10) unsigned not null,
     created timestamp not null default current_timestamp(),
     calls int(10) unsigned not null default 0,
     last_call datetime default '1999-12-31 23:59:59',
-    PRIMARY KEY (short_id)
+    PRIMARY KEY (short_id),
+    UNIQUE KEY uri_sha_uniq (sha_uri)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 create table customer (

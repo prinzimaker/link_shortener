@@ -94,16 +94,16 @@ class database {
 
     function getShortCode($uri){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("SELECT short_id FROM link WHERE full_uri = :uri LIMIT 1");
-        $stmt->execute(['uri' => $uri]);
+        $stmt = $this->pdo->prepare("SELECT short_id FROM link WHERE sha_uri = :shuri LIMIT 1");
+        $stmt->execute(['shuri' => hash("sha512", $uri)]);
         $result = $stmt->fetch();
         return $result["short_id"];
     }
 
     function putlink($linkcode, $uri){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("INSERT INTO link (short_id, full_uri, cust_id) VALUES (:code, :uri, 0)");
-        $stmt->execute(['code' => $linkcode, 'uri' => $uri]);
+        $stmt = $this->pdo->prepare("INSERT INTO link (short_id, full_uri, sha_uri, cust_id) VALUES (:code, :uri, :shuri, 0)");
+        $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'shuri' => hash("sha512", $uri)]);
     }
 
     function getShortlinkInfo($short_id){
@@ -118,10 +118,9 @@ class database {
 // Other private functions
 // ----------------------------------------------------
 
-    // genera una stringa di massimo 8 caratteri random e verifica che non ce ne siano di uguali nel database
+    // genera una stringa di max 8 caratteri random e verifica che non ce ne siano di uguali nel database
     private function _genRndString($length = 8) {
         $allCharacters = 'ACDEFGHJKLMNPQRSTUVWXYZ' . '2345679' .'abcdefghijkmnpqrstuvwxyz';
-        
         // Seed the random number generator
         $milliseconds = (int) (microtime(true) * 1000);
         srand($milliseconds);
@@ -135,7 +134,7 @@ class database {
             $randomString = str_shuffle($randomString);
             // loop secure
             if ($max--<1){
-                $randomString="";
+                $randomString="LOOP ERROR!";
                 break;
             }
         } while ($this->_checkCode($randomString));
