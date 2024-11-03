@@ -1,0 +1,209 @@
+/* 
+=====================================================================
+      Quick and Dirty Prinzimaker's Link Shoertener
+      Copyright (C) 2024 - Aldo Prinzi
+=====================================================================
+This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+---------------------------------------------------------------------
+This file contains the cascadind stylesheet for the web app
+-
+v1.0 - Aldo Prinzi - 03 Nov 2024
+=====================================================================
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    padding: 20px;
+}
+
+.container {
+    max-width: 95%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height:500px;
+}
+
+.header {
+    background: #3e0267;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: solid 1px silver;
+    margin-bottom:20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.title_header    {
+    font-size: 0.9em;
+    font-style: oblique;
+}
+
+nav {
+    margin: 20px 0;
+    text-align: center;
+}
+
+nav a {
+    color: #333;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.1em;
+}
+
+nav a:hover {
+    color: #007BFF;
+}
+
+main {
+    margin: 20px 0;
+}
+
+main h2 {
+    margin-bottom: 10px;
+    font-size: 2em;
+    color: #007BFF;
+}
+
+main p {
+    margin-bottom: 20px;
+}
+
+p.pad {
+    padding-left: 15px;
+}
+
+.footer {
+    background: #3e0267;
+    color: #eaff8b;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+    border-top: solid 1px silver;
+}
+
+.footer p {
+    margin: 0;
+}
+
+.footer .link{
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #3e0267; 
+}
+
+.btn-secondary {
+    background-color: #1a821f; 
+}
+
+.btn-warning {
+    background-color: #cb7a1c; 
+}
+
+.center-content {
+    text-align: center;
+}
+
+.center-content-vertical {
+    display: flex;
+    justify-content: center; /* Centra orizzontalmente */
+    align-items: center;     /* Centra verticalmente */
+}
+
+.input-text {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    box-sizing: border-box;
+    margin-bottom:5px;
+}
+
+.input-text:focus {
+    border-color: #66afe9;
+    outline: none;
+}
+
+.form-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.1em;
+    padding-right: 10px;
+}
+
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 16px;
+    position: relative;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.alert .icon {
+    margin-right: 10px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.alert .close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+  
+  
