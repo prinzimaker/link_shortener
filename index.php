@@ -10,8 +10,15 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v0.1.0 - Aldo Prinzi - 03 Nov 2024
+v1.1.0 - Aldo Prinzi - 23 Dic 2024
+---------
+UPDATES
+---------
+2024.12.23 - Added qr-code generation for the short link, using an
+             api server from Fundata GmbH - Karlsruhe (DE):
+             https://goqr.me/api/doc/
 =====================================================================
+*/
 */
 require_once 'src/._loadenv.php';
 include 'src/._connect.php';
