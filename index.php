@@ -19,7 +19,6 @@ UPDATES
              https://goqr.me/api/doc/
 =====================================================================
 */
-*/
 require_once 'src/._loadenv.php';
 include 'src/._connect.php';
 include 'src/._user.php';
