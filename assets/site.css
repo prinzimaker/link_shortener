@@ -1,6 +1,6 @@
 /* 
 =====================================================================
-      Quick and Dirty Prinzimaker's Link Shoertener
+      Quick and Dirty Prinzimaker's Link Shortener
       Copyright (C) 2024 - Aldo Prinzi
 =====================================================================
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.
@@ -10,7 +10,12 @@ This file contains the cascadind stylesheet for the web app
 v1.0 - Aldo Prinzi - 03 Nov 2024
 =====================================================================
 */
-* {
+:root {
+    --mainbg: #0800A0;
+    --btnbg: #cb7a1c;
+}
+
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -33,7 +38,7 @@ body {
 }
 
 .header {
-    background: #3e0267;
+    background: var(--mainbg);
     color: #fff;
     padding: 20px 0;
     text-align: center;
@@ -49,22 +54,6 @@ body {
 .title_header    {
     font-size: 0.9em;
     font-style: oblique;
-}
-
-nav {
-    margin: 20px 0;
-    text-align: center;
-}
-
-nav a {
-    color: #333;
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 1.1em;
-}
-
-nav a:hover {
-    color: #007BFF;
 }
 
 main {
@@ -86,7 +75,7 @@ p.pad {
 }
 
 .footer {
-    background: #3e0267;
+    background: var(--mainbg);
     color: #eaff8b;
     text-align: center;
     padding: 10px 0;
@@ -116,7 +105,7 @@ p.pad {
 }
 
 .btn-primary {
-    background-color: #3e0267; 
+    background-color: var(--mainbg);
 }
 
 .btn-secondary {
@@ -124,7 +113,7 @@ p.pad {
 }
 
 .btn-warning {
-    background-color: #cb7a1c; 
+    background-color: var(--btnbg); 
 }
 
 .center-content {
@@ -142,7 +131,7 @@ p.pad {
     padding: 12px 20px;
     font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 25px;
+    border-radius: 15px;
     box-sizing: border-box;
     margin-bottom:5px;
 }

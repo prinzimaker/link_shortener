@@ -1,9 +1,9 @@
 # Prinzimaker's Link Shortener
 
-**Quick and dirty link shortener.**
+**Quick and dirty link shortener** - **v1.1**
 
 E' un progetto open source (MIT license).
-E' un completo sito web in italiano per la generazione di link compressi: inserisci un link lungo e complicato e ottieni un link ridotto a 8 caratteri.
+E' un completo sito web in italiano per la generazione di link compressi: inserisci un link lungo e complicato e ottieni un link ridotto a 8 caratteri e un qr-code.
 Ad esempio come uno dei tanti: **https://www.google.com/search?q=link+shortener**
 ma gestito da te privatamente.
 *E' usabile sia da browser che via API (**json** reply).*
@@ -262,6 +262,12 @@ Se desideri contribuire al progetto:
 ## Licenza
 
 Questo progetto è distribuito sotto la licenza MIT. Vedi il file [LICENSE](LICENSE) per maggiori dettagli.
+
+**QR-CODE**
+
+La generazione dei Qr-Code è ottenuta usando un generatore on line gratuito QR-SERVER.
+Verifica le informazioni su https://goqr.me/api/
+| Fundata GmbH - Karlsruhe (DE)
 
 ## Autore
 

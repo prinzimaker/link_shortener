@@ -1,7 +1,7 @@
 <?php
 /* 
 =====================================================================
-      Quick and Dirty Prinzimaker's Link Shoertener
+      Quick and Dirty Prinzimaker's Link Shortener
       Copyright (C) 2024 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
@@ -10,6 +10,10 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This class contains all the DB logic for the link shortener
 -
 v0.1.0 - Aldo Prinzi - 03 Nov 2024
+---------
+UPDATES
+---------
+2024.10.04 - Added variable lenght for short link
 =====================================================================
 */
 
@@ -83,7 +87,9 @@ class database {
         if (!empty($existing_short_code)) 
             $code=$existing_short_code;
         else {
-            $code = $this->_genRndString();
+            $lenght=getenv('LinkLenght');
+            if ($lenght<1) $lenght=8;
+            $code = $this->_genRndString($lenght);
             if ($code!="")
                 $this->putlink($code, $uri);
             else

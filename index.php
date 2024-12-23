@@ -1,7 +1,7 @@
 <?php
 /* 
 =====================================================================
-      Quick and Dirty Prinzimaker's Link Shoertener
+      Quick and Dirty Prinzimaker's Link Shortener
       Copyright (C) 2024 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
@@ -25,6 +25,7 @@ $showApi=false;
 $req=[];
 if ((stripos($uri, "api.php") !== false) || ($_SERVER["REDIRECT_URL"]=="/api") || ($_SERVER["SCRIPT_NAME"]=="/api") || ($_SERVER["SCRIPT_NAME"]=="/api.php"))
     $uri = "api";
+$uri=explode("?",$uri)[0];
 switch ($uri){
     case "favicon.ico":
         $ret=getFavicon();
@@ -42,7 +43,10 @@ switch ($uri){
         break;
     case "shortinfo":
         $header = "Short Link - Link info";
-        $puri=$_POST["smalluri"];
+        $puri=$_POST["smalluri"]??$_GET["code"];
+        $chk=explode(getenv("URI"),$puri);
+        if (is_array($chk)&&count($chk)>1)
+            $puri=$chk[1];
         if ($puri!=""){
             $uri=checkIfSelfUri($puri);
             if (empty($uri)){
@@ -67,11 +71,13 @@ switch ($uri){
                             "EEEE dd MMMM yyyy ! HH:mm:ss"      // Pattern di formattazione
                         );
                         $formattedDate = str_replace("!","alle",$formatter->format($date));
-                        $content.="<div class='alert alert-info'>";
+                        $content.="<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>";
+                        $content.="<div class='alert alert-info'><table width='100%'><tr><td width=85%>";
                         $content.="<label>Il link originale &egrave;:</label><input type='text' class='input-text' id='originalLink' value='".$res["full_uri"]."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>Copia</button>";
                         $content.="<script>function copyShortLink(){var copyText=document.getElementById('originalLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('Link copiato: '+ copyText);},function(err){console.error('Errore nella copia:', err);});}</script>";
-                        $content.="<table style='padding-top:15px' width=100%><tr><td width=70%><label>&Egrave; stato creato il:</label><input type='text' class='input-text' id='createdLink' value='".$formattedDate."' readonly></td><td>&nbsp;</td>";
-                        $content.="<td width=30%><label>Ed &egrave; stato richiesto:</label><input type='text' class='input-text' id='createdLink' value='".$res["calls"]." volte' readonly></div></td></tr></table></div>";
+                        $content.="<table style='padding-top:15px' width=100%><tr><td width=65%><label>&Egrave; stato creato il:</label><input type='text' class='input-text' id='createdLink' value='".$formattedDate."' readonly></td><td>&nbsp;</td>";
+                        $content.="<td width=35%><label>Ed &egrave; stato richiesto:</label><input type='text' class='input-text' id='createdLink' value='".$res["calls"]." volte' readonly></div></td></tr></table>";
+                        $content.="<td width='15%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$uri_code). "&amp;size=100x100&amp;color=0800A0' alt='' title='qr-code' width='100px' height='100px' /></td></tr></table></div>";
                     }
                 }
             } else {
@@ -92,7 +98,7 @@ switch ($uri){
             if ($puri!=""){
                 $uri=checkIfSelfUri($puri);
                 if (empty($uri)){
-                    $content="<div class='alert alert-danger'>Errore: <strong>uri</strong> non corretto oppure loop-<strong>uri</strong> (non è possibile, ne consigliabile, accorciare un link di <strong>https://flu.lu</strong>)</div>";
+                    $content="<div class='alert alert-danger'>Errore: <strong>uri</strong> non corretto oppure loop-<strong>uri</strong> (non è possibile, ne consigliabile, accorciare un link di <strong>".getenv("URI")."</strong>)</div>";
                     $content.=getShortenContent($puri);
                 } else {
                     $content=getShortenContent($uri);
@@ -100,7 +106,9 @@ switch ($uri){
                     $res=$db->connect();
                     if ($res["conn"]){
                         $shorCode=$db->createShortlink($uri);
-                        $content="<div class='alert alert-info'><label>Il link corto &egrave;</label><input type='text' class='input-text' id='shortLink' value='".getenv("URI").$shorCode."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>Copia</button></div>";
+                        $content="<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>";
+                        $content.="<div class='alert alert-info'><table width='100%'><tr><td width=50%><label>Il link corto &egrave;</label><input type='text' class='input-text' id='shortLink' value='".getenv("URI").$shorCode."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>Copia</button></td>";
+                        $content.="<td width='50%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$shorCode). "&amp;size=100x100' alt='' title='qr-code' width='100px' height='100px' /></td></tr></table></div>";
                         $content.="<script>function copyShortLink(){var copyText=document.getElementById('shortLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('Link copiato: '+ copyText);},function(err){console.error('Errore nella copia:', err);});}</script>";
                     } else {
                         $content="<div class='alert alert-danger'>Errore: ".$res["err"]."</div>".$content;
@@ -219,7 +227,7 @@ function checkIfSelfUri($uri) {
     $host = strtolower($parsedUrl['host']);
     if (substr($host, 0, 4) === 'www.') 
         $host = substr($host, 4);
-    if ($host === 'flu.lu' || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
+    if ($host === getenv("URI") || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
         $uri = "";
     return $uri; 
 }
@@ -234,7 +242,7 @@ function replyToApiCall ($db){
         $user = filter_var($user, FILTER_SANITIZE_STRING);
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
         if (filter_var($uri, FILTER_VALIDATE_URL)) {
-            // Controlla che l'URI non punti a flu.lu per evitare loop
+            // Controlla che l'URI non punti allo stesso url per evitare loop
             if (checkIfSelfUri($uri)!="") {
                 foreach($_GET as $key=>$data){
                     if ($key!="key" && $key!="uri")
@@ -247,7 +255,7 @@ function replyToApiCall ($db){
                 $response['short_url'] = $shortUrl;
             } else {
                 $response['status'] = 'error';
-                $response['message'] = 'To avoid loops, it isn\'t possible to shorten a flu.lu URL.';
+                $response['message'] = 'To avoid loops, it isn\'t possible to shorten a '.getenv("URI").' URL.';
             }
         } else {
             $response['status'] = 'error';

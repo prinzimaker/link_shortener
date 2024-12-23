@@ -1,7 +1,7 @@
 <?php
 /* 
 =====================================================================
-      Quick and Dirty Prinzimaker's Link Shoertener
+      Quick and Dirty Prinzimaker's Link Shortener
       Copyright (C) 2024 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
