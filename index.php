@@ -68,12 +68,12 @@ switch ($uri){
                     } else {
                         $date = new DateTime($res["created"]);
                         $locale = 'it_IT';
-                        $formatter = new IntlDateFormatter(
+                        $formatter = new \IntlDateFormatter(
                             $locale,                         // Locale
-                            IntlDateFormatter::FULL,         // Tipo di formattazione della data
-                            IntlDateFormatter::FULL,         // Tipo di formattazione dell'ora
+                            \IntlDateFormatter::FULL,         // Tipo di formattazione della data
+                            \IntlDateFormatter::FULL,         // Tipo di formattazione dell'ora
                             'Europe/Rome',                   // Fuso orario
-                            IntlDateFormatter::GREGORIAN,    // Calendario
+                            \IntlDateFormatter::GREGORIAN,    // Calendario
                             "EEEE dd MMMM yyyy ! HH:mm:ss"      // Pattern di formattazione
                         );
                         $formattedDate = str_replace("!","alle",$formatter->format($date));

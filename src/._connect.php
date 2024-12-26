@@ -59,12 +59,33 @@ class database {
         try {
             // Start a transaction to ensure data integrity
             $this->pdo->beginTransaction();
+            $log=$_SERVER['REMOTE_ADDR'].",".date("Y-m-d H:i:s").";";
+            /*
             $updateStmt = $this->pdo->prepare("
+                UPDATE link
+                SET calls = calls + 1, last_call = NOW()
+                WHERE short_id = :code;
+                UPDATE calls 
+                SET call_log=concat(call_log, :log)
+                WHERE short_id = :code
+            ");
+            $updateStmt->execute(['code' => $code,'log'=>$log]);
+            */
+            $updateStmt1 = $this->pdo->prepare("
                 UPDATE link
                 SET calls = calls + 1, last_call = NOW()
                 WHERE short_id = :code
             ");
-            $updateStmt->execute(['code' => $code]);
+            $updateStmt1->execute(['code' => $code]);
+/*
+            // Secondo update
+            $updateStmt2 = $this->pdo->prepare("
+                UPDATE calls 
+                SET call_log = CONCAT(call_log, :log)
+                WHERE short_id = :code
+            ");
+            $updateStmt2->execute(['code' => $code, 'log' => $log]);
+*/
             $selectStmt = $this->pdo->prepare("
                 SELECT full_uri
                 FROM link
@@ -152,5 +173,20 @@ class database {
         $stmt->execute(['code' => $randomCode]);
         $exists = $stmt->fetchColumn();
         return $exists ? true : false;
+    }
+    private function _callsTableExists(){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("SELECT count(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA = 'shortlinks') AND (TABLE_NAME = 'calls')");
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $result>0;
+    }
+    private function _callsTableCreate(){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("create table calls{short_id varchar(10) not null, call_log longtext, PRIMARY KEY (short_id),} DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $stmt->execute();
+        $stmt = $this->pdo->prepare("create table calls{short_id varchar(10) not null, call_log longtext, PRIMARY KEY (short_id),} DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $stmt->execute();
+        return $stmt->fetch();
     }
 }
