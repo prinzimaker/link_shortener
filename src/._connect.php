@@ -59,33 +59,19 @@ class database {
         try {
             // Start a transaction to ensure data integrity
             $this->pdo->beginTransaction();
-            $log=$_SERVER['REMOTE_ADDR'].",".date("Y-m-d H:i:s").";";
-            /*
-            $updateStmt = $this->pdo->prepare("
-                UPDATE link
-                SET calls = calls + 1, last_call = NOW()
-                WHERE short_id = :code;
-                UPDATE calls 
-                SET call_log=concat(call_log, :log)
-                WHERE short_id = :code
-            ");
-            $updateStmt->execute(['code' => $code,'log'=>$log]);
-            */
             $updateStmt1 = $this->pdo->prepare("
                 UPDATE link
                 SET calls = calls + 1, last_call = NOW()
                 WHERE short_id = :code
             ");
             $updateStmt1->execute(['code' => $code]);
-/*
-            // Secondo update
+            // CALLS LOG UPDATE
+            $log=$_SERVER['REMOTE_ADDR'].",".date("Y-m-d H:i:s").";";
             $updateStmt2 = $this->pdo->prepare("
-                UPDATE calls 
-                SET call_log = CONCAT(call_log, :log)
-                WHERE short_id = :code
+                INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
+                ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
             ");
-            $updateStmt2->execute(['code' => $code, 'log' => $log]);
-*/
+            $updateStmt2->execute(['code' => $code, 'log' => $log, 'log2' => $log]);
             $selectStmt = $this->pdo->prepare("
                 SELECT full_uri
                 FROM link

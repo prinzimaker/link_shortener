@@ -30,11 +30,11 @@ create table link (
     UNIQUE KEY uri_sha_uniq (sha_uri)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-create table calls{
+create table calls(
     short_id varchar(10) not null,
     call_log longtext,
     PRIMARY KEY (short_id),
-} DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 create table customer (
 	cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,
