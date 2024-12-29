@@ -1,16 +1,20 @@
 # Prinzimaker's Link Shortener
 
-**Quick and dirty link shortener** - **v1.1**
+**Quick and dirty link shortener** - **v1.2**
 
 E' un progetto open source (MIT license).
-E' un completo sito web in italiano per la generazione di link compressi: inserisci un link lungo e complicato e ottieni un link ridotto a 8 caratteri e un qr-code.
+
+**E' un completo sito web in italiano per la riduzione di link complessi e la gestione delle informazioni sull'uso del link: 
+Esempi:**
+* **inserisci un link lungo e complicato e ottieni un link ridotto a 8 caratteri e un qr-code.**
+* **inserisci un link accorciato e ottieni informazioni sul suo uso.**
+
 Ad esempio come uno dei tanti: **https://www.google.com/search?q=link+shortener**
 ma gestito da te privatamente.
-*E' usabile sia da browser che via API (**json** reply).*
+**E' usabile sia da browser che via API (**json** reply).**
 - Mancano:
   - La gestione utenti
   - un log applicativo 
-  - la gestione delle statistiche. 
 
 Scritto in **PHP** (dalla versione **7.4** in poi) per **Apache** e **MySQL**.
 
@@ -19,25 +23,36 @@ Scritto in **PHP** (dalla versione **7.4** in poi) per **Apache** e **MySQL**.
 - **PHP** 7.4 o superiore
 - Web server
   - **Apache**
-  - **Apache2**
+  - oppure **Apache2**
 - Database server
   - **MariaDB**
-  - **MySQL**
+  - oppure **MySQL**
 
-## Installazione
+---
+
+# Installazione
 
 ### 1. Clona il Repository
 
 ```bash
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
+---
+### 2. Aggiorna le librerie (Geo-Ip))
+Viene usata una libreria locale per la geolocalizzazione (vedi *LICENZA* alla fine di questo readme).
+Va installata usando il seguente comando:
+```bash
+composer install
+```
 
-### 2. Configurazione di Apache
+(_Se non hai COMPOSER installato sul tuo server, cerca su internet: "come installare composer su [il tuo sistema operativo]"_)
+---
+### 3. Configurazione di Apache
 (_trovi il file anche nella cartella /DOC_)
 
-Per configurare Apache per questo progetto, è necessario creare un file di configurazione e abilitare alcuni moduli.
+Per configurare Apache per questo progetto, è necessario creare un file di configurazione e abilitare alcuni moduli:
 
-#### Creazione del file di configurazione
+* ### Creazione del file di configurazione
 
 Crea un nuovo file di configurazione per il sito, ad esempio `miosito.it.conf`, nella directory dei siti disponibili di Apache.
 
@@ -72,7 +87,7 @@ sudo nano /etc/apache2/sites-available/miosito.it.conf
 </VirtualHost>
 ```
 
-#### Abilitazione del sito e moduli necessari
+* ### Abilitazione del sito e moduli necessari
 
 1. **Abilita il modulo `rewrite` di Apache:**
 
@@ -92,10 +107,12 @@ sudo nano /etc/apache2/sites-available/miosito.it.conf
    sudo systemctl restart apache2
    ```
 
-### 3. Configurazione di MySQL
+---
+
+### 4. Configurazione di MySQL
 (_trovi il file anche nella cartella /DOC_)
 
-#### Creazione del database e dell'utente
+ * ### Creazione del database e dell'utente
 
 Esegui i seguenti comandi per creare un database chiamato `shortlinks`, un utente `shlnkusr` con la password `laTuaPass`, e concedi all'utente tutti i privilegi sul database.
 
@@ -124,7 +141,7 @@ FLUSH PRIVILEGES;
 EXIT;
 ```
 
-#### Creazione delle tabelle necessarie
+ * ### Creazione delle tabelle necessarie
 
 **Accedi al database `shortlinks`:**
 
@@ -147,6 +164,12 @@ create table link (
   UNIQUE KEY uri_sha_uniq (sha_uri)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+create table calls(
+    short_id varchar(10) not null,
+    call_log longtext,
+    PRIMARY KEY (short_id),
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 create table customer (
   cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,
   descr varchar(100),
@@ -165,10 +188,10 @@ create table customer (
 ```sql
 EXIT;
 ```
+---
+### 5. Configurazione dell'Applicazione
 
-### 4. Configurazione dell'Applicazione
-
-#### Variabili d'Ambiente
+* ### Variabili d'Ambiente
 
 Crea un file `.env` nella directory principale del progetto e inserisci le seguenti variabili:
 
@@ -181,8 +204,8 @@ URI=https://miosito.it/
 ```
 
 **Nota:** Assicurati che il file `.env` non sia accessibile pubblicamente e aggiungilo al tuo `.gitignore`.
-
-### 5. Permessi delle Cartelle
+---
+### 6. Permessi delle Cartelle
 
 Imposta i permessi corretti alla cartella del progetto per consentire ad Apache di accedere ai file:
 
@@ -190,20 +213,25 @@ Imposta i permessi corretti alla cartella del progetto per consentire ad Apache 
 sudo chown -R www-data:www-data /var/www/html/miosito.it
 sudo chmod -R 755 /var/www/html/miosito.it
 ```
+---
+# Utilizzo
 
-## Utilizzo
-
-### Accesso via Web
+## Accesso via Web
 
 Apri il browser e naviga verso `http://miosito.it` per accedere all'interfaccia web del link shortener.
 
-### Utilizzo delle API
+## Utilizzo delle API
 
-Per utilizzare le API, effettua una richiesta GET all'endpoint `api` con i parametri `key` e `uri`.
+Per utilizzare le API, effettua una richiesta GET all'endpoint `api` con il parametro:
 * `key` - al momento qualsiasi valore va bene, non c'è la gestione utenti
-* `uri` - il link lungo da ridurre
 
-**Esempio:**
+e almeno uno dei seguenti parametri/comando:
+
+* `uri` - seguito dal link lungo da ridurre -> crea uno short url
+* `short` - seguito dal codice del link ridotto -> restituisce informazioni sul link 
+* `calls` - - seguito dal codice del link ridotto -> restituisce un log delle singole chiamate
+
+**Esempio: CREAZIONE DI UNO SHORT URL**
 
 ```
 http://miosito.it/api?key=987697869&uri=https://www.example.com/page.php?myvalue1=23456&othval=97867ygh087g087g8&longval=6576576-hjuhiu-ouy8757
@@ -219,11 +247,61 @@ http://miosito.it/api?key=987697869&uri=https://www.example.com/page.php?myvalue
 }
 ```
 
+**Esempio: RICHIESTA INFORMAZIONI PER UNO SHORT URL ESISTENTE**
+
+```
+http://miosito.it/api?key=987697869&short=123456
+```
+
+**Risposta JSON di esempio:**
+
+```json
+{
+    "status":"success",
+    "original_url":"https:\\miosito.it\miolink&value1=123456",
+    "created":"2024-12-01 09:15:00",
+    "calls_count":4
+}
+```
+
+**Esempio: RICHIESTA LOG CHIAMATE PER UNO SHORT URL ESISTENTE**
+
+```
+http://miosito.it/api?key=987697869&short=4Idu5
+```
+
+**Risposta JSON di esempio:**
+
+```json
+{
+    "status":"success",
+    "short_id":"4Idu5",
+    "calls_log":["10.10.10.10,2024-12-01 09:50:00","128.1.15.16,2024-12-02 11:25:07","88.89.90.91,2024-12-02 18:03:11","15.5.5.1,2024-12-03 05:06:07"]
+}
+```
+
+**Esempio: RICHIESTA ERRATA**
+
+```
+http://miosito.it/api?key=987697869&calls=DUNNO?
+```
+
+**Risposta JSON di esempio:**
+
+```json
+{
+    "status":"error",
+    "message":"[descrizione testuale dello stato d'errore]"
+}
+```
+
+
 ## Funzionalità
 
 - **Creazione di link abbreviati** tramite interfaccia web.
 - **API RESTful** per la generazione di link abbreviati da applicazioni esterne.
 - **Statistica delle chiamate**: conteggio degli accessi e data dell'ultimo accesso per ogni link.
+- **Log delle chiamate**: lista degli accessi per indirizzo IP e data, per ogni link.
 - **Protezione contro loop**: verifica che non vengano creati link abbreviati che puntano a `miosito.it` stesso.
 
 ## Personalizzazione
@@ -249,7 +327,6 @@ Puoi modificare i file CSS e HTML per personalizzare l'aspetto dell'applicazione
 
 - Manca la gestione utenti
 - Manca il logging
-- Manca una gestione delle statistiche (manca anche tabella database) 
 
 Se desideri contribuire al progetto:
 
@@ -262,14 +339,23 @@ Se desideri contribuire al progetto:
 ## Licenza
 
 Questo progetto è distribuito sotto la licenza MIT. Vedi il file [LICENSE](LICENSE) per maggiori dettagli.
-
+___
 **QR-CODE**
 
 La generazione dei Qr-Code è ottenuta usando un generatore on line gratuito QR-SERVER.
-Verifica le informazioni su https://goqr.me/api/
-| Fundata GmbH - Karlsruhe (DE)
 
+Verifica le informazioni su 
+### https://goqr.me/api/
+| Fundata GmbH - Karlsruhe (DE)
+___
+**MMDB - Database geografico indirizzi IP**
+
+Il database dei dati geoIP è locale, per evitare limitazioni di call di api di terze parti. La localizzazione è ottenuta usando un progetto GitHub: 
+### https://github.com/maxmind/GeoIP2-php
+
+___
 ## Autore
+Alla data dell'ultima versione l'autore del progetto è uno solo: 
 
 - **Aldo Prinzi (Prinzimaker) aldo[AT]prinzi.it**
 

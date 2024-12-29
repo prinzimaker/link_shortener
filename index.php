@@ -77,6 +77,18 @@ switch ($uri){
                             "EEEE dd MMMM yyyy ! HH:mm:ss"      // Pattern di formattazione
                         );
                         $formattedDate = str_replace("!","alle",$formatter->format($date));
+
+                        $rows=getCallsLog($db,$puri);
+                        $hret="<table cellpadding=0 cellspacing=0 class='table table-striped table-bordered table-hover'>";
+                        $hret.="<tr><th colspan=2>Data</th><th colspan=2>Indirizzo IP</th></tr><tbody>";
+                        if (is_array($rows)){
+                            foreach ($rows as $row){
+                                $cols=explode(",",$row);
+                                $hret.="<tr><td class='tdcont'>".$cols[1]."</td><td class='tdsep'>&nbsp;&nbsp;</td><td class='tdcont'>&nbsp;&nbsp;</td><td>".$cols[0]."</td></tr>";
+                            }
+                        } 
+                        $hret.="</tbody></table>";
+
                         $content.="<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>";
                         $content.="<div class='alert alert-info'><table width='100%'><tr><td width=85%>";
                         $content.="<label>Il link originale &egrave;:</label><input type='text' class='input-text' id='originalLink' value='".$res["full_uri"]."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>Copia</button>";
@@ -84,6 +96,9 @@ switch ($uri){
                         $content.="<table style='padding-top:15px' width=100%><tr><td width=65%><label>&Egrave; stato creato il:</label><input type='text' class='input-text' id='createdLink' value='".$formattedDate."' readonly></td><td>&nbsp;</td>";
                         $content.="<td width=35%><label>Ed &egrave; stato richiesto:</label><input type='text' class='input-text' id='createdLink' value='".$res["calls"]." volte' readonly></div></td></tr></table>";
                         $content.="<td width='15%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$uri_code). "&amp;size=100x100&amp;color=0800A0' alt='' title='qr-code' width='100px' height='100px' /></td></tr></table></div>";
+                        $content.='<section class="accordion"><div class="tab"><input type="radio" name="accordion-2" id="rd1"><label for="rd1" class="tab__label">Downloads info</label>';
+                        $content.='<div class="tab__content"><p>'.$hret.'</p>';
+                        $content.='</div><div class="tab"><input type="radio" name="accordion-2" id="rd3"><label for="rd3" class="tab__close">Chiudi &times;</label></div></div></section>';
                     }
                 }
             } else {
@@ -242,11 +257,15 @@ function replyToApiCall ($db){
     header('Content-Type: application/json');
     $user = isset($_GET['key']) ? $_GET['key'] : null;
     $uri = isset($_GET['uri']) ? $_GET['uri'] : null;
+    $short = isset($_GET['short']) ? $_GET['short'] : null;
+    $calls = isset($_GET['calls']) ? $_GET['calls'] : null;
     $response = array();
-    if ($user && $uri) {
+    if ($user && ($uri || $short|| $calls)) {
         // Sanitizza gli input
         $user = filter_var($user, FILTER_SANITIZE_STRING);
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
+        $short = filter_var($short, FILTER_SANITIZE_URL);
+        $calls = filter_var($calls, FILTER_SANITIZE_URL);
         if (filter_var($uri, FILTER_VALIDATE_URL)) {
             // Controlla che l'URI non punti allo stesso url per evitare loop
             if (checkIfSelfUri($uri)!="") {
@@ -263,6 +282,27 @@ function replyToApiCall ($db){
                 $response['status'] = 'error';
                 $response['message'] = 'To avoid loops, it isn\'t possible to shorten a '.getenv("URI").' URL.';
             }
+        } elseif (filter_var($short, FILTER_SANITIZE_STRING)) {
+            $res=$db->getShortlinkInfo($short);
+            if (empty($res)){
+                $response['status'] = 'error';
+                $response['message'] = 'Invalid SHORT_ID provided.';
+            } else {
+                $response['status'] = 'success';
+                $response['original_url'] = $res["full_uri"];
+                $response['created'] = $res["created"];
+                $response['calls_count'] = $res["calls"];
+            }
+        } elseif (filter_var($calls, FILTER_SANITIZE_STRING)) {
+            $rows=getCallsLog($db,$calls);
+            if (!isset($rows) || empty($rows)){
+                $response['status'] = 'error';
+                $response['message'] = 'Invalid SHORT_ID provided.';
+            } else {
+                $response['status'] = 'success';
+                $response['short_id'] = $calls;
+                $response['calls_log'] = $rows;
+            }
         } else {
             $response['status'] = 'error';
             $response['message'] = 'Invalid URI provided.';
@@ -274,6 +314,17 @@ function replyToApiCall ($db){
     die( json_encode($response));
 }
 
+function getCallsLog($db,$short_id){
+    $rows=$db->getDownloadInfo($short_id);
+    if (is_array($rows)){
+        usort($rows, function ($a, $b) {
+            $dateA = strtotime(explode(',', $a)[1]);
+            $dateB = strtotime(explode(',', $b)[1]);
+            return $dateB <=> $dateA;
+        });
+    }
+    return $rows; 
+}
 function getFavicon(){
     $ret="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAdCAMAAAGLR64jAAAKN2lDQ1BzUkdCIElFQzYxOTY2LTIuMQAAeJydlndUU9kWh8+9N71QkhCKlNBraFICSA29SJEuKjEJEErAkAAiNkRUcERRkaYIMijggKNDkbEiioUBUbHrBBlE1HFwFBuWSWStGd+8ee/Nm98f935rn73P3Wfvfda6AJD8gwXCTFgJgAyhWBTh58WIjYtnYAcBDPAAA2wA4HCzs0IW+EYCmQJ82IxsmRP4F726DiD5+yrTP4zBAP+flLlZIjEAUJiM5/L42VwZF8k4PVecJbdPyZi2NE3OMErOIlmCMlaTc/IsW3z2mWUPOfMyhDwZy3PO4mXw5Nwn4405Er6MkWAZF+cI+LkyviZjg3RJhkDGb+SxGXxONgAoktwu5nNTZGwtY5IoMoIt43kA4EjJX/DSL1jMzxPLD8XOzFouEiSniBkmXFOGjZMTi+HPz03ni8XMMA43jSPiMdiZGVkc4XIAZs/8WRR5bRmyIjvYODk4MG0tbb4o1H9d/JuS93aWXoR/7hlEH/jD9ld+mQ0AsKZltdn6h21pFQBd6wFQu/2HzWAvAIqyvnUOfXEeunxeUsTiLGcrq9zcXEsBn2spL+jv+p8Of0NffM9Svt3v5WF485M4knQxQ143bmZ6pkTEyM7icPkM5p+H+B8H/nUeFhH8JL6IL5RFRMumTCBMlrVbyBOIBZlChkD4n5r4D8P+pNm5lona+BHQllgCpSEaQH4eACgqESAJe2Qr0O99C8ZHA/nNi9GZmJ37z4L+fVe4TP7IFiR/jmNHRDK4ElHO7Jr8WgI0IABFQAPqQBvoAxPABLbAEbgAD+ADAkEoiARxYDHgghSQAUQgFxSAtaAYlIKtYCeoBnWgETSDNnAYdIFj4DQ4By6By2AE3AFSMA6egCnwCsxAEISFyBAVUod0IEPIHLKFWJAb5AMFQxFQHJQIJUNCSAIVQOugUqgcqobqoWboW+godBq6AA1Dt6BRaBL6FXoHIzAJpsFasBFsBbNgTzgIjoQXwcnwMjgfLoK3wJVwA3wQ7oRPw5fgEVgKP4GnEYAQETqiizARFsJGQpF4JAkRIauQEqQCaUD";
     $ret.="akB6kH7mKSJGnyFsUBkVFMVBMlAvKHxWF4qKWoVahNqOqUQdQnag+1FXUKGoK9RFNRmuizdHO6AB0LDoZnYsuRlegm9Ad6LPoEfQ4+hUGg6FjjDGOGH9MHCYVswKzGbMb0445hRnGjGGmsVisOtYc64oNxXKwYmwxtgp7EHsSewU7jn2DI+J0cLY4X1w8TogrxFXgWnAncFdwE7gZvBLeEO+MD8Xz8MvxZfhGfA9+CD+OnyEoE4wJroRIQiphLaGS0EY4S7hLeEEkEvWITsRwooC4hlhJPEQ8TxwlviVRSGYkNimBJCFtIe0nnSLdIr0gk8lGZA9yPFlM3kJuJp8h3ye/UaAqWCoEKPAUVivUKHQqXFF4pohXNFT0VFysmK9YoXhEcUjxqRJeyUiJrcRRWqVUo3RU6YbStDJV2UY5VDlDebNyi/IF5UcULMWI4kPhUYoo+yhnKGNUhKpPZVO51HXURupZ6jgNQzOmBdBSaaW0b2iDtCkVioqdSrRKnkqNynEVKR2hG9ED6On0Mvph+nX6O1UtVU9Vvuom1TbVK6qv1eaoeajx1UrU2tVG1N6pM9R91NPUt6l3qd/TQGmYaYRr5Grs0Tir8XQObY7LHO6ckjmH59zWhDXNNCM0V2ju0xzQnNbS1vLTytKq0jqj9VSbru2hnaq9Q/uE9qQOVcdNR6CzQ+ekzmOGCsOTkc6oZPQxpnQ1df11Jbr1uoO6M3rGelF6hXrtevf0Cfos/ST9Hfq9+lMGOgYhBgUGrQa3DfGGLMMUw12G/YavjYyNYow2GHUZPTJWMw4wzjduNb5rQjZxN1lm0mByzRRjyjJNM91tetkMNrM3SzGrMRsyh80dzAXmu82HLdAWThZCiwaLG0wS05OZw2xljlrSLYMtCy27LJ9ZGVjFW22z6rf6aG1vnW7daH3HhmITaFNo02Pzq62ZLde2xvbaXPJc37mr53bPfW5nbse322N3055qH2K/wb7X/oODo4PIoc1h0tHAMdGx1vEGi8YKY21mnXdCO3k5rXY65vTW2cFZ7HzY+RcXpkuaS4vLo3nG8/jzGueNueq5clzrXaVuDLdEt71uUnddd457g/sDD30PnkeTx4SnqWeq50HPZ17WXiKvDq/XbGf2SvYpb8Tbz7vEe9CH4";

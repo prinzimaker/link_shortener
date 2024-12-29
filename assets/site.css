@@ -13,9 +13,25 @@ v1.1.0 - Aldo Prinzi - 23 Dic 2024
 :root {
     --mainbg: #0800A0;
     --btnbg: #cb7a1c;
+
+    --primary: #227093;
+    --secondary: #ff5252;
+    --background: #eee;
+    --highlight: #ffda79;
+
+    --theme: var(--primary);
 }
 
-  * {
+th{
+    background: var(--mainbg);
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    border-bottom: solid 1px silver;
+}
+
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -173,26 +189,102 @@ label {
 }
 
 .alert-info {
-    color: #31708f;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
 }
 
 .alert .icon {
-    margin-right: 10px;
-    font-size: 18px;
-    vertical-align: middle;
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
 }
 
 .alert .close {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    color: inherit;
-    text-decoration: none;
-    font-size: 20px;
-    line-height: 20px;
-    cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 20px;
+  line-height: 20px;
+  cursor: pointer;
 }
-  
+.tdsep{
+  border-right: 1px solid #ccc;
+}
+.tdcont{
+  padding: 5px;
+}
+
+
+  /* ACCORDION */
+  .tab {
+    position: relative;
+  }
+  .tab input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+  }
+  .tab__content {
+    max-height: 0;
+    overflow: auto;
+    transition: all 0.35s;
+  }
+  .tab input:checked ~ .tab__content {
+    max-height: 10rem;
+  }
+  .accordion {
+    color: var(--theme);
+    border: 2px solid;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  .tab__label,
+  .tab__close {
+    display: flex;
+    color: white;
+    background: var(--theme);
+    cursor: pointer;
+  }
+  .tab__label {
+    justify-content: space-between;
+    padding: 1rem;
+  }
+  .tab__label::after {
+    content: "\276F";
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    transform: rotate(90deg);
+    transition: all 0.35s;
+  }
+  .tab input:checked + .tab__label::after {
+    transform: rotate(270deg);
+  }
+  .tab__content p {
+    margin: 0;
+    padding: 1rem;
+  }
+  .tab__close {
+    justify-content: flex-end;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  .accordion--radio {
+    --theme: var(--secondary);
+  }
+    /* Arrow animation */
+  .tab input:not(:checked) + .tab__label:hover::after {
+    animation: bounce .5s infinite;
+  }
+    @keyframes bounce {
+    25% {
+      transform: rotate(90deg) translate(.25rem);
+    }
+    75% {
+      transform: rotate(90deg) translate(-.25rem);
+    }
+  }
   
