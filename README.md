@@ -38,16 +38,7 @@ Scritto in **PHP** (dalla versione **7.4** in poi) per **Apache** e **MySQL**.
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
 ---
-### 2. Aggiorna le librerie (Geo-Ip))
-Viene usata una libreria locale per la geolocalizzazione (vedi *LICENZA* alla fine di questo readme).
-Va installata usando il seguente comando:
-```bash
-composer install
-```
-
-(_Se non hai COMPOSER installato sul tuo server, cerca su internet: "come installare composer su [il tuo sistema operativo]"_)
----
-### 3. Configurazione di Apache
+### 2. Configurazione di Apache
 (_trovi il file anche nella cartella /DOC_)
 
 Per configurare Apache per questo progetto, è necessario creare un file di configurazione e abilitare alcuni moduli:
@@ -109,7 +100,7 @@ sudo nano /etc/apache2/sites-available/miosito.it.conf
 
 ---
 
-### 4. Configurazione di MySQL
+### 3. Configurazione di MySQL
 (_trovi il file anche nella cartella /DOC_)
 
  * ### Creazione del database e dell'utente
@@ -189,7 +180,7 @@ create table customer (
 EXIT;
 ```
 ---
-### 5. Configurazione dell'Applicazione
+### 4. Configurazione dell'Applicazione
 
 * ### Variabili d'Ambiente
 
@@ -205,7 +196,7 @@ URI=https://miosito.it/
 
 **Nota:** Assicurati che il file `.env` non sia accessibile pubblicamente e aggiungilo al tuo `.gitignore`.
 ---
-### 6. Permessi delle Cartelle
+### 5. Permessi delle Cartelle
 
 Imposta i permessi corretti alla cartella del progetto per consentire ad Apache di accedere ai file:
 
@@ -348,10 +339,10 @@ Verifica le informazioni su
 ### https://goqr.me/api/
 | Fundata GmbH - Karlsruhe (DE)
 ___
-**MMDB - Database geografico indirizzi IP**
+**IP_API - API geografiche per indirizzi IP**
 
-Il database dei dati geoIP è locale, per evitare limitazioni di call di api di terze parti. La localizzazione è ottenuta usando un progetto GitHub: 
-### https://github.com/maxmind/GeoIP2-php
+Le informazioni gegrafiche per gli IP sono ottenuti da un servizio gratuito sul web: 
+### https://ip-api.com/
 
 ___
 ## Autore
