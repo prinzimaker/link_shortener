@@ -14,8 +14,8 @@ servers:
 paths:
   /api:
     get:
-      summary: API for managing shortened links
-      description: Allows creating, retrieving information, or viewing the call log of a shortened link.
+      summary: API for shorten links
+      description: Allows creating a shortened link.
       parameters:
         - name: key
           in: query
@@ -30,15 +30,39 @@ paths:
           schema:
             type: string
             format: uri
-        - name: short
+      responses:
+        '200':
+          description: Successful response with the result of the API call.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ShortenLinkResponse'
+        '400':
+          description: Bad request or missing parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    info:
+      summary: Get short link info 
+      description: Retrieving information of a shortened link.
+      parameters:
+        - name: key
           in: query
-          description: Shortened link code to retrieve information.
-          required: false
+          description: API key for authentication (currently any value is valid).
+          required: true
           schema:
             type: string
-        - name: calls
+        - name: short_id
           in: query
-          description: Shortened link code to retrieve the call log.
+          description: The code of the short link.
           required: false
           schema:
             type: string
@@ -49,8 +73,42 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ShortenLinkResponse'
                   - $ref: '#/components/schemas/ShortLinkInfoResponse'
+        '400':
+          description: Bad request or missing parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    calls:
+      summary: Get short link call log 
+      description: Retrieving log from shortened link calls.
+      parameters:
+        - name: key
+          in: query
+          description: API key for authentication (currently any value is valid).
+          required: true
+          schema:
+            type: string
+        - name: short_id
+          in: query
+          description: The code of the short link.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with the result of the API call.
+          content:
+            application/json:
+              schema:
+                oneOf:
                   - $ref: '#/components/schemas/ShortLinkCallsResponse'
         '400':
           description: Bad request or missing parameters.
@@ -64,7 +122,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
 components:
   schemas:
     ShortenLinkResponse:
