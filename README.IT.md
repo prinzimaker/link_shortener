@@ -30,8 +30,10 @@ Scritto in **PHP** (dalla versione **7.4** in poi) per **apache** e **mariaDB** 
   - **mariaDB**
   - oppure **mySQL**
 
+### Documentazione Open Api
+- Link:
+https://prinzimaker.github.io/link_shortener/
 ---
-
 # Installazione
 
 ### 1. Clona il Repository

@@ -6,3 +6,7 @@
 
 - 🇬🇧 [English Version](README.EN.md)
 - 🇮🇹 [Versione Italiana](README.IT.md)
+
+### Open Api documentation
+- Link:
+https://prinzimaker.github.io/link_shortener/

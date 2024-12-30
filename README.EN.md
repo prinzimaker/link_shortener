@@ -31,6 +31,9 @@ Written in **PHP** (version **7.4** onward) for **Apache** and **MariaDB** or **
   - **MariaDB**
   - or **MySQL**
 
+### Open Api documentation
+- Link:
+https://prinzimaker.github.io/link_shortener/
 ---
 
 # Installation
