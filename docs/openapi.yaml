@@ -11,10 +11,11 @@ servers:
     description: Production API
   - url: http://localhost
     description: Development API
+
 paths:
-  /api:
+  /api/shorten:
     get:
-      summary: API for shorten links
+      summary: Shorten a link
       description: Allows creating a shortened link.
       parameters:
         - name: key
@@ -26,18 +27,17 @@ paths:
         - name: uri
           in: query
           description: Long URL to be shortened.
-          required: false
+          required: true
           schema:
             type: string
             format: uri
       responses:
         '200':
-          description: Successful response with the result of the API call.
+          description: Successfully created a shortened link.
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ShortenLinkResponse'
+                $ref: '#/components/schemas/ShortenLinkResponse'
         '400':
           description: Bad request or missing parameters.
           content:
@@ -50,9 +50,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    info:
-      summary: Get short link info 
-      description: Retrieving information of a shortened link.
+
+  /api/info:
+    get:
+      summary: Get short link info
+      description: Retrieve information of a shortened link.
       parameters:
         - name: key
           in: query
@@ -63,17 +65,16 @@ paths:
         - name: short_id
           in: query
           description: The code of the short link.
-          required: false
+          required: true
           schema:
             type: string
       responses:
         '200':
-          description: Successful response with the result of the API call.
+          description: Successfully retrieved link information.
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ShortLinkInfoResponse'
+                $ref: '#/components/schemas/ShortLinkInfoResponse'
         '400':
           description: Bad request or missing parameters.
           content:
@@ -86,9 +87,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    calls:
-      summary: Get short link call log 
-      description: Retrieving log from shortened link calls.
+
+  /api/calls:
+    get:
+      summary: Get short link call log
+      description: Retrieve the call log for a shortened link.
       parameters:
         - name: key
           in: query
@@ -99,17 +102,16 @@ paths:
         - name: short_id
           in: query
           description: The code of the short link.
-          required: false
+          required: true
           schema:
             type: string
       responses:
         '200':
-          description: Successful response with the result of the API call.
+          description: Successfully retrieved call logs for the shortened link.
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ShortLinkCallsResponse'
+                $ref: '#/components/schemas/ShortLinkCallsResponse'
         '400':
           description: Bad request or missing parameters.
           content:
@@ -122,6 +124,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
     ShortenLinkResponse:
@@ -138,6 +141,7 @@ components:
           type: string
           format: uri
           example: "https://yoursite.com/abc123"
+
     ShortLinkInfoResponse:
       type: object
       properties:
@@ -155,6 +159,7 @@ components:
         calls_count:
           type: integer
           example: 42
+
     ShortLinkCallsResponse:
       type: object
       properties:
@@ -171,6 +176,7 @@ components:
           example:
             - "10.10.10.10,2024-06-15 09:50:00,Rome|Lazio|Italy"
             - "128.1.15.16,2024-06-16 11:25:07,Venice|Veneto|Italy"
+
     ErrorResponse:
       type: object
       properties:
