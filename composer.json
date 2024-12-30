@@ -1,5 +1,10 @@
 {
+    "name": "prinzimaker/link-shortener",
+    "description": "Quick and dirty link shortener",
+    "version": "1.2.1",
+    "license": "MIT",
     "require": {
+        "php": ">=7.4",
         "phpmailer/phpmailer": "^6.9"
     }
 }
