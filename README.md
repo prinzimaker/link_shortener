@@ -4,5 +4,5 @@
 
 ### 📚 Choose info and instruction in one of the following languages:
 
-- 🇬🇧 [English Version](README.en.md)
-- 🇮🇹 [Versione Italiana](README.it.md)
+- 🇬🇧 [English Version](README.EN.md)
+- 🇮🇹 [Versione Italiana](README.IT.md)
