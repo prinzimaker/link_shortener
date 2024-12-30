@@ -25,6 +25,7 @@ function lng($key){
         case "ip-address": return "ip address";
         case "geoloc": return "geolocalisation";
         case "not-found": return "not found";
+        case "unavailable_data": return "Unavailable data";
         case "front_link-is": return "The original link is";
         case "front_copied-link":return "Link copied";
         case "front_was-req":return "And was requested";

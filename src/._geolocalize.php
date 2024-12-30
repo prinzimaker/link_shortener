@@ -80,7 +80,7 @@ function geolocalizzaIP(array $ips): array {
                 if ($entry['status'] === 'success') {
                     $geoData[$ip] = $entry['city'] . '|' . $entry['regionName'] . '|' . $entry['country'];
                 } else {
-                    $geoData[$ip] = 'Informazioni non disponibili';
+                    $geoData[$ip] = lng("unavailable_data");
                 }
             }
         }

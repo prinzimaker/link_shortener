@@ -15,6 +15,7 @@ function lng($key){
         case "front_information":
         case "information":return "Informazioni";
         case "language":return "Language";
+        case "unavailable_data": return "Informazioni non disponibili";
         case "front_reduced-link": return "Link ridotto";
         case "front_copied-link":return "Link copiato";
         case "front_link-to-shrink": return "Link da ridurre";
