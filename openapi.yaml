@@ -1,0 +1,125 @@
+openapi: 3.0.3
+info:
+  title: Prinzimaker's Link Shortener API
+  description: API for creating, managing, and viewing statistics of shortened links.
+  version: 1.2.1
+  contact:
+    name: Aldo Prinzi
+    email: aldo@prinzi.it
+servers:
+  - url: https://api.yoursite.com
+    description: Production API
+  - url: http://localhost
+    description: Development API
+paths:
+  /api:
+    get:
+      summary: API for managing shortened links
+      description: Allows creating, retrieving information, or viewing the call log of a shortened link.
+      parameters:
+        - name: key
+          in: query
+          description: API key for authentication (currently any value is valid).
+          required: true
+          schema:
+            type: string
+        - name: uri
+          in: query
+          description: Long URL to be shortened.
+          required: false
+          schema:
+            type: string
+            format: uri
+        - name: short
+          in: query
+          description: Shortened link code to retrieve information.
+          required: false
+          schema:
+            type: string
+        - name: calls
+          in: query
+          description: Shortened link code to retrieve the call log.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with the result of the API call.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ShortenLinkResponse'
+                  - $ref: '#/components/schemas/ShortLinkInfoResponse'
+                  - $ref: '#/components/schemas/ShortLinkCallsResponse'
+        '400':
+          description: Bad request or missing parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ShortenLinkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        original_url:
+          type: string
+          format: uri
+          example: "https://www.example.com/page.php?param=1"
+        short_url:
+          type: string
+          format: uri
+          example: "https://yoursite.com/abc123"
+    ShortLinkInfoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        original_url:
+          type: string
+          format: uri
+          example: "https://www.example.com/page.php?param=1"
+        created:
+          type: string
+          format: date-time
+          example: "2024-06-15T12:34:56"
+        calls_count:
+          type: integer
+          example: 42
+    ShortLinkCallsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        short_id:
+          type: string
+          example: "abc123"
+        calls_log:
+          type: array
+          items:
+            type: string
+          example:
+            - "10.10.10.10,2024-06-15 09:50:00,Rome|Lazio|Italy"
+            - "128.1.15.16,2024-06-16 11:25:07,Venice|Veneto|Italy"
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: "Mandatory parameters missing."

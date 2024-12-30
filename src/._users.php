@@ -65,7 +65,6 @@ class UserManager {
         }
         return false;
     }
-
     public function getUserData($email) {
         $query = "SELECT email, api_key, api_key_active, created_at 
                   FROM users 
@@ -76,7 +75,6 @@ class UserManager {
         $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
     public function isApiKeyActive($apiKey) {
         $query = "SELECT api_key_active FROM users WHERE api_key = :api_key";
         $params = [':api_key' => $apiKey];
@@ -86,7 +84,6 @@ class UserManager {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result && $result['api_key_active'];
     }
-
     public function sendVerificationEmail($email) {
         // Genera un codice univoco
         $verificationCode = bin2hex(random_bytes(32));

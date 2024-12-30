@@ -24,7 +24,11 @@
 ### Added
 - Added calls logger
 
-## [1.0.0] - 2024-10-04
+## [1.0.0] - 2024-11-03
 ### Added
 - Added variable lenght for short link
+
+## [1.0.0] - 2024-11-03
+### Release
+- First release
 
