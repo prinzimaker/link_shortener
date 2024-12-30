@@ -7,6 +7,10 @@
 - 🇬🇧 [English Version](README.EN.md)
 - 🇮🇹 [Versione Italiana](README.IT.md)
 
-### Open Api documentation
+### OpenApi documentation
 - Link:
 https://prinzimaker.github.io/link_shortener/
+
+### REDOC Api documentation
+- Link:
+https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml
