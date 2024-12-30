@@ -7,9 +7,9 @@
 =====================================================================
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
-This class contains all the DB logic for the link shortener
+This class contains all the Geolocalisation functions
 -
-v1.2.0 - Aldo Prinzi - 29 Dic 2024
+v1.2.1 - Aldo Prinzi - 30 Dic 2024
 ---------
 UPDATES
 ---------
@@ -78,7 +78,7 @@ function geolocalizzaIP(array $ips): array {
             foreach ($data as $entry) {
                 $ip = $entry['query'];
                 if ($entry['status'] === 'success') {
-                    $geoData[$ip] = $entry['city'] . '-' . $entry['regionName'] . '-' . $entry['country'];
+                    $geoData[$ip] = $entry['city'] . '|' . $entry['regionName'] . '|' . $entry['country'];
                 } else {
                     $geoData[$ip] = 'Informazioni non disponibili';
                 }

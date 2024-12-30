@@ -40,12 +40,22 @@ create table customer (
 	cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,
 	descr varchar(100),
 	email varchar(50),
+	email_verif_code varchar(64),
+    email_verified BOOLEAN DEFAULT FALSE,
 	pass varchar(128),
 	active int(1) unsigned,
 	apikey varchar(64),
 	max_links int(3) unsigned,
 	PRIMARY KEY (cust_id),
 	UNIQUE (email)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+create table custlinks (
+    cust_id int(10) unsigned NOT NULL,
+    short_id varchar(10) not null,
+    PRIMARY KEY (cust_id, short_id),
+    FOREIGN KEY (cust_id) REFERENCES customer(cust_id) ON DELETE CASCADE,
+    FOREIGN KEY (short_id) REFERENCES link(short_id) ON DELETE CASCADE
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE USER 'shlnkusr'@'localhost' IDENTIFIED BY 'laTuaPass';

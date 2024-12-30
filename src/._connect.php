@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the DB logic for the link shortener
 -
-v1.2.0 - Aldo Prinzi - 29 Dic 2024
+v1.2.1 - Aldo Prinzi - 30 Dic 2024
 ---------
 UPDATES
 ---------
@@ -85,7 +85,11 @@ class database {
         } catch (PDOException $e) {
             // Roll back the transaction if an error occurs
             $this->pdo->rollBack();
-            throw $e; // Re-throw the exception or handle it as needed
+            //this page is not on this site/shortlink/etc
+            //raise http 404 error
+            http_response_code(404);
+            header("HTTP/1.1 404 Not Found");
+            exit();
         }
     }
     

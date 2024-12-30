@@ -1,11 +1,13 @@
 # Prinzimaker's Link Shortener
 
-**Quick and dirty link shortener** - **v1.2**
+### **Quick and dirty link shortener** - **v1.2.1**
 
-E' un progetto open source (MIT license).
+**Questo progetto è realizzato in php e necessita solo di apache e di mariadb/mysql.
+Una volta implementato diventa un completo sito web (in italiano) che permette di gestire la riduzione dei link complessi e la gestione delle informazioni sull'uso di questi link.**
 
-**E' un completo sito web in italiano per la riduzione di link complessi e la gestione delle informazioni sull'uso del link: 
-Esempi:**
+E' un progetto _open source_ (MIT license).
+
+### **Esempi:**
 * **inserisci un link lungo e complicato e ottieni un link ridotto a 8 caratteri e un qr-code.**
 * **inserisci un link accorciato e ottieni informazioni sul suo uso.**
 
@@ -16,17 +18,17 @@ ma gestito da te privatamente.
   - La gestione utenti
   - un log applicativo 
 
-Scritto in **PHP** (dalla versione **7.4** in poi) per **Apache** e **MySQL**.
+Scritto in **PHP** (dalla versione **7.4** in poi) per **apache** e **mariaDB** oppure **mySQL**.
 
 ## Requisiti
 
 - **PHP** 7.4 o superiore
 - Web server
-  - **Apache**
-  - oppure **Apache2**
+  - **apache**
+  - oppure **apache2**
 - Database server
-  - **MariaDB**
-  - oppure **MySQL**
+  - **mariaDB**
+  - oppure **mySQL**
 
 ---
 
@@ -38,7 +40,13 @@ Scritto in **PHP** (dalla versione **7.4** in poi) per **Apache** e **MySQL**.
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
 ---
-### 2. Configurazione di Apache
+### 2. Installa le dipendenze
+
+```bash
+composer install
+```
+---
+### 3. Configurazione di Apache
 (_trovi il file anche nella cartella /DOC_)
 
 Per configurare Apache per questo progetto, è necessario creare un file di configurazione e abilitare alcuni moduli:
@@ -53,30 +61,7 @@ Crea un nuovo file di configurazione per il sito, ad esempio `miosito.it.conf`, 
 sudo nano /etc/apache2/sites-available/miosito.it.conf
 ```
 
-**Contenuto del file `miosito.it.conf`:**
-
-```apache
-<VirtualHost *:80>
-    ServerName miosito.it
-    DocumentRoot /var/www/html/miosito.it
-
-    <Directory /var/www/html/miosito.it>
-        ErrorDocument 403 /forbidden
-        ErrorDocument 404 /notfound
-        Options Indexes FollowSymLinks
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    # Log personalizzati (opzionale)
-    ErrorLog ${APACHE_LOG_DIR}/miosito.it_error.log
-    CustomLog ${APACHE_LOG_DIR}/miosito.it_access.log combined
-
-    RewriteEngine on
-    RewriteCond %{SERVER_NAME} =miosito.it
-    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
-</VirtualHost>
-```
+Il file di configurazione si trova in **docs/miosito.it.conf**
 
 * ### Abilitazione del sito e moduli necessari
 
@@ -100,103 +85,19 @@ sudo nano /etc/apache2/sites-available/miosito.it.conf
 
 ---
 
-### 3. Configurazione di MySQL
-(_trovi il file anche nella cartella /DOC_)
+### 4. Configurazione di MySQL
+Nella cartella /docs/ trovi il file **database_script.sql** che serve a generare il database e le tabelle necessarie al funzionamento dell'applicazione. 
 
- * ### Creazione del database e dell'utente
-
-Esegui i seguenti comandi per creare un database chiamato `shortlinks`, un utente `shlnkusr` con la password `laTuaPass`, e concedi all'utente tutti i privilegi sul database.
-
-**Accedi a MySQL come utente root o con privilegi sufficienti:**
-
-```bash
-mysql -u root -p
-```
-
-**Esegui i comandi SQL:**
-
-```sql
--- Crea il database
-CREATE DATABASE shortlinks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- Crea l'utente 'shlnkusr' con la password 'Sh0rtPass'
-CREATE USER 'shlnkusr'@'localhost' IDENTIFIED BY 'laTuaPass';
-
--- Concedi tutti i privilegi sull'intero database 'shortlinks' a 'shlnkusr'
-GRANT ALL PRIVILEGES ON shortlinks.* TO 'shlnkusr'@'localhost';
-
--- Applica le modifiche
-FLUSH PRIVILEGES;
-
--- Esci da MySQL
-EXIT;
-```
-
- * ### Creazione delle tabelle necessarie
-
-**Accedi al database `shortlinks`:**
-
-```bash
-mysql -u shlnkusr -p shortlinks
-```
-
-**Esegui lo script SQL per creare la tabella `link`:**
-
-```sql
-create table link (
-  short_id varchar(10) not null,
-  full_uri longtext,
-  sha_uri varchar(128),
-  cust_id int(10) unsigned not null,
-  created timestamp not null default current_timestamp(),
-  calls int(10) unsigned not null default 0,
-  last_call datetime default '1999-12-31 23:59:59',
-  PRIMARY KEY (short_id),
-  UNIQUE KEY uri_sha_uniq (sha_uri)
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-create table calls(
-    short_id varchar(10) not null,
-    call_log longtext,
-    PRIMARY KEY (short_id),
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-create table customer (
-  cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  descr varchar(100),
-  email varchar(50),
-  pass varchar(128),
-  active int(1) unsigned,
-  apikey varchar(64),
-  max_links int(3) unsigned,
-  PRIMARY KEY (cust_id),
-  UNIQUE (email)
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-```
-
-**Esci da MySQL:**
-
-```sql
-EXIT;
-```
 ---
-### 4. Configurazione dell'Applicazione
+### 5. Configurazione dell'Applicazione
 
 * ### Variabili d'Ambiente
 
-Crea un file `.env` nella directory principale del progetto e inserisci le seguenti variabili:
-
-```dotenv
-DB_NAME=shortlinks
-DB_USER=shlnkusr
-DB_PASS=laTuaPass
-DB_HOST=localhost
-URI=https://miosito.it/
-```
+Rinomina il file `.env.sample`, che si trova nella directory principale del progetto, in `.env`  e inserisci i tuoi dati nelle variabili di configurazione.
 
 **Nota:** Assicurati che il file `.env` non sia accessibile pubblicamente e aggiungilo al tuo `.gitignore`.
 ---
-### 5. Permessi delle Cartelle
+### 6. Permessi delle Cartelle
 
 Imposta i permessi corretti alla cartella del progetto per consentire ad Apache di accedere ai file:
 
@@ -258,7 +159,7 @@ http://miosito.it/api?key=987697869&short=123456
 **Esempio: RICHIESTA LOG CHIAMATE PER UNO SHORT URL ESISTENTE**
 
 ```
-http://miosito.it/api?key=987697869&short=4Idu5
+http://miosito.it/api?key=987697869&calls=4Idu5
 ```
 
 **Risposta JSON di esempio:**
@@ -267,7 +168,7 @@ http://miosito.it/api?key=987697869&short=4Idu5
 {
     "status":"success",
     "short_id":"4Idu5",
-    "calls_log":["10.10.10.10,2024-12-01 09:50:00","128.1.15.16,2024-12-02 11:25:07","88.89.90.91,2024-12-02 18:03:11","15.5.5.1,2024-12-03 05:06:07"]
+    "calls_log":["10.10.10.10,2024-12-01 09:50:00,Rome|Lazio|Italy","128.1.15.16,2024-12-02 11:25:07,Venezia|Veneto|Italy","88.89.90.91,2024-12-02 18:03:11,Des Moines|Iowa|United States","15.5.5.1,2024-12-03 05:06:07,Brussels|Brussels Capital|Belgium"]
 }
 ```
 
