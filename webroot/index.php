@@ -29,6 +29,7 @@ include '../src/._frontend.php';
 include '../src/._geolocalize.php';
 include '../src/._shortdata.php';
 include '../src/._user.php';
+include '../src/._language.php';
 //=====================================================================
 $uri=str_replace("/","",$_SERVER["REQUEST_URI"]);
 $header = "";
@@ -40,6 +41,10 @@ if ((stripos($uri, "api.php") !== false) || ($_SERVER["REDIRECT_URL"]=="/api") |
     $uri = "api";
 $uri=explode("?",$uri)[0];
 switch ($uri){
+    case "setlang":
+        setNewLanguage($_SESSION["lang"]=="en"?"it":"en");
+        header("Location: /");
+        die();
     case "favicon.ico":
         $ret=getFavicon();
         die ($ret);

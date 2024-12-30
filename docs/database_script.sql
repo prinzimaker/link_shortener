@@ -7,7 +7,7 @@
 ---------------------------------------------------------------------
  This class contains the Database Creator for the link shortener
  -
- v1.1.0 - Aldo Prinzi - 23 Dic 2024
+ v1.2.1 - Aldo Prinzi - 29 Dic 2024
 =====================================================================
  Copy the following sql commands and paste them in your MySQL client
  to create the database and the tables needed for the link shortener

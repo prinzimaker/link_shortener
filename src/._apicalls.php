@@ -39,13 +39,13 @@ function replyToApiCall ($db){
                 $response['short_url'] = $shortUrl;
             } else {
                 $response['status'] = 'error';
-                $response['message'] = 'To avoid loops, it isn\'t possible to shorten a '.getenv("URI").' URL.';
+                $response['message'] = lng("api_loop").getenv("URI").' URL.';
             }
         } elseif (filter_var($short, FILTER_SANITIZE_STRING)) {
             $res=$db->getShortlinkInfo($short);
             if (empty($res)){
                 $response['status'] = 'error';
-                $response['message'] = 'Invalid SHORT_ID provided.';
+                $response['message'] = lng("api_invalid-short");
             } else {
                 $response['status'] = 'success';
                 $response['original_url'] = $res["full_uri"];

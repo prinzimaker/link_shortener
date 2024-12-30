@@ -18,8 +18,7 @@ v1.1.0 - Aldo Prinzi - 23 Dic 2024
         <link rel="stylesheet" type="text/css" href="/html/site.css">
     </head>
     <body>
-        <div class="header">
-            <h1><?php 
-            echo $_SESSION["pageTitle"]; 
-            ?></h1>
+        <div>
+            <table class="header" width="100%"><tr><td width="90%"><h1><?php echo $_SESSION["pageTitle"]; ?></h1></td>
+            <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td></tr></table>
         </div>

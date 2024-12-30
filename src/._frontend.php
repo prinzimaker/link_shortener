@@ -17,24 +17,24 @@ function getShortenContent($uri){
     return '        <form action="shorten" method="post">
         <div class="form-group">
             <label for="uri">URI</label>
-            <input type="text" class="input-text" name="uri" placeholder="Inserisci qui il link lungo..." value="'.$uri.'">
+            <input type="text" class="input-text" name="uri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
         </div>
-        <button type="submit" class="btn btn-primary">Riduci il link</button>
-        <button type="button" class="btn btn-warning" onclick=\'window.location.href="info"\'>Informazioni &gt;</button>
+        <button type="submit" class="btn btn-primary">'.lng("front_shorten").'</button>
+        <button type="button" class="btn btn-warning" onclick=\'window.location.href="info"\'>'.lng("front_information").' &gt;</button>
         </form>';
 }
 
 function getShortInfoContent($uri=""){
     $ret='        <form action="shortinfo" method="post">
         <div class="form-group">
-            <label for="uri">Link ridotto</label>
-            <input type="text" class="input-text" name="smalluri" placeholder="Inserisci qui il link ridotto..." value="'.$uri.'">
+            <label for="uri">'.lng("front_link-to-shrink").'</label>
+            <input type="text" class="input-text" name="smalluri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
         </div>
         <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>&lt; Home</button>
-        <button type="submit" class="btn btn-primary">Informazioni</button>
+        <button type="submit" class="btn btn-primary">'.lng("front_information").'</button>
         </form><br>';
     if ($uri==""){
-        $ret.='<p>Inserire il link ridotto e premere il tasto "<strong>Informazioni</strong>" per ottenere informazioni sul link ridotto.</p>';
+        $ret.='<p>'.lng("front_instr-small").'</p>';
     }
     return $ret;
 }
@@ -45,15 +45,7 @@ function getUserContent($uri){
 
 // Contenuto della pagina home
 function getHomeContent($uri){
-    return'<p><strong>Questo &egrave; un sito per la creazione di link corti.</strong></p>
-    <p>Vuol dire che tu mi passi un link lungo e io ti restituisco un link corto che pu&ograve; essere sostituito al link originale.</p>
-    <h3>Come funziona?</h3>
-    <p class="pad">Per creare un link corto, basta inserire il link lungo nel campo di testo e premere il pulsante "<strong>Riduci il link</strong>", la versione accorciata sar&agrave; visualizzata nella casella che comparirà.<br>
-    Per utilizzare il link corto, basta copiarlo e incollarlo nel browser e l\'utilizzatore verr&agrave; reindirizzato automaticamente verso il link originale.<br>
-    Per visualizzare le statistiche premere il pulsante "<strong>Informazioni</strong>".</p>
-    <h3>Esempio</h3>
-    <p class="pad">Se vuoi creare un link corto per <a href="https://www.google.com/search?client=firefox-b-d&q=come+si+accorciano+i+link%3F">https://www.google.com/search?client=firefox-b-d&q=come+si+accorciano+i+link%3F</a>, 
-    inseriscilo nel campo di testo e premi il pulsante "Shorten", quando avrai il link corto usalo direttamente sul browser per visualizzare il risultato.</p>';
+    return lng("front_instructions");
 }
 
 function checkIfSelfUri($uri) {

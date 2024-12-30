@@ -72,6 +72,21 @@ body {
     font-style: oblique;
 }
 
+.langLbl {
+    color: #fff;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+.langSbm {
+    background: #fff;
+    color: var(--mainbg);
+    border: none;
+    padding: 5px 10px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+
 main {
     margin: 20px 0;
 }
