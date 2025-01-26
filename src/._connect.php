@@ -153,6 +153,16 @@ class Database {
         return $result;
     }
 
+    public function getUserByApiKey($apiKey) {
+        $query = "SELECT descr, apikey, pass, active, is_admin, max_links FROM customers WHERE apikey = :apikey";
+        $params = [':apikey' => $apiKey];
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result;
+    }
+
 
 // ----------------------------------------------------
 // Other private functions

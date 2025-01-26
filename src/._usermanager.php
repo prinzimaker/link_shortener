@@ -7,9 +7,9 @@
 =====================================================================
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
-This class contains all the USER class/functions
+This class contains all the Users-Management class/functions
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.3.0 - Aldo Prinzi - 25 Jan 2025
 =====================================================================
 
 NEED TO BE IMPLEMENTED!
@@ -30,6 +30,12 @@ class UserManager {
     public function getUserData($email) {
         return $this->db->getUserData($email); 
     }
+
+    public function checkUserApi($apiKey) {
+        $data=$this->db->getUserByApiKey($apiKey);
+        return (!empty($data) && $data['active']>0);
+    }
+
     public function registerUser($email, $password) {
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $apiKey = bin2hex(random_bytes(32)); // Genera una chiave API univoca

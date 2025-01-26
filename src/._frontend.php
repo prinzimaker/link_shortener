@@ -9,7 +9,8 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the front-end html page/form generators 
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+Updated to
+v1.3.0 - Aldo Prinzi - 25 Jan 2025
 =====================================================================
 */
 // form per lo shorten del link

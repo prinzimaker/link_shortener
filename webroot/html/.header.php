@@ -9,7 +9,8 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains the header part of the web app
 -
-v1.1.0 - Aldo Prinzi - 23 Dic 2024
+v1.3.0 - Aldo Prinzi - 24 Jan 2025
+- Added menu items
 =====================================================================
 */
 ?><html>

@@ -10,7 +10,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.3.0 - Aldo Prinzi - 30 Dic 2024
 ---------
 UPDATES
 ---------
@@ -20,6 +20,7 @@ UPDATES
 2024.12.26 - Added calls logger 
 2024.12.29 - Added calls logger ip geolocalisation
 2024.12.30 - exported all the complexity to specific /src files
+2024.01.25 - initial user management and control
 =====================================================================
 */
 include '../src/._loadenv.php';

@@ -9,7 +9,8 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the functions needed to handle api calls
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.3.0 - Aldo Prinzi - 26 Jan 2025
+    - check for user key
 =====================================================================
 */
 function replyToApiCall ($db){
@@ -18,6 +19,15 @@ function replyToApiCall ($db){
     $uri = isset($_GET['uri']) ? $_GET['uri'] : null;
     $short = isset($_GET['short']) ? $_GET['short'] : null;
     $calls = isset($_GET['calls']) ? $_GET['calls'] : null;
+    if (is_null($user)){
+        die( json_encode(array('status' => 'error', 'message' => 'No API key provided: you need at least one key to use this service.')));
+    } else {
+        $um=new UserManager($db);
+        $user = filter_var($user, FILTER_SANITIZE_STRING);
+        if (!$um->checkUserApi($user)){
+            die( json_encode(array('status' => 'error', 'message' => 'Invalid API key or inactive account.')));
+        }
+    }
     $response = array();
     if ($user && ($uri || $short|| $calls)) {
         // Sanitizza gli input

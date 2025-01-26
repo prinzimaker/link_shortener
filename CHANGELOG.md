@@ -1,4 +1,7 @@
 # Changelog
+## [1.3.0] - 2025-01-25
+### Added
+- Started the user-management and control, on a special branch on github
 
 ## [1.2.1] - 2024-12-30
 ### Added
