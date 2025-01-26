@@ -17,7 +17,7 @@ UPDATES
 =====================================================================
 */
 
-class database {
+class Database {
     private $host;
     private $pdo;
     private $db;
@@ -142,6 +142,17 @@ class database {
         }
         return $ret;
     }
+
+    public function getUserData($email) {
+        $query = "SELECT descr, apikey, pass, active, is_admin, max_links FROM customers WHERE email = :email";
+        $params = [':email' => $email];
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result;
+    }
+
 
 // ----------------------------------------------------
 // Other private functions

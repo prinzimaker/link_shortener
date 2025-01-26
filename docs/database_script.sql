@@ -36,19 +36,22 @@ create table calls(
     PRIMARY KEY (short_id),
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-create table customer (
+create table customers (
 	cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,
 	descr varchar(100),
 	email varchar(50),
 	email_verif_code varchar(64),
     email_verified BOOLEAN DEFAULT FALSE,
 	pass varchar(128),
-	active int(1) unsigned,
+	active BOOLEAN DEFAULT FALSE,
+    is_admin BOOLEAN DEFAULT FALSE,
 	apikey varchar(64),
 	max_links int(3) unsigned,
 	PRIMARY KEY (cust_id),
 	UNIQUE (email)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+insert into customers (descr, email, pass, active, apikey,is_admin, max_links) values ('the administrator', 'Admin', '', true, 'APYKEY123456',true, 10);
 
 create table custlinks (
     cust_id int(10) unsigned NOT NULL,

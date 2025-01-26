@@ -8,6 +8,17 @@ This file contains the string labels for italian language
 ===================================================================*/
 function lng($key){
     switch ($key){
+        case "":return "";
+        case "user": return "Utente";
+        case "password": return "Password";
+        case "login": return "Accedi";
+        case "register": return "Registrati";
+        case "ripeti_password": return "Ripeti password";
+        case "email": return "Indirizzo e-mail";
+        case "verify": return "Verifica";
+        case "autentication": return "Autenticazione";
+        case "forgot_pass": return "Ho dimenticato la mia password";
+        case "invalid_uid_or_pass": return "Utente o password non validi";
         case "api_loop": return "Non è possibile creare un look per ridurre il link ";
         case "api_invalid-short": return "Questo SHORT_ID non è valido.";
         case "front_insert-long": return "Inserisci qui il link lungo...";

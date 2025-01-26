@@ -20,7 +20,7 @@ function getShortInfoDisplay(){
     if ($puri!=""){
         $uri=checkIfSelfUri($puri);
         if (empty($uri)){
-            $db = new database();
+            $db = new Database();
             $res=$db->connect();
             if ($res["conn"]){
                 $uri_code=str_replace(getenv("URI"),"",$puri);
@@ -77,7 +77,7 @@ function getShortLinkDisplay(){
                 $content.=getShortenContent($puri);
             } else {
                 $content=getShortenContent($uri);
-                $db = new database();
+                $db = new Database();
                 $res=$db->connect();
                 if ($res["conn"]){
                     $shorCode=$db->createShortlink($uri);

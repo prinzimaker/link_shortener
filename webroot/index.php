@@ -28,7 +28,8 @@ include '../src/._connect.php';
 include '../src/._frontend.php';
 include '../src/._geolocalize.php';
 include '../src/._shortdata.php';
-include '../src/._user.php';
+include '../src/._users.php';
+include '../src/._usermanager.php';
 include '../src/._language.php';
 //=====================================================================
 $uri=str_replace("/","",$_SERVER["REQUEST_URI"]);
@@ -36,10 +37,14 @@ $header = "";
 $content="";
 $showPage=true;
 $showApi=false;
+$userData=[];
+if (isset($_SESSION["user"]))
+    $userData=$_SESSION["user"];
 $req=[];
 if ((stripos($uri, "api.php") !== false) || ($_SERVER["REDIRECT_URL"]=="/api") || ($_SERVER["SCRIPT_NAME"]=="/api") || ($_SERVER["SCRIPT_NAME"]=="/api.php"))
     $uri = "api";
 $uri=explode("?",$uri)[0];
+
 switch ($uri){
     case "setlang":
         setNewLanguage($_SESSION["lang"]=="en"?"it":"en");
@@ -49,23 +54,50 @@ switch ($uri){
         $ret=getFavicon();
         die ($ret);
     case "api":
-        $db = new database();
+        $db = new Database();
         $res=$db->connect();
         $showPage=false;
         $showApi=true;
         replyToApiCall($db);
         break;
+    case "login":   
+        $header = "Short Link - Login";
+        $user=new SLUsers($_POST["userid"],$_POST["password"]);
+        if ($user->isLogged()){
+            header("Location: ".$_SESSION["dvalu"], true, 302);
+            exit();
+        } else 
+            $content=getLoginForm($_POST["userid"]);
+        break;
     case "user":
-        $header = "Short Link - User info";
-        $content=getUserContent($uri);
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - User";
+            $content=getUserContent($uri);
+        } else {
+            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
+            $header = "Short Link - Autenticate";
+            $content=getLoginForm();
+        }
         break;
     case "shortinfo":
-        $header = "Short Link - Link info";
-        $content=getShortInfoDisplay();
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - Link info";
+            $content=getShortInfoDisplay();
+        } else {
+            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
+            $header = "Short Link - Autenticate";
+            $content=getLoginForm();
+        }
     break;
     case "shorten":
-        $header = "Short Link - Link shortened";
-        $content=getShortLinkDisplay();
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - Link shortened";
+            $content=getShortLinkDisplay();
+        } else {
+            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
+            $header = "Short Link - Autenticate";
+            $content=getLoginForm();
+        }
         break;
     case "":
     case "index.htm":
@@ -74,8 +106,14 @@ switch ($uri){
         $content=getShortenContent("")."<br>&nbsp;<br>".getHomeContent($uri);
         break;
     case "info":
-        $header = "Short Link - Info";
-        $content=getShortInfoContent();
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - Info";
+            $content=getShortInfoContent();
+        } else {
+            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
+            $header = "Short Link - Autenticate";
+            $content=getLoginForm();
+        }
         break;
     default:
         $showPage=false;
@@ -101,7 +139,7 @@ if ($showPage){
 
 function execRedirect($uri){
     if (!empty($uri)){
-        $db = new database();
+        $db = new Database();
         $res=$db->getFullLink($uri);
         if (empty($res)){
             $res=getenv("URI");
@@ -114,3 +152,4 @@ function execRedirect($uri){
         die( '<html><head><meta http-equiv="refresh" content="0; URL=/" /></head><body><script>var timer=setTimeout(function(){window.location="/"}, 1);</script></body></html>');
     }
 }
+

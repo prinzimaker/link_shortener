@@ -39,6 +39,32 @@ function getShortInfoContent($uri=""){
     return $ret;
 }
 
+function getLoginForm($userid=""){
+    isset($_SESSION["loginerr"])?$errMsg=lng($_SESSION["loginerr"]):"";
+    $_SESSION["loginerr"]="";
+    $ret='        <div class="auth-div"><div class="login-header"><h3>'.lng("autentication").'</h3></div>
+        <form class="auth-form" action="login" method="post">
+            <div class="form-group">
+                <label for="userid">'.lng("user").'</label>
+                <input id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userid.'">
+                <label for="password">'.lng("password").'</label>
+                <input type="password" class="input-text2" name="password" placeholder="'.lng("password").'" value="">
+            </div>
+            <div class="forgotpass" onclick="forgotPass()">'.lng("forgot_pass").'</div>
+            <button type="submit" class="btn btn-primary">'.lng("login").'</button>
+        </form>
+        <div class="err-message">'.$errMsg.'</div>
+    </div><br>
+    <script>
+        function forgotPass(){
+            $uid=document.getElementById("userid").value;
+            window.location.href="/fgtpass?uid="+$uid;
+        }
+    </script>';
+    return $ret;
+}
+
+
 function getUserContent($uri){
     return "User Content";
 }

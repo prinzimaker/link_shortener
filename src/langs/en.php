@@ -8,6 +8,17 @@ This file contains the string labels for english language
 ===================================================================*/
 function lng($key){
     switch ($key){
+        case "":return "";
+        case "user": return "User-id";
+        case "password": return "Password";
+        case "login": return "Login";
+        case "register": return "Registrer";
+        case "ripeti_password": return "Ripeat password";
+        case "email": return "E-mail address";
+        case "verify": return "Verify";
+        case "autentication": return "Autentication";
+        case "forgot_pass": return "I forgot my password";
+        case "invalid_uid_or_pass": return "Invalid user-id or password";
         case "api_loop": return "To avoid loops, it isn't possible to shorten a ";
         case "api_invalid-short": return "Invalid SHORT_ID provided.";
         case "front_insert-long": return "Insert the long URL to shorten...";

@@ -104,6 +104,18 @@ main p {
 p.pad {
     padding-left: 15px;
 }
+.nav-row {
+    display: flex;
+    margin-bottom: 20px;
+    padding-left:30px
+}
+.nav-item   {
+    display: inline-block;
+    margin-right: 10px;
+    color:#fff;
+    text-decoration:none
+}
+
 
 .footer {
     background: var(--mainbg);
@@ -133,6 +145,9 @@ p.pad {
     border-radius: 5px;
     cursor: pointer;
     border: none;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    border-bottom: solid 1px #333;
+    border-right: solid 1px #333;
 }
 
 .btn-primary {
@@ -156,7 +171,7 @@ p.pad {
     justify-content: center; /* Centra orizzontalmente */
     align-items: center;     /* Centra verticalmente */
 }
-
+.input-text2,
 .input-text {
     width: 100%;
     padding: 12px 20px;
@@ -167,9 +182,23 @@ p.pad {
     margin-bottom:5px;
 }
 
+.input-text2 {
+    width: 90%;
+    padding: 6px 10px;
+    border-top: none;
+    border-radius: 5px;
+    border: 2px solid #bbb;
+    border-top:none;
+    margin-bottom:14px;
+    background-color: #fafafa;
+    margin-top:-4px
+}
+
+.input-text2:focus,
 .input-text:focus {
     border-color: #66afe9;
     outline: none;
+    background-color: white;
 }
 
 .form-group {
@@ -230,6 +259,49 @@ label {
 }
 .tdcont{
   padding: 5px;
+}
+
+.auth-div{
+    text-align: center;
+    background-color: #f8f8f8;
+    min-width:290px;
+    max-width:400px;    
+    padding:10px;
+    margin:10px;
+    border: 3px solid #f6f6f6;
+    border-radius: 6px;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+    margin-left: auto;
+    margin-right: auto;
+}
+.auth-form{
+    padding:10px;
+    margin:10px;
+}
+.err-message{
+    background-color: #ff0000;
+    color:#fff;
+    font-size: 1.2em;
+    margin-top: 5px;
+}
+.forgotpass:hover{
+    color:#111;
+    font-weight:700;
+    font-size: 0.90em;
+}
+.forgotpass{
+    padding-bottom:10px;
+    margin-top:-10px;
+    font-size: 0.95em;
+    color:  var(--primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+.login-header{
+    background: var(--primary);
+    color: #fff;
+    padding: 10px;
+    text-align: center;
 }
 
 
