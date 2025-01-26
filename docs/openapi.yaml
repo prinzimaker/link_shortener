@@ -13,7 +13,7 @@ servers:
     description: Development API
 
 paths:
-  /api/shorten:
+  /api?uri:
     get:
       summary: Shorten a link
       description: Allows creating a shortened link.
@@ -51,7 +51,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/info:
+  /api?short:
     get:
       summary: Get short link info
       description: Retrieve information of a shortened link.
@@ -62,7 +62,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: short_id
+        - name: short
           in: query
           description: The code of the short link.
           required: true
@@ -88,7 +88,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/calls:
+  /api?calls:
     get:
       summary: Get short link call log
       description: Retrieve the call log for a shortened link.
