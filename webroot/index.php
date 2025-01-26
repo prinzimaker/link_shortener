@@ -2,7 +2,7 @@
 /* 
 =====================================================================
       Quick and Dirty Prinzimaker's Link Shortener
-      Copyright (C) 2024 - Aldo Prinzi
+      Copyright (C) 2024-2025 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.

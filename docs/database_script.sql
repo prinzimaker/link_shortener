@@ -1,13 +1,13 @@
 /* 
 =====================================================================
       Quick and Dirty Prinzimaker's Link Shortener
-      Copyright (C) 2024 - Aldo Prinzi
+      Copyright (C) 2024-2025 - Aldo Prinzi
 =====================================================================
  This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
  This class contains the Database Creator for the link shortener
  -
- v1.2.1 - Aldo Prinzi - 29 Dic 2024
+ v1.3.0 - Aldo Prinzi - 24 Jan 2025
 =====================================================================
  Copy the following sql commands and paste them in your MySQL client
  to create the database and the tables needed for the link shortener
