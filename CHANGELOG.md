@@ -6,7 +6,6 @@
 - Added a graphic statistic display using DRAW.JS
 - Push "about" link under shortlin/statistic control
 
-# Changelog
 ## [1.3.0] - 2025-01-25
 ### Added
 - Started the user-management and control, on a special branch on github
