@@ -1,6 +1,6 @@
 # Prinzimaker's Link Shortener
 
-### **Quick and dirty link shortener** - **v1.2.1**
+### **Quick and dirty link shortener** - **v1.3.1**
 
 ### 📚 Choose info and instruction in one of the following languages:
 
