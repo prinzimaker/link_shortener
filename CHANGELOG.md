@@ -1,4 +1,12 @@
 # Changelog
+## [1.3.1] - 2025-02-13
+### Added
+- Added a right 404 handling
+- Changed the way the STAT register requests for short links not found
+- Added a graphic statistic display using DRAW.JS
+- Push "about" link under shortlin/statistic control
+
+# Changelog
 ## [1.3.0] - 2025-01-25
 ### Added
 - Started the user-management and control, on a special branch on github
