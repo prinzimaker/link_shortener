@@ -7,7 +7,7 @@
 ---------------------------------------------------------------------
  This class contains the Database Creator for the link shortener
  -
- v1.3.0 - Aldo Prinzi - 24 Jan 2025
+ v1.3.1 - Aldo Prinzi - 24 Jan 2025
 =====================================================================
  Copy the following sql commands and paste them in your MySQL client
  to create the database and the tables needed for the link shortener
@@ -15,9 +15,7 @@
 */
 
 create database shortlinks;
-
 use shortlinks;
-
 create table link (
     short_id varchar(10) not null,
     full_uri longtext,
@@ -29,13 +27,11 @@ create table link (
     PRIMARY KEY (short_id),
     UNIQUE KEY uri_sha_uniq (sha_uri)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 create table calls(
     short_id varchar(10) not null,
     call_log longtext,
     PRIMARY KEY (short_id),
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 create table customers (
 	cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,
 	descr varchar(100),
@@ -50,17 +46,16 @@ create table customers (
 	PRIMARY KEY (cust_id),
 	UNIQUE (email)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-insert into customers (descr, email, pass, active, apikey,is_admin, max_links) values ('the administrator', 'Admin', '', true, 'APYKEY123456',true, 10);
-
+insert into customers (descr, email, pass, active, apikey,is_admin, max_links) values ('the administrator', 'Admin', '', true, 'APYKEY123456',true, 9999);
+insert into link (short_id,full_uri,cust_id,sha_uri) values ('about','https://github.com/prinzimaker/link_shortener',1,'AAA');
 create table custlinks (
     cust_id int(10) unsigned NOT NULL,
     short_id varchar(10) not null,
     PRIMARY KEY (cust_id, short_id),
-    FOREIGN KEY (cust_id) REFERENCES customer(cust_id) ON DELETE CASCADE,
+    FOREIGN KEY (cust_id) REFERENCES customers(cust_id) ON DELETE CASCADE,
     FOREIGN KEY (short_id) REFERENCES link(short_id) ON DELETE CASCADE
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+insert into custlinks(cust_id, short_id) values (1,'about');
 CREATE USER 'shlnkusr'@'localhost' IDENTIFIED BY 'laTuaPass';
 GRANT ALL PRIVILEGES ON shortlinks.* TO 'shlnkusr'@'localhost';
 FLUSH PRIVILEGES;

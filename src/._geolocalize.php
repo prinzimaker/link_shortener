@@ -9,10 +9,11 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Geolocalisation functions
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.3.1 - Aldo Prinzi - 13 Feb 2025
 ---------
 UPDATES
 ---------
+2025.02.13 - Limited geolocation requests to max 200 records per link
 =====================================================================
 */
 function getCallsLog($db,$short_id){
@@ -23,12 +24,15 @@ function getCallsLog($db,$short_id){
             $dateB = strtotime(explode(',', $b)[1]);
             return $dateB <=> $dateA;
         });
-        $ips = array_map(function($entry) {
+        $_StatIp = array_map(function($entry) {
             return explode(',', $entry)[0];
         }, $rows);
         
         // Rimuovi duplicati e reindicizza l'array
-        $geoIp=geolocalizzaIP(array_values(array_unique($ips)));
+        $ipps=$_StatIp;
+        if (count($ipps)>200)
+            $ipps=array_slice($ipps,count($ipps)-201,count($ipps)-1);
+        $geoIp=geolocalizzaIP(array_values(array_unique($ipps)));
         foreach ($rows as $key => $row) {
             $ip = explode(',', $row)[0];
             $rows[$key] .= ','. $geoIp[$ip];

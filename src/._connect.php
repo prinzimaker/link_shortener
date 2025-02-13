@@ -9,11 +9,13 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the DB logic for the link shortener
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.3.1 - Aldo Prinzi - 13 Feb 2025
 ---------
 UPDATES
 ---------
 2024.10.04 - Added variable lenght for short link
+2025.02.13 - Modified the way the statistics are stored: if short link 
+             is not found, the statistics are not stored
 =====================================================================
 */
 
@@ -59,19 +61,6 @@ class Database {
         try {
             // Start a transaction to ensure data integrity
             $this->pdo->beginTransaction();
-            $updateStmt1 = $this->pdo->prepare("
-                UPDATE link
-                SET calls = calls + 1, last_call = NOW()
-                WHERE short_id = :code
-            ");
-            $updateStmt1->execute(['code' => $code]);
-            // CALLS LOG UPDATE
-            $log=$_SERVER['REMOTE_ADDR'].",".date("Y-m-d H:i:s").";";
-            $updateStmt2 = $this->pdo->prepare("
-                INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
-                ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
-            ");
-            $updateStmt2->execute(['code' => $code, 'log' => $log, 'log2' => $log]);
             $selectStmt = $this->pdo->prepare("
                 SELECT full_uri
                 FROM link
@@ -80,6 +69,21 @@ class Database {
             ");
             $selectStmt->execute(['code' => $code]);
             $result = $selectStmt->fetch();
+            if ($result["full_uri"]){ 
+                $updateStmt1 = $this->pdo->prepare("
+                    UPDATE link
+                    SET calls = calls + 1, last_call = NOW()
+                    WHERE short_id = :code
+                ");
+                $updateStmt1->execute(['code' => $code]);
+                // CALLS LOG UPDATE
+                $log=$_SERVER['REMOTE_ADDR'].",".date("Y-m-d H:i:s").";";
+                $updateStmt2 = $this->pdo->prepare("
+                    INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
+                    ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
+                ");
+                $updateStmt2->execute(['code' => $code, 'log' => $log, 'log2' => $log]);
+            }
             $this->pdo->commit();
             return $result["full_uri"];
         } catch (PDOException $e) {
@@ -160,6 +164,29 @@ class Database {
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
         $result = $stmt->fetch();
+        return $result;
+    }
+
+    function getStatistics($short_id){
+        $query = "
+        SELECT 
+            DATE(call_log) AS day,
+            CASE 
+                WHEN TIME(call_log) BETWEEN '00:00:00' AND '06:30:00' THEN 1
+                WHEN TIME(call_log) BETWEEN '06:31:00' AND '20:30:00' THEN 2
+                WHEN TIME(call_log) BETWEEN '20:31:00' AND '23:59:59' THEN 3
+            END AS time_part,
+            COUNT(*) AS call_count
+        FROM calls 
+        WHERE short_id = :code
+        GROUP BY day, time_part
+        ORDER BY day, time_part
+        ";
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        $params = [':code' => $short_id];
+        $stmt->execute($params);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 

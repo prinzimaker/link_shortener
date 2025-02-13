@@ -1,15 +1,16 @@
 /* 
 =====================================================================
       Quick and Dirty Prinzimaker's Link Shortener
-      Copyright (C) 2024 - Aldo Prinzi
+      Written By Aldo Prinzi 2024/2025 
 =====================================================================
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains the cascadind stylesheet for the web app
 -
-v1.1.0 - Aldo Prinzi - 23 Dic 2024
+v1.3.1 - Aldo Prinzi - 13 Feb 2025
 =====================================================================
 */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 :root {
     --mainbg: #0800A0;
     --btnbg: #cb7a1c;
@@ -374,4 +375,12 @@ label {
       transform: rotate(90deg) translate(-.25rem);
     }
   }
-  
+
+/* 404 page not found */
+.center-xy404 {top: 50%; left: 50%; transform: translate(-50%,-50%); position: absolute;}
+.html404, .body404 {font-family: 'Roboto Mono', monospace; font-size: 16px;}
+.html404 {box-sizing: border-box; user-select: none;}
+.body404 {background-color: #184f68;}
+.container404 {width: 100%;}
+.copy-container404 {text-align: center;}
+.p404 {color: #fff;font-size: 24px;letter-spacing: .2px;margin: 0;}

@@ -9,7 +9,8 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the Link Data display builder logic 
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.3.1 - Aldo Prinzi - 13 Feb 2025
+2025-02-13 - Added the html/script for the chart.js display
 =====================================================================
 */
 function getShortInfoDisplay(){
@@ -43,7 +44,12 @@ function getShortInfoDisplay(){
                     } 
                     $hret.="</tbody></table>";
 
-                    $content.="<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>";
+                    $content.="
+                    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+                    <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+                    <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js'></script>
+                    <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest/dist/chartjs-plugin-zoom.min.js'></script>
+                    ";
                     $content.="<div class='alert alert-info'><table width='100%'><tr><td width=85%>";
                     $content.="<label>".lng("front_link-is").":</label><input type='text' class='input-text' id='originalLink' value='".$res["full_uri"]."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>".lng("copy")."</button>";
                     $content.="<script>function copyShortLink(){var copyText=document.getElementById('originalLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>";
@@ -53,6 +59,71 @@ function getShortInfoDisplay(){
                     $content.='<section class="accordion"><div class="tab"><input type="radio" name="accordion-2" id="rd1"><label for="rd1" class="tab__label">'.lng("front_downloads-info").'</label>';
                     $content.='<div class="tab__content"><p>'.$hret.'</p>';
                     $content.='</div><div class="tab"><input type="radio" name="accordion-2" id="rd3"><label for="rd3" class="tab__close">'.lng("close").' &times;</label></div></div></section>';
+                    $content.='<div style="display:none" id="chartData">'.getStatisticData($db,$puri).'</div>';
+                    $content.='
+                        <div style="max-width:97%; width:90%; margin-top: 20px; height:440px; max-height:450px">
+                        <canvas id="myChart" width="1000" height="440"></canvas>
+                        </div>';
+                    $content.="<script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const chartData = JSON.parse(document.getElementById('chartData').textContent); 
+                    const data = {
+                        datasets: [{
+                            label: 'Per fasce orarie',
+                            backgroundColor: '#237093',
+                            borderColor: '#93A0FF',
+                            data: chartData.map(entry => ({
+                                x: entry.day,
+                                y: entry.time_part,
+                                r: Math.sqrt(entry.call_count) * 1.1 
+                                /* r: entry.call_count * 2 */
+                            }))
+                        }]
+                    };
+                    const config = {
+                        type: 'bubble',
+                        data: data,
+                        options: {
+                            plugins: {
+                                zoom: {
+                                    zoom: {
+                                        wheel: {
+                                            enabled: true,
+                                        },
+                                        pinch: {
+                                            enabled: true
+                                        },
+                                        mode: 'xyz',
+                                    }
+                                }
+                            },
+                                scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {unit: 'day'},
+                                    title: {display: true,text: 'Giorno'}
+                                },
+                                y: {
+                                    type: 'linear',
+                                    title: {display: true,text: 'Parte del Giorno'},
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function(value) {
+                                            if (value === 1) return 'Notte';
+                                            if (value === 2) return 'Giorno';
+                                            if (value === 3) return 'Sera';
+                                        }
+                                    },
+                                    suggestedMin: 1,
+                                    suggestedMax: 3
+                                }
+                            }
+                        }
+                    };
+                    new Chart(ctx, config);
+                    Chart.register(ChartDataLabels); // Se lo stai usando, altrimenti puoi saltare questa riga
+                    Chart.register(dateFnsAdapter);
+                    </script>";
                 }
             }
         } else {
@@ -65,6 +136,46 @@ function getShortInfoDisplay(){
     }
     return $content;
 }
+
+function getStatisticData($db, $short_id){
+    $entries =$db->getDownloadInfo($short_id);
+    if (is_array($entries) && count($entries)>0) {
+        // Separa i dati CSV
+        //$entries = explode(';', trim($_StatIp, ';'));
+        $chartData = [];
+    
+        foreach ($entries as $entry) {
+            list($ip, $dateStr) = explode(',', $entry);
+            if ($dateStr){
+                $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $dateStr);
+                $day = $dateTime->format('Y-m-d');
+                $time = $dateTime->format('H:i:s');
+        
+                // Determina la parte del giorno
+                if ($time >= '00:00:00' && $time <= '06:30:00') {
+                    $part = 1;
+                } elseif ($time > '06:30:00' && $time <= '20:30:00') {
+                    $part = 2;
+                } else {
+                    $part = 3;
+                }
+        
+                // Incrementa il conteggio per il giorno e la parte del giorno
+                $key = $day . '-' . $part;
+                if (!isset($chartData[$key])) {
+                    $chartData[$key] = ['day' => $day, 'time_part' => $part, 'call_count' => 0];
+                }
+                $chartData[$key]['call_count']++;
+            }
+        }
+    
+        // Prepara i dati per l'output JSON
+        $preparedData = array_values($chartData);
+        return json_encode($preparedData);
+    } 
+    return json_encode([]);
+}
+
 function getShortLinkDisplay(){
     $uri="";
     $content=getShortenContent($uri);

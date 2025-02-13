@@ -10,7 +10,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.3.0 - Aldo Prinzi - 30 Dic 2024
+v1.3.1 - Aldo Prinzi - 12 Feb 2025
 ---------
 UPDATES
 ---------
@@ -21,6 +21,12 @@ UPDATES
 2024.12.29 - Added calls logger ip geolocalisation
 2024.12.30 - exported all the complexity to specific /src files
 2024.01.25 - initial user management and control
+2024.02.13 - v1.3.1
+             Added 404 reply for not found short links
+             Added control over statistics on short link not found
+             Added graphic display for statistics using CHART.JS
+             Added base database records
+             Added cotrol over "about us" link as a short link
 =====================================================================
 */
 include '../src/._loadenv.php';
@@ -143,14 +149,18 @@ function execRedirect($uri){
         $db = new Database();
         $res=$db->getFullLink($uri);
         if (empty($res)){
-            $res=getenv("URI");
+            $res='<div class="container404"><div class="copy-container404 center-xy404"><p class="p404"><span style="font-size:2em;font-weight:900">'.$uri.' ??</span><br>404: page not found.</p><span class="handle404"></span></div></div>';
+            http_response_code(404);
+            die( '<html class="html404"><head><title>Page not found (hex 32768)</title><link rel="stylesheet" type="text/css" href="/html/site.css"></head><body class="body404">'.$res.'</body></html>');
+            //$res=getenv("URI");
         }
         http_response_code(302);
         header("Location: ".$res);
         die( '<html><head><meta http-equiv="refresh" content="0; URL='.$res.'" /></head><body><script>var timer=setTimeout(function(){window.location="'.$res.'"}, 1);</script></body></html>');
     } else {
+        $res='<div class="container404"><div class="copy-container404 center-xy404"><p class="p404">404.1: page not found because you don\'t specify one.</p><span class="handle404"></span></div></div>';
         http_response_code(404);
-        die( '<html><head><meta http-equiv="refresh" content="0; URL=/" /></head><body><script>var timer=setTimeout(function(){window.location="/"}, 1);</script></body></html>');
+        die( '<html class="html404"><head><title>Page not found (hex 32768)</title><link rel="stylesheet" type="text/css" href="/html/site.css"></head><body class="body404">'.$res.'</body></html>');
     }
 }
 
