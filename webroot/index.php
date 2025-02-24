@@ -15,6 +15,7 @@ v1.3.2 - Aldo Prinzi - 24 Feb 2025
 UPDATES
 ---------
 2025.02.24 - Added Ip2Location database support
+             Added user management and control
 2024.12.23 - Added qr-code generation for the short link, using an
              api server from Fundata GmbH - Karlsruhe (DE):
              https://goqr.me/api/doc/
@@ -96,11 +97,31 @@ switch ($uri){
             $header = "Short Link - Autenticate";
             $content=getLoginForm();
         }
-    break;
+        break;
+    case "removeshortinfo":
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - Link info";
+            $content=delShortData();
+        } else {
+            $_SESSION["dvalu"]="/";
+            $header = "Short Link - Delete";
+            $content=getLoginForm();
+        }
+        break;
     case "shorten":
         if (!empty($userData) && $userData["active"]>0){
             $header = "Short Link - Link shortened";
-            $content=getShortLinkDisplay();
+            $content=getShortLinkDisplay("");
+        } else {
+            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
+            $header = "Short Link - Autenticate";
+            $content=getLoginForm();
+        }
+        break;
+    case "changecode":
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - Chenge short code";
+            $content=changeShortCode();
         } else {
             $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
             $header = "Short Link - Autenticate";

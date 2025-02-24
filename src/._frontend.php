@@ -10,7 +10,10 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the front-end html page/form generators 
 -
 Updated to
-v1.3.2 - Aldo Prinzi - 24 Feb 2025 : solved a bug that will shrink a local link already shrinked.
+v1.3.2 - Aldo Prinzi - 24 Feb 2025 
+       - Solved a bug that will shrink a local link already shrinked.
+       - Added user link datatable view
+       - Added user link delete
 v1.3.0 - Aldo Prinzi - 25 Jan 2025
 =====================================================================
 */
@@ -68,7 +71,42 @@ function getLoginForm($userid=""){
 
 
 function getUserContent($uri){
-    return "User Content";
+    $content='
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#userCodesTable").DataTable({"paging": true, "ordering": true, "info": true});
+            });
+        </script>
+        <div class="form-group">
+        <label>User\'s Links</label>
+        <table id="userCodesTable" class="display"><thead>
+        <tr><th>short_id</th><th>Uri</th><th>&nbsp;</th><th>Calls</th><th>Created</th><th>Last call</th></tr>
+        </thead><tbody>
+    ';
+    
+    $db = new Database();
+    $result = $db->getUserShortDatatable();
+
+    // Costruzione della tabella HTML
+    foreach ($result as $row) {
+
+        $fu=$row['full_uri'];
+        if (strlen($fu)>65)
+            $fu=substr($fu, 0, 65)." ...";
+
+        $content.='<tr>';
+        $content.= '<td><a href="/shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
+        $content.= '<td><a href="/removeshortinfo?code='. $row['short_id'] .'">[DEL]</a></td>';
+        $content.= '<td><a href="' . getenv("URI"). $row['short_id'] . '" target="_blank">'.htmlspecialchars($fu, ENT_QUOTES).'</a></td>';
+        $content.= '<td>' . $row['calls'] . '</td>';
+        $content.= '<td>' . $row['created'] . '</td>';
+        $content.= '<td>' . $row['last_call'] . '</td>';
+        $content.='</tr>';
+    }
+    return $content.'</tbody></table></div>';
 }
 
 // Contenuto della pagina home

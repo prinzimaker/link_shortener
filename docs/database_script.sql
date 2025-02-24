@@ -48,14 +48,6 @@ create table customers (
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 insert into customers (descr, email, pass, active, apikey,is_admin, max_links) values ('the administrator', 'Admin', '', true, 'APYKEY123456',true, 9999);
 insert into link (short_id,full_uri,cust_id,sha_uri) values ('about','https://github.com/prinzimaker/link_shortener',1,'AAA');
-create table custlinks (
-    cust_id  int(10) unsigned NOT NULL,
-    short_id varchar(10) not null,
-    PRIMARY KEY (cust_id, short_id),
-    FOREIGN KEY (cust_id) REFERENCES customers(cust_id) ON DELETE CASCADE,
-    FOREIGN KEY (short_id) REFERENCES link(short_id) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-insert into custlinks(cust_id, short_id) values (1,'about');
 create table ip2location (
     ip_from   int(10) unsigned NOT NULL,
     ip_to     int(10) unsigned NOT NULL,

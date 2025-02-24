@@ -9,7 +9,9 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the Link Data display builder logic 
 -
-v1.3.1 - Aldo Prinzi - 13 Feb 2025
+v1.3.2 - Aldo Prinzi - 24 Feb 2025
+2025-02-24 - Added shortcode personalization
+           - Added shortcode deletion
 2025-02-13 - Added the html/script for the chart.js display
 =====================================================================
 */
@@ -176,8 +178,28 @@ function getStatisticData($db, $short_id){
     return json_encode([]);
 }
 
-function getShortLinkDisplay(){
-    $uri="";
+function delShortData(){
+    $delCode=trim($_POST["code"]??$_GET["code"]);
+    $content="";
+    if (isset($delCode) && strlen($delCode)>2){
+        $db = new Database();
+        $res=$db->connect();    
+        if ($res["conn"]){
+            $res= $db->deleteShortCodeData($delCode);
+            if ($res){
+                header("Location: ".getenv("URI")."/user");
+                exit();
+            } else {
+                $content="<div class='alert alert-danger'>".lng("error").": ".lng("database_generic_error")."</div>";
+            }
+        }
+        
+    } else {
+        $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>";
+    }
+    return $content;
+}
+function getShortLinkDisplay($uri){
     $content=getShortenContent($uri);
     try{
         $puri=$_POST["uri"];
@@ -191,11 +213,8 @@ function getShortLinkDisplay(){
                 $db = new Database();
                 $res=$db->connect();
                 if ($res["conn"]){
-                    $shorCode=$db->createShortlink($uri);
-                    $content="<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>";
-                    $content.="<div class='alert alert-info'><table width='100%'><tr><td width=50%><label>".lng("front_short-link-is")."</label><input type='text' class='input-text' id='shortLink' value='".getenv("URI").$shorCode."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>".lng("copy")."</button></td>";
-                    $content.="<td width='50%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$shorCode). "&amp;size=100x100' alt='' title='qr-code' width='100px' height='100px' /></td></tr></table></div>";
-                    $content.="<script>function copyShortLink(){var copyText=document.getElementById('shortLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>";
+                    $shortCode=$db->createShortlink($uri);
+                    return buildShortenedDisplay($shortCode);
                 } else {
                     $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>".$content;
                 }
@@ -208,4 +227,57 @@ function getShortLinkDisplay(){
     }
     $content.="<div style='margin-top:20px'><button type='button' class='btn btn-warning' onclick=\"window.location.href='/'\">&lt; Home</button>&nbsp;<button type='button' class='btn btn-warning' onclick=\"window.location.href='info'\">".lng("information")." &gt;</button></div>";
     return $content;
+}
+
+function changeShortCode(){
+    $oldCode=trim($_POST["shortcode"]??$_GET["shortcode"]);
+    $newCode=trim($_POST["newcode"]??$_GET["newcode"]);
+
+    if (isset($oldCode) && isset($oldCode) && (strlen($oldCode)<11 && strlen($newCode)<11) && strlen($newCode)>2){
+        $db = new Database();
+        $res=$db->connect();
+        $content="";
+        if ($res["conn"]){
+            $res= $db->getShortCodeData($oldCode);
+            if (is_array($res) && $res["short_id"]==$oldCode){
+                $exc=$db->changeShortCode($oldCode,$newCode, getenv("URI").$newCode);
+                if ($exc=="AE"){
+                    $content="<div class='alert alert-danger'>".lng("error").": ".lng("code_exists")."</div>";
+                    $newCode=$oldCode;
+                } else if ($exc=="ER"){
+                    $content="<div class='alert alert-danger'>".lng("error").": ".lng("database_generic_error")."</div>";
+                    $newCode=$oldCode;
+                }
+                $content.=buildShortenedDisplay($newCode);
+            } else {
+                $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>".buildShortenedDisplay($oldCode);
+            }
+        } else {
+            $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>".buildShortenedDisplay($oldCode);
+        }
+    } else {
+        $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>".buildShortenedDisplay($oldCode);
+    }
+    return $content;
+}
+
+function buildShortenedDisplay($shortCode){
+    return"
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+    <div class='alert alert-info'>
+        <table width='100%'><tr>
+            <td width=50%><label>".lng("front_short-link-is")."</label><input type='text' class='input-text' id='shortLink' value='".getenv("URI").$shortCode."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>".lng("copy")."</button></td>
+            <td width='50%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$shortCode). "&amp;size=100x100' alt='' title='qr-code' width='100px' height='100px' /></td>
+        </tr></table>
+    </div>
+    <script>function copyShortLink(){var copyText=document.getElementById('shortLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>
+    <div class='alert alert-info'>
+        <form action='changecode'  method='post'>
+            <input type='hidden' name='shortcode' value='".$shortCode."'>
+            <label>".lng("change_link_code")."</label><br>
+            <input type='text' class='input-text' name='newcode' placeholder=''>
+            <button type='submit' class='btn btn-primary'>".lng("change")."</button>
+        </form>
+    </div>
+    ";
 }

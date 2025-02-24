@@ -15,6 +15,8 @@ UPDATES
 ---------
 2025.02.24 - Added statement prepare extraction (needed by localisation
              database based funtions) 
+           - Added shortcode change
+           - Added shortcode delete
 2024.10.04 - Added variable lenght for short link
 2025.02.13 - Modified the way the statistics are stored: if short link 
              is not found, the statistics are not stored
@@ -106,7 +108,7 @@ class Database {
     }
     
     function createShortlink($uri){
-        $existing_short_code=$this->getShortCode($uri);
+        $existing_short_code=$this->getShortLink($uri);
         if (!empty($existing_short_code)) 
             $code=$existing_short_code;
         else {
@@ -121,12 +123,41 @@ class Database {
         return $code;
     }
 
-    function getShortCode($uri){
+    function getShortLink($uri){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("SELECT short_id FROM link WHERE sha_uri = :shuri LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT short_id FROM link WHERE sha_uri = :shuri");
         $stmt->execute(['shuri' => hash("sha512", $uri)]);
         $result = $stmt->fetch();
         return $result["short_id"];
+    }
+
+    function getShortCodeData($shortCode){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("SELECT * FROM link WHERE short_id = :shortCode");
+        $stmt->execute(['shortCode' => $shortCode]);
+        return $stmt->fetch();
+    }
+
+    function changeShortCode($oldCode,$newCode,$newUri){
+        if (!isset($this->pdo)) $this->connect();
+        $exists=$this->getShortCodeData($newCode);
+        if ($exists) 
+            return "AE";
+        $stmt = $this->pdo->prepare("UPDATE link SET short_id = :newcode, sha_uri= :shuri WHERE short_id = :oldcode");
+        if ($stmt->execute(['newcode' => $newCode, 'oldcode' => $oldCode, 'shuri' => hash("sha512", $newUri)]))
+            return "DO";
+        return "ER";
+    }
+
+    function deleteShortCodeData($delCode){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("DELETE FROM calls WHERE short_id = :delCode");
+        if ($stmt->execute(['delCode' => $delCode])){
+            $stmt = $this->pdo->prepare("DELETE FROM link WHERE short_id = :delCode");
+            if ($stmt->execute(['delCode' => $delCode]))
+                return true;
+        }
+        return false;
     }
 
     function putlink($linkcode, $uri){
@@ -142,6 +173,20 @@ class Database {
         $result = $stmt->fetch();
         return $result;
     }
+    function getUserShortDatatable(){
+        $result=[];
+        $userData="";
+        if (isset($_SESSION["user"]))
+            $userData=$_SESSION["user"];
+        if (!empty($userData)){
+            if (!isset($this->pdo)) $this->connect();
+            $stmt = $this->pdo->prepare("SELECT * FROM link WHERE cust_id = :user_id");
+            $stmt->execute(['user_id' => $userData["cust_id"]]);
+            $result = $stmt->fetchAll();
+        }
+        return $result;
+    }
+
 
     function getDownloadInfo($short_id){
         $ret="";
@@ -156,7 +201,7 @@ class Database {
     }
 
     public function getUserData($email) {
-        $query = "SELECT descr, apikey, pass, active, is_admin, max_links FROM customers WHERE email = :email";
+        $query = "SELECT cust_id, descr, apikey, pass, active, is_admin, max_links FROM customers WHERE email = :email";
         $params = [':email' => $email];
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare($query);
@@ -166,7 +211,7 @@ class Database {
     }
 
     public function getUserByApiKey($apiKey) {
-        $query = "SELECT descr, apikey, pass, active, is_admin, max_links FROM customers WHERE apikey = :apikey";
+        $query = "SELECT cust_id, descr, apikey, pass, active, is_admin, max_links FROM customers WHERE apikey = :apikey";
         $params = [':apikey' => $apiKey];
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare($query);

@@ -43,6 +43,10 @@ function lng($key){
         case "copy": return "copia";
         case "close": return "Chiudi";
         case "times": return "volte";
+        case "change_link_code": return "Cambia il codice del link:";
+        case "change": return "Cambia";
+        case "code_exists":"Questo codice esiste già!";
+        case "database_generic_error": return "Errore durante la registrazione nel database";
         case "front_was-req":return "Ed &egrave; stato richiesto";
         case "geoloc": return "geolocalizazione";
         case "front_link-is": return "Il link originale &egrave;";

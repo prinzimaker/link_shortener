@@ -45,6 +45,10 @@ function lng($key){
         case "front_copy-error":return "Link copy error";
         case "front_insert-correct":return "Insert a correct link in the input box before hit the &quot;<strong>".lng("front_shorten")."</strong>&quot; button.";
         case "front_downloads-info": return "Download&apos;s info";
+        case "change_link_code": return "Change link code";
+        case "change": return "Change";
+        case "code_exists":"This short-code already exists!";
+        case "database_generic_error": return "Error during database registration";
         case "front_incorrect-link":return "Incorrect <strong>uri</strong> or loop-<strong>uri</strong> (isn't possible to shrink a <strong>".getenv("URI")."</strong> link)";
         case "front_instr-small": return "Enter the shortened link and press the <strong>Information</strong> button to get details about the shortened link.";
         case "front_instructions": return '<p><strong>This is a website for creating short links.</strong></p>
