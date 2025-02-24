@@ -74,7 +74,10 @@ switch ($uri){
         $header = "Short Link - Login";
         $user=new SLUsers($_POST["userid"],$_POST["password"]);
         if ($user->isLogged()){
-            header("Location: ".$_SESSION["dvalu"], true, 302);
+            if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="")
+                header("Location: /", true);
+            else
+                header("Location: ".$_SESSION["dvalu"], true, 302);
             exit();
         } else 
             $content=getLoginForm($_POST["userid"]);

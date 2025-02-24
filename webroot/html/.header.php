@@ -22,9 +22,9 @@ $userData="";
 if (isset($_SESSION["user"]))
     $userData=$_SESSION["user"];
 if (empty($userData))
-    $userLink="href='/login'>Login";
+    $userLink="href='/login' class='nav-item btn btn-warning btn-small'>Login";
 else
-    $userLink="href='/user'><strong>".$userData["descr"]."</strong>";
+    $userLink="href='/user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong>";
 
 ?><html>
     <head>
@@ -33,11 +33,9 @@ else
     </head>
     <body>
         <div>
-            <table class="header" width="100%"><tr><td width="90%"><h1><?php echo $_SESSION["pageTitle"]; ?></h1></td>
+            <table class="header" width="100%"><tr><td width="90%" colspan="2"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
             <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td></tr>
-            <tr><td align="left"><nav class="nav-row"><a class="nav-item" href="/">Home</a>&nbsp;|&nbsp;<a class="nav-item" href="https://flu.lu/about" target='_blank'>About</a>&nbsp;|&nbsp;
-            <a class="nav-item" <?php echo $userLink; ?></a>
-            
-            </nav></td><td>&nbsp;</td></tr>
+            <tr><td align="left" width="80%" style="padding-top:5px">
+            <nav class="nav-row"><a class="nav-item" href="/">Home</a>&nbsp;|&nbsp;<a class="nav-item" href="/about" target='_blank'>About</a>&nbsp;|&nbsp;<a class="nav-item-doc" href="/Redoc" target='_blank'>Redoc&nbsp;API&nbsp;doc</a>&nbsp;|&nbsp;<a class="nav-item-doc" href="/Swagger" target='_blank'>OpenAPI&nbsp;doc</a>&nbsp;</nav></td><td>&nbsp;</td><td style="padding-right:20px"><a <?php echo $userLink; ?></a></td></tr>
         </table>
         </div>
