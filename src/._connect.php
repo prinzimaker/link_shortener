@@ -107,7 +107,7 @@ class Database {
         }
     }
     
-    function createShortlink($uri){
+    function createShortlink($uri,$user_id){
         $existing_short_code=$this->getShortLink($uri);
         if (!empty($existing_short_code)) 
             $code=$existing_short_code;
@@ -116,7 +116,7 @@ class Database {
             if ($lenght<1) $lenght=8;
             $code = $this->_genRndString($lenght);
             if ($code!="")
-                $this->putlink($code, $uri);
+                $this->putlink($code, $uri, $user_id);
             else
                 $code="Error!";
         }
@@ -160,10 +160,13 @@ class Database {
         return false;
     }
 
-    function putlink($linkcode, $uri){
+    function putlink($linkcode, $uri, $user_id){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("INSERT INTO link (short_id, full_uri, sha_uri, cust_id) VALUES (:code, :uri, :shuri, 0)");
-        $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'shuri' => hash("sha512", $uri)]);
+        /* The line `         = ->pdo->prepare("INSERT INTO link (short_id, full_uri,
+        user_id, sha_uri, cust_id) VALUES (:code, :uri, :shuri, 0)");` is preparing an SQL statement
+        to insert a new record into the `link` table in the database. */
+        $stmt = $this->pdo->prepare("INSERT INTO link (short_id, full_uri, cust_id, sha_uri) VALUES (:code, :uri, :cust_id, :shuri)");
+        $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'cust_id'=>$user_id , 'shuri' => hash("sha512", $uri)]);
     }
 
     function getShortlinkInfo($short_id){
@@ -186,7 +189,6 @@ class Database {
         }
         return $result;
     }
-
 
     function getDownloadInfo($short_id){
         $ret="";

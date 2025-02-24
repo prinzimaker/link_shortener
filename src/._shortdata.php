@@ -209,14 +209,22 @@ function getShortLinkDisplay($uri){
                 $content="<div class='alert alert-danger'>".lng("error").": ".lng("front_incorrect-link")."</div>";
                 $content.=getShortenContent($puri);
             } else {
-                $content=getShortenContent($uri);
-                $db = new Database();
-                $res=$db->connect();
-                if ($res["conn"]){
-                    $shortCode=$db->createShortlink($uri);
-                    return buildShortenedDisplay($shortCode);
-                } else {
-                    $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>".$content;
+                $userData="";
+                if (isset($_SESSION["user"]))
+                    $userData=$_SESSION["user"];
+                if (empty($userData))
+                    return;
+                else {
+                    $content=getShortenContent($uri);
+                    $db = new Database();
+                    $res=$db->connect();
+                    $user_id=$userData["cust_id"];
+                    if ($res["conn"]){
+                        $shortCode=$db->createShortlink($uri,$user_id);
+                        return buildShortenedDisplay($shortCode);
+                    } else {
+                        $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>".$content;
+                    }
                 }
             }
         } else {
