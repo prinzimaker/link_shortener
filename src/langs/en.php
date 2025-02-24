@@ -33,6 +33,7 @@ function lng($key){
         case "times": return "times";
         case "close": return "Close";        
         case "language":return "Lingua";
+        case "update":return "Aggiorna";
         case "ip-address": return "ip address";
         case "geoloc": return "geolocalisation";
         case "not-found": return "not found";

@@ -16,6 +16,7 @@ function lng($key){
         case "ripeti_password": return "Ripeti password";
         case "email": return "Indirizzo e-mail";
         case "verify": return "Verifica";
+        case "update":return "Update";
         case "autentication": return "Autenticazione";
         case "forgot_pass": return "Ho dimenticato la mia password";
         case "invalid_uid_or_pass": return "Utente o password non validi";

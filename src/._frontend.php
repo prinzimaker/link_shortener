@@ -70,7 +70,16 @@ function getLoginForm($userid=""){
 }
 
 
-function getUserContent($uri){
+function getUserContent(){
+    $userData="";
+    if (isset($_SESSION["user"]))
+        $userData=$_SESSION["user"];
+    if (empty($userData))
+        return;
+
+
+//        $userLink="href='/user'><strong>".$userData["descr"]."</strong>";
+
     $content='
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
@@ -80,10 +89,23 @@ function getUserContent($uri){
                 $("#userCodesTable").DataTable({"paging": true, "ordering": true, "info": true});
             });
         </script>
+        <div class="alert alert-info">
+            <table width="100%"><tr><td width="50%">
+                <label for="userid">'.lng("user").'</label>
+                <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'">
+                </td><td>&nbsp;</td><td>
+                <label for="userid">API key</label>
+                <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="API key" value="'.$userData["apikey"].'">
+                </td></tr>
+            </table>
+            <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>'.lng("password").'</button>&nbsp;
+            <button type="button" class="btn btn-secondary" onclick=\'window.location.href="/logout"\'>Logout</button>
+        </div>
         <div class="form-group">
         <label>User\'s Links</label>
+        <div class="userTabLinks">
         <table id="userCodesTable" class="display"><thead>
-        <tr><th>short_id</th><th>Uri</th><th>&nbsp;</th><th>Calls</th><th>Created</th><th>Last call</th></tr>
+        <tr><th>short_id</th><th>&nbsp;</th><th>Uri</th><th>Calls</th><th>Created</th><th>Last call</th></tr>
         </thead><tbody>
     ';
     
@@ -96,17 +118,41 @@ function getUserContent($uri){
         $fu=$row['full_uri'];
         if (strlen($fu)>65)
             $fu=substr($fu, 0, 65)." ...";
+        
+        $timestamp = new DateTime($row['last_call']);
+        if ($timestamp->format("Y")=="1999"){
+            $timestamp="";
+        } else {
+            $now = new DateTime();
+            $diff = $now->diff($timestamp);
+            
+            // Calcolo dei periodi relativi
+            if ($diff->y > 0) {
+                $timestamp= $diff->y == 1 ? "one year ago" : $diff->y . " years ago";
+            } elseif ($diff->m > 0) {
+                $timestamp= $diff->m == 1 ? "one month ago" : $diff->m . " months ago";
+            } elseif ($diff->d > 0) {
+                $timestamp= $diff->d == 1 ? "one day ago" : $diff->d . " days ago";
+            } elseif ($diff->h > 0) {
+                $timestamp= $diff->h == 1 ? "one hour ago" : $diff->h . " hours ago";
+            } elseif ($diff->i > 0) {
+                $timestamp= $diff->i == 1 ? "one minute ago" : $diff->i . " minutes ago";
+            } else {
+                $timestamp= "right now";
+            }
+        }
+        $created = new DateTime($row['created'] );
 
         $content.='<tr>';
         $content.= '<td><a href="/shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
-        $content.= '<td><a href="/removeshortinfo?code='. $row['short_id'] .'">[DEL]</a></td>';
+        $content.= '<td><a href="/removeshortinfo?code='. $row['short_id'] .'"><button class="btn btn-small btn-warning">DEL</button></a></td>';
         $content.= '<td><a href="' . getenv("URI"). $row['short_id'] . '" target="_blank">'.htmlspecialchars($fu, ENT_QUOTES).'</a></td>';
-        $content.= '<td>' . $row['calls'] . '</td>';
-        $content.= '<td>' . $row['created'] . '</td>';
-        $content.= '<td>' . $row['last_call'] . '</td>';
+        $content.= '<td align="right">' . $row['calls'] . '</td>';
+        $content.= '<td>' . $created->format("d/m/y") . '</td>';
+        $content.= '<td>' . $timestamp . '</td>';
         $content.='</tr>';
     }
-    return $content.'</tbody></table></div>';
+    return $content.'</tbody></table></div></div>';
 }
 
 // Contenuto della pagina home

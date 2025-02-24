@@ -31,7 +31,6 @@ th{
     border-bottom: solid 1px silver;
 }
 
-
 * {
     margin: 0;
     padding: 0;
@@ -150,7 +149,11 @@ p.pad {
     border-bottom: solid 1px #333;
     border-right: solid 1px #333;
 }
-
+.btn-small{
+    max-height:32px;
+    font-size: .8em;
+    padding: 4px 8px;
+}
 .btn-primary {
     background-color: var(--mainbg);
 }
@@ -303,6 +306,16 @@ label {
     color: #fff;
     padding: 10px;
     text-align: center;
+}
+
+.userTabLinks{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+.dataTable {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 
