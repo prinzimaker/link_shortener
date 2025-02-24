@@ -10,6 +10,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the front-end html page/form generators 
 -
 Updated to
+v1.3.2 - Aldo Prinzi - 24 Feb 2025 : solved a bug that will shrink a local link already shrinked.
 v1.3.0 - Aldo Prinzi - 25 Jan 2025
 =====================================================================
 */
@@ -87,7 +88,8 @@ function checkIfSelfUri($uri) {
     $host = strtolower($parsedUrl['host']);
     if (substr($host, 0, 4) === 'www.') 
         $host = substr($host, 4);
-    if ($host === getenv("URI") || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
+    $thisHost=parse_url(getenv("URI"))['host'];
+    if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
         $uri = "";
     return $uri; 
 }
