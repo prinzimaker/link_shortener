@@ -169,10 +169,10 @@ class Database {
         $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'cust_id'=>$user_id , 'shuri' => hash("sha512", $uri)]);
     }
 
-    function getShortlinkInfo($short_id){
+    function getShortlinkInfo($short_id, $cust_id){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("SELECT * FROM link WHERE short_id = :short_id LIMIT 1");
-        $stmt->execute(['short_id' => $short_id]);
+        $stmt = $this->pdo->prepare("SELECT * FROM link WHERE short_id = :short_id and cust_id= :cust_id LIMIT 1");
+        $stmt->execute(['short_id' => $short_id,'cust_id' => $cust_id]);
         $result = $stmt->fetch();
         return $result;
     }
@@ -183,8 +183,8 @@ class Database {
             $userData=$_SESSION["user"];
         if (!empty($userData)){
             if (!isset($this->pdo)) $this->connect();
-            $stmt = $this->pdo->prepare("SELECT * FROM link WHERE cust_id = :user_id");
-            $stmt->execute(['user_id' => $userData["cust_id"]]);
+            $stmt = $this->pdo->prepare("SELECT * FROM link WHERE cust_id = :cust_id");
+            $stmt->execute(['cust_id' => $userData["cust_id"]]);
             $result = $stmt->fetchAll();
         }
         return $result;

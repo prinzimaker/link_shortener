@@ -19,15 +19,18 @@ function replyToApiCall ($db){
     $uri = isset($_GET['uri']) ? $_GET['uri'] : null;
     $short = isset($_GET['short']) ? $_GET['short'] : null;
     $calls = isset($_GET['calls']) ? $_GET['calls'] : null;
+    $cust_id=0;
+    $userData=[];
     if (is_null($user)){
         die( json_encode(array('status' => 'error', 'message' => 'No API key provided: you need at least one key to use this service.')));
     } else {
-        $um=new UserManager($db);
         $user = filter_var($user, FILTER_SANITIZE_STRING);
-        if (!$um->checkUserApi($user)){
+        $userData=$db->getUserByApiKey($user);
+        if (!isset($userData["cust_id"])){
             die( json_encode(array('status' => 'error', 'message' => 'Invalid API key or inactive account.')));
         }
     }
+    $cust_id=$userData["cust_id"];
     $response = array();
     if ($user && ($uri || $short|| $calls)) {
         // Sanitizza gli input
@@ -42,7 +45,7 @@ function replyToApiCall ($db){
                     if ($key!="key" && $key!="uri")
                         $uri.="&".$key."=".$data;
                 }
-                $code=$db->createShortlink($uri);
+                $code=$db->createShortlink($uri,$cust_id);
                 $shortUrl = getenv("URI").$code;
                 $response['status'] = 'success';
                 $response['original_url'] = $uri;
@@ -52,7 +55,7 @@ function replyToApiCall ($db){
                 $response['message'] = lng("api_loop").getenv("URI").' URL.';
             }
         } elseif (filter_var($short, FILTER_SANITIZE_STRING)) {
-            $res=$db->getShortlinkInfo($short);
+            $res=$db->getShortlinkInfo($short,$cust_id);
             if (empty($res)){
                 $response['status'] = 'error';
                 $response['message'] = lng("api_invalid-short");

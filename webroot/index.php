@@ -92,7 +92,7 @@ switch ($uri){
     case "shortinfo":
         if (!empty($userData) && $userData["active"]>0){
             $header = "Short Link - Link info";
-            $content=getShortInfoDisplay();
+            $content=getShortInfoDisplay($userData["cust_id"]);
         } else {
             $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
             $header = "Short Link - Autenticate";

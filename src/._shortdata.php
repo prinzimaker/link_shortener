@@ -15,7 +15,7 @@ v1.3.2 - Aldo Prinzi - 24 Feb 2025
 2025-02-13 - Added the html/script for the chart.js display
 =====================================================================
 */
-function getShortInfoDisplay(){
+function getShortInfoDisplay($cust_id){
     $puri=$_POST["smalluri"]??$_GET["code"];
     $chk=explode(getenv("URI"),$puri);
     if (is_array($chk)&&count($chk)>1)
@@ -27,7 +27,7 @@ function getShortInfoDisplay(){
             $res=$db->connect();
             if ($res["conn"]){
                 $uri_code=str_replace(getenv("URI"),"",$puri);
-                $res=$db->getShortlinkInfo($uri_code);
+                $res=$db->getShortlinkInfo($uri_code,$cust_id);
                 $content=getShortInfoContent($puri);
                 if (empty($res)){
                     $content="<div class='alert alert-danger'>".lng("error").": <strong>uri</strong>".lng("not-found")."</div>";
