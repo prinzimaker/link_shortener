@@ -9,10 +9,12 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the DB logic for the link shortener
 -
-v1.3.1 - Aldo Prinzi - 13 Feb 2025
+v1.3.2 - Aldo Prinzi - 24 Feb 2025
 ---------
 UPDATES
 ---------
+2025.02.24 - Added statement prepare extraction (needed by localisation
+             database based funtions) 
 2024.10.04 - Added variable lenght for short link
 2025.02.13 - Modified the way the statistics are stored: if short link 
              is not found, the statistics are not stored
@@ -54,6 +56,12 @@ class Database {
             $ret["err"]=$e->getMessage();
         }
         return $ret;
+    }
+
+    public function getPreparedStatement($sql){
+        if (isset($this->pdo))
+            return $this->pdo->prepare($sql);
+        return null; 
     }
     
     function getFullLink($code){

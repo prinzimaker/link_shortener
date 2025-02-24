@@ -9,10 +9,12 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Geolocalisation functions
 -
-v1.3.1 - Aldo Prinzi - 13 Feb 2025
+v1.3.2 - Aldo Prinzi - 24 Feb 2025
 ---------
 UPDATES
 ---------
+2025.02.24 - Removed any limit, and use database
+             See /ip2locatioon folder for more info
 2025.02.13 - Limited geolocation requests to max 200 records per link
 =====================================================================
 */
@@ -28,11 +30,8 @@ function getCallsLog($db,$short_id){
             return explode(',', $entry)[0];
         }, $rows);
         
-        // Rimuovi duplicati e reindicizza l'array
-        $ipps=$_StatIp;
-        if (count($ipps)>200)
-            $ipps=array_slice($ipps,count($ipps)-201,count($ipps)-1);
-        $geoIp=geolocalizzaIP(array_values(array_unique($ipps)));
+        // Rimuovi duplicati 
+        $geoIp=geolocalizzaIP($db,array_values(array_unique($_StatIp)));
         foreach ($rows as $key => $row) {
             $ip = explode(',', $row)[0];
             $rows[$key] .= ','. $geoIp[$ip];
@@ -41,6 +40,31 @@ function getCallsLog($db,$short_id){
     return $rows; 
 }
 
+function geolocalizzaIP($db,array $ips): array {
+    $geoData = []; 
+    $stmt=$db->getPreparedStatement("SELECT * FROM ip2location WHERE ip_from <= :myip ORDER BY ip_from DESC LIMIT 1;");
+    foreach ($ips as $batch) {
+        $ipParts=explode(".",$batch);
+        if (is_array($ipParts) && count($ipParts)>3){
+            $thisIp=$ipParts[0]*256*256*256+$ipParts[1]*256*256+$ipParts[2]*256+$ipParts[3];
+            $stmt->bindParam(':myip', $thisIp);
+            $stmt->execute();
+            $result = $stmt->fetch();
+
+            // Analizza i risultati dell'API
+            if (is_array($result)) {
+                $geoData[$batch] = $result['city'] . '|' . $result['region'] . '|' . $result['state_id'];
+            } else {
+                $geoData[$batch] = "unkown |" . $thisIp ;
+            }
+        }
+    }
+    return $geoData;
+}
+
+
+// OLD ROUTINE GEOLOCALIZE API DRIVEN
+/*
 function geolocalizzaIP(array $ips): array {
     $batchSize = 100; // Numero massimo di IP per batch
     $geoData = []; // Array per memorizzare i risultati
@@ -92,3 +116,4 @@ function geolocalizzaIP(array $ips): array {
 
     return $geoData;
 }
+*/

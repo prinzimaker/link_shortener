@@ -209,10 +209,15 @@ The QR-code generation uses a free online generator:
 
 ---
 
-**IP_API – IP Address Geolocation API**
+** IP address geo-localisation**
 
-Geolocation information is obtained via:  
-### https://ip-api.com/
+This project supports the IP addresses geolocalisation through the IP2Location LITE free database.
+
+### https://lite.ip2location.com
+| Hexasoft Development Sdn. Bhd.
+
+Check the /ip2location folder for further details
+
 
 ---
 

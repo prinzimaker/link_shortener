@@ -10,10 +10,11 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.3.1 - Aldo Prinzi - 12 Feb 2025
+v1.3.2 - Aldo Prinzi - 24 Feb 2025
 ---------
 UPDATES
 ---------
+2025.02.24 - Added Ip2Location database support
 2024.12.23 - Added qr-code generation for the short link, using an
              api server from Fundata GmbH - Karlsruhe (DE):
              https://goqr.me/api/doc/

@@ -1,4 +1,11 @@
 # Changelog
+## [1.3.2] - 2025-02-24
+### Removed
+- Removed geolocalisation by API
+### Added
+- Added geolocalisation by database, using free ip2location database
+### Modify
+- Modified the localisation functions and removed limits (API was limited) 
 ## [1.3.1] - 2025-02-13
 ### Added
 - Added a right 404 handling

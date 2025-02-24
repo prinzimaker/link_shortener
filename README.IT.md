@@ -242,11 +242,15 @@ Verifica le informazioni su
 ### https://goqr.me/api/
 | Fundata GmbH - Karlsruhe (DE)
 ___
-**IP_API - API geografiche per indirizzi IP**
+**Localizzazione indirizzi IP**
 
-Le informazioni gegrafiche per gli IP sono ottenuti da un servizio gratuito sul web: 
-### https://ip-api.com/
+Questo progetto supporta la localizzazione degl indirizzi IP attraverso il database di IP2Location LITE.
 
+Verifica le informazioni su 
+### https://lite.ip2location.com
+| Hexasoft Development Sdn. Bhd.
+
+Verifica la cartella /ip2location per maggiori informazioni
 ___
 ## Autore
 Alla data dell'ultima versione l'autore del progetto è uno solo: 

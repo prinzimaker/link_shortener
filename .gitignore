@@ -1,3 +1,5 @@
 .env
 /.vscode
 /vendor
+/ip2location/*.CSV
+/ip2location/LICENSE_LITE.TXT
