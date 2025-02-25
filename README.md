@@ -26,7 +26,7 @@ Write to aldo@milleisole.com if interested, thank you.
 - Select Import in the sidebar. 
 - Choose to upload the following URL: https://prinzimaker.github.io/link_shortener/openapi.yaml 
 
-Learn more about importing an API into Postman https://learning.postman.com/docs/designing-and-developing-your-api/importing-an-api/
+Learn more about [importing an API into Postman](https://learning.postman.com/docs/designing-and-developing-your-api/importing-an-api/)
 
 ### REDOC Api documentation
 - Link: https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml
