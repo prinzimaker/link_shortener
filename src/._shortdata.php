@@ -78,7 +78,6 @@ function getShortInfoDisplay($cust_id){
                                 x: entry.day,
                                 y: entry.time_part,
                                 r: Math.sqrt(entry.call_count) * 1.1 
-                                /* r: entry.call_count * 2 */
                             }))
                         }]
                     };
@@ -87,34 +86,19 @@ function getShortInfoDisplay($cust_id){
                         data: data,
                         options: {
                             plugins: {
-                                zoom: {
-                                    zoom: {
-                                        wheel: {
-                                            enabled: true,
-                                        },
-                                        pinch: {
-                                            enabled: true
-                                        },
+                                zoom: {zoom: {
+                                        wheel: {enabled: true},
+                                        pinch: {enabled: true},
                                         mode: 'xyz',
-                                    }
-                                }
-                            },
-                                scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {unit: 'day'},
-                                    title: {display: true,text: 'Giorno'}
+                                    }}
                                 },
-                                y: {
-                                    type: 'linear',
+                                scales: {
+                                x: {type: 'time',time: {unit: 'day'},title: {display: true,text: 'Giorno'}},
+                                y: {type: 'linear',
                                     title: {display: true,text: 'Parte del Giorno'},
                                     ticks: {
                                         beginAtZero: true,
-                                        callback: function(value) {
-                                            if (value === 1) return 'Notte';
-                                            if (value === 2) return 'Giorno';
-                                            if (value === 3) return 'Sera';
-                                        }
+                                        callback: function(value) {if (value === 1) return 'Notte';if (value === 2) return 'Giorno';if (value === 3) return 'Sera';}
                                     },
                                     suggestedMin: 1,
                                     suggestedMax: 3
