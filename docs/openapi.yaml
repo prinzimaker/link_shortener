@@ -20,7 +20,7 @@ paths:
       parameters:
         - name: key
           in: query
-          description: API key for authentication (currently any value is valid).
+          description: The assigned API key to identify the customer.
           required: true
           schema:
             type: string
@@ -58,7 +58,7 @@ paths:
       parameters:
         - name: key
           in: query
-          description: API key for authentication (currently any value is valid).
+          description: The assigned API key to identify the customer.
           required: true
           schema:
             type: string
@@ -95,7 +95,7 @@ paths:
       parameters:
         - name: key
           in: query
-          description: API key for authentication (currently any value is valid).
+          description: The assigned API key to identify the customer.
           required: true
           schema:
             type: string
