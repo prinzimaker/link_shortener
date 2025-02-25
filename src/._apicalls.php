@@ -58,7 +58,7 @@ function replyToApiCall ($db){
             $res=$db->getShortlinkInfo($short,$cust_id);
             if (empty($res)){
                 $response['status'] = 'error';
-                $response['message'] = lng("api_invalid-short");
+                $response['message'] = 'Invalid SHORT_ID OR invalid KEY provided.';
             } else {
                 $response['status'] = 'success';
                 $response['original_url'] = $res["full_uri"];
@@ -69,7 +69,7 @@ function replyToApiCall ($db){
             $rows=getCallsLog($db,$calls, $cust_id);
             if (!isset($rows) || empty($rows)){
                 $response['status'] = 'error';
-                $response['message'] = 'Invalid SHORT_ID provided.';
+                $response['message'] = 'Invalid SHORT_ID OR invalid KEY provided.';
             } else {
                 $response['status'] = 'success';
                 $response['short_id'] = $calls;
@@ -77,7 +77,7 @@ function replyToApiCall ($db){
             }
         } else {
             $response['status'] = 'error';
-            $response['message'] = 'Invalid URI provided.';
+            $response['message'] = 'Invalid URI provided .';
         }
     } else {
         $response['status'] = 'error';

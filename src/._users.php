@@ -15,8 +15,6 @@ v1.3.2 - Aldo Prinzi - 24 Feb 2025
 NEED TO BE IMPLEMENTED!
 
 */
-//include './._connect.php';
-//include './._usermanager.php';
 
 class SLUsers{
     private $_mng;

@@ -13,6 +13,7 @@ v1.3.2 - Aldo Prinzi - 24 Feb 2025
 ---------
 UPDATES
 ---------
+2025.02.25 - file renamed from ._connction.php to ._database.php
 2025.02.24 - Added statement prepare extraction (needed by localisation
              database based funtions) 
            - Added shortcode change
@@ -108,7 +109,7 @@ class Database {
     }
     
     function createShortlink($uri,$user_id){
-        $existing_short_code=$this->getShortLink($uri);
+        $existing_short_code=$this->getShortLink($uri, $user_id);
         if (!empty($existing_short_code)) 
             $code=$existing_short_code;
         else {
@@ -123,10 +124,16 @@ class Database {
         return $code;
     }
 
-    function getShortLink($uri){
+    function getShortLink($uri,$user_id){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("SELECT short_id FROM link WHERE sha_uri = :shuri");
-        $stmt->execute(['shuri' => hash("sha512", $uri)]);
+        $qry="SELECT short_id FROM link WHERE sha_uri = :shuri";
+        $params=['shuri' => hash("sha512", $user_id."!".$uri)];
+        if ($user_id!=""){
+            $qry.=" AND cust_id = :cust_id";
+            $params['cust_id']=$user_id;
+        }
+        $stmt = $this->pdo->prepare($qry);
+        $stmt->execute($params);
         $result = $stmt->fetch();
         return $result["short_id"];
     }
@@ -138,13 +145,13 @@ class Database {
         return $stmt->fetch();
     }
 
-    function changeShortCode($oldCode,$newCode,$newUri){
+    function changeShortCode($oldCode,$newCode,$newUri,$user_id){
         if (!isset($this->pdo)) $this->connect();
         $exists=$this->getShortCodeData($newCode);
         if ($exists) 
             return "AE";
         $stmt = $this->pdo->prepare("UPDATE link SET short_id = :newcode, sha_uri= :shuri WHERE short_id = :oldcode");
-        if ($stmt->execute(['newcode' => $newCode, 'oldcode' => $oldCode, 'shuri' => hash("sha512", $newUri)]))
+        if ($stmt->execute(['newcode' => $newCode, 'oldcode' => $oldCode, 'shuri' => hash("sha512", $user_id."!".$newUri)]))
             return "DO";
         return "ER";
     }
@@ -166,7 +173,7 @@ class Database {
         user_id, sha_uri, cust_id) VALUES (:code, :uri, :shuri, 0)");` is preparing an SQL statement
         to insert a new record into the `link` table in the database. */
         $stmt = $this->pdo->prepare("INSERT INTO link (short_id, full_uri, cust_id, sha_uri) VALUES (:code, :uri, :cust_id, :shuri)");
-        $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'cust_id'=>$user_id , 'shuri' => hash("sha512", $uri)]);
+        $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'cust_id'=>$user_id , 'shuri' => hash("sha512", $user_id."!".$uri)]);
     }
 
     function getShortlinkInfo($short_id, $cust_id){

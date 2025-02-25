@@ -34,7 +34,7 @@ UPDATES
 */
 include '../src/._loadenv.php';
 include '../src/._apicalls.php';
-include '../src/._connect.php';
+include '../src/._database.php';
 include '../src/._frontend.php';
 include '../src/._geolocalize.php';
 include '../src/._shortdata.php';

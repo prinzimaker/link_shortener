@@ -18,7 +18,7 @@ echo "Inserting IP localization data into database:\n";
 
 // Necessary including.
 include '../src/._loadenv.php';
-include '../src/._connect.php';
+include '../src/._database.php';
 
 // CSV file name and location
 $csvFile = 'IP2LOCATION-LITE-DB11.CSV';

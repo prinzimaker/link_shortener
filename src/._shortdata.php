@@ -7,7 +7,7 @@
 =====================================================================
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
-This file contains all the Link Data display builder logic 
+This file contains all the data handling logic 
 -
 v1.3.2 - Aldo Prinzi - 24 Feb 2025
 2025-02-24 - Added shortcode personalization
@@ -140,40 +140,44 @@ function getShortInfoDisplay($cust_id){
 }
 
 function getStatisticData($db, $short_id){
-    $entries =$db->getDownloadInfo($short_id);
-    if (is_array($entries) && count($entries)>0) {
-        // Separa i dati CSV
-        //$entries = explode(';', trim($_StatIp, ';'));
-        $chartData = [];
-    
-        foreach ($entries as $entry) {
-            list($ip, $dateStr) = explode(',', $entry);
-            if ($dateStr){
-                $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $dateStr);
-                $day = $dateTime->format('Y-m-d');
-                $time = $dateTime->format('H:i:s');
+    $userData="";
+    if (isset($_SESSION["user"])){
+        $user_id=$_SESSION["user"]["cust_id"];
+        $entries =$db->getDownloadInfo($short_id,$user_id);
+        if (is_array($entries) && count($entries)>0) {
+            // Separa i dati CSV
+            //$entries = explode(';', trim($_StatIp, ';'));
+            $chartData = [];
         
-                // Determina la parte del giorno
-                if ($time >= '00:00:00' && $time <= '06:30:00') {
-                    $part = 1;
-                } elseif ($time > '06:30:00' && $time <= '20:30:00') {
-                    $part = 2;
-                } else {
-                    $part = 3;
+            foreach ($entries as $entry) {
+                list($ip, $dateStr) = explode(',', $entry);
+                if ($dateStr){
+                    $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $dateStr);
+                    $day = $dateTime->format('Y-m-d');
+                    $time = $dateTime->format('H:i:s');
+            
+                    // Determina la parte del giorno
+                    if ($time >= '00:00:00' && $time <= '06:30:00') {
+                        $part = 1;
+                    } elseif ($time > '06:30:00' && $time <= '20:30:00') {
+                        $part = 2;
+                    } else {
+                        $part = 3;
+                    }
+            
+                    // Incrementa il conteggio per il giorno e la parte del giorno
+                    $key = $day . '-' . $part;
+                    if (!isset($chartData[$key])) {
+                        $chartData[$key] = ['day' => $day, 'time_part' => $part, 'call_count' => 0];
+                    }
+                    $chartData[$key]['call_count']++;
                 }
-        
-                // Incrementa il conteggio per il giorno e la parte del giorno
-                $key = $day . '-' . $part;
-                if (!isset($chartData[$key])) {
-                    $chartData[$key] = ['day' => $day, 'time_part' => $part, 'call_count' => 0];
-                }
-                $chartData[$key]['call_count']++;
             }
+        
+            // Prepara i dati per l'output JSON
+            $preparedData = array_values($chartData);
+            return json_encode($preparedData);
         }
-    
-        // Prepara i dati per l'output JSON
-        $preparedData = array_values($chartData);
-        return json_encode($preparedData);
     } 
     return json_encode([]);
 }
@@ -241,14 +245,18 @@ function changeShortCode(){
     $oldCode=trim($_POST["shortcode"]??$_GET["shortcode"]);
     $newCode=trim($_POST["newcode"]??$_GET["newcode"]);
 
-    if (isset($oldCode) && isset($oldCode) && (strlen($oldCode)<11 && strlen($newCode)<11) && strlen($newCode)>2){
+    $userData="";
+    if (isset($_SESSION["user"]))
+        $userData=$_SESSION["user"];
+    
+    if (!empty($userData) && isset($oldCode) && isset($oldCode) && (strlen($oldCode)<11 && strlen($newCode)<11) && strlen($newCode)>2){
         $db = new Database();
         $res=$db->connect();
         $content="";
         if ($res["conn"]){
             $res= $db->getShortCodeData($oldCode);
             if (is_array($res) && $res["short_id"]==$oldCode){
-                $exc=$db->changeShortCode($oldCode,$newCode, getenv("URI").$newCode);
+                $exc=$db->changeShortCode($oldCode,$newCode, getenv("URI").$newCode,$userData["cust_id"]);
                 if ($exc=="AE"){
                     $content="<div class='alert alert-danger'>".lng("error").": ".lng("code_exists")."</div>";
                     $newCode=$oldCode;
