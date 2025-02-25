@@ -33,6 +33,8 @@ function lng($key){
         case "times": return "times";
         case "close": return "Close";        
         case "language":return "Lingua";
+        case "new apikey":return "New API key";
+        case "change password":return "Change password";
         case "update":return "Aggiorna";
         case "ip-address": return "ip address";
         case "geoloc": return "geolocalisation";

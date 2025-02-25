@@ -55,10 +55,19 @@ if ((stripos($uri, "api.php") !== false) || ($_SERVER["REDIRECT_URL"]=="/api") |
     $uri = "api";
 $uri=explode("?",$uri)[0];
 
+$back="/";
+if (isset($_SERVER["HTTP_REFERER"]))
+    $back=$_SERVER["HTTP_REFERER"];
+
 switch ($uri){
     case "setlang":
         setNewLanguage($_SESSION["lang"]=="en"?"it":"en");
-        header("Location: /");
+        header("Location: ".$back);
+        die();
+    case "newapikey":
+        $usr=new SLUsers();
+        $usr->assignNewApiKey();
+        header("Location: ".$back);
         die();
     case "favicon.ico":
         $ret=getFavicon();
@@ -72,15 +81,22 @@ switch ($uri){
         break;
     case "login":   
         $header = "Short Link - Login";
-        $user=new SLUsers($_POST["userid"],$_POST["password"]);
-        if ($user->isLogged()){
-            if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="")
-                header("Location: /", true);
-            else
-                header("Location: ".$_SESSION["dvalu"], true, 302);
-            exit();
+        $pwd=trim($_POST["password"]);
+        $usr=trim($_POST["userid"]);
+        if ((is_string($pwd) && strlen($pwd)<20 && strlen($pwd)>7) 
+        && (is_string($usr) && strlen($usr)<60 && strlen($usr)>5)){
+            $_SESSION["user"]=[];
+            $user=new SLUsers($usr,$pwd);
+            if ($user->isLogged()){
+                if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="")
+                    header("Location: ".$back, true);
+                else
+                    header("Location: ".$_SESSION["dvalu"], true);
+                exit();
+            } else 
+                $content=getLoginForm($usr);
         } else 
-            $content=getLoginForm($_POST["userid"]);
+            $content=getLoginForm("");
         break;
     case "user":
         if (!empty($userData) && $userData["active"]>0){

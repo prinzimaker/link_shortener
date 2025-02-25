@@ -15,7 +15,6 @@ v1.3.0 - Aldo Prinzi - 25 Jan 2025
 NEED TO BE IMPLEMENTED!
 
 */
-include '../../src/._connect.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php'; 
@@ -27,8 +26,8 @@ class UserManager {
         $this->db = $db; 
     }
 
-    public function getUserData($email) {
-        return $this->db->getUserData($email); 
+    public function getUserData($email,$allData=false) {
+        return $this->db->getUserData($email,$allData); 
     }
 
     public function checkUserApi($apiKey) {

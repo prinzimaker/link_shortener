@@ -15,8 +15,8 @@ v1.3.0 - Aldo Prinzi - 25 Jan 2025
 NEED TO BE IMPLEMENTED!
 
 */
-include '../../src/._connect.php';
-include '../../src/._usermanager.php';
+//include './._connect.php';
+//include './._usermanager.php';
 
 class SLUsers{
     private $_mng;
@@ -32,7 +32,7 @@ class SLUsers{
             unset($_SESSION["user"]);
     }
     public function load ($userId,$password=""){
-        $data=$this->_mng->getUserData($userId);
+        $data=$this->_mng->getUserData($userId,true);
         $this->_logged=true;
         if ($data && $data!==false){
             if ($password!="")
@@ -74,7 +74,6 @@ class SLUsers{
         else {
             return $hash=$this->_createUserHash($email, $password);
         }
-
     }
 
     private function _createUserHash($email, $strPass) {
@@ -83,5 +82,20 @@ class SLUsers{
         // Creiamo un hash usando l'email come messaggio e la password come chiave
         $strHPass = hash_hmac($algorithm, $email, $strPass);
         return $strHPass;
+    }
+
+    function assignNewApiKey(){
+        $userData="";
+        if (isset($_SESSION["user"]))
+            $userData=$_SESSION["user"];
+        if (empty($userData))
+            return;
+        $db=new Database();
+        $apiKey=$db->checkAndAssignNewApiKey($userData["apikey"]);
+        if ($apiKey!="")
+            $_SESSION["user"]["apikey"]=$apiKey;
+        else
+            $apiKey=$userData["apikey"];
+        return $apiKey;
     }
 }

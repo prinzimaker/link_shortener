@@ -202,9 +202,16 @@ class Database {
         return $ret;
     }
 
-    public function getUserData($email) {
-        $query = "SELECT cust_id, descr, apikey, pass, active, is_admin, max_links FROM customers WHERE email = :email";
-        $params = [':email' => $email];
+    public function getUserData($email, $allData=false,$selectBy=0) {
+        $query = "SELECT cust_id, descr, apikey, pass, active, is_admin, max_links";
+        if ($allData)
+            $query .= ", email, email_verified, email_verif_code";
+        $query .= " FROM customers WHERE";
+        if ($selectBy==0)
+            $query .=" email = :field";
+        else
+            $query .=" apikey = :field";
+        $params = [':field' => $email];
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
@@ -212,14 +219,8 @@ class Database {
         return $result;
     }
 
-    public function getUserByApiKey($apiKey) {
-        $query = "SELECT cust_id, descr, apikey, pass, active, is_admin, max_links FROM customers WHERE apikey = :apikey";
-        $params = [':apikey' => $apiKey];
-        if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($params);
-        $result = $stmt->fetch();
-        return $result;
+    public function getUserByApiKey($apiKey, $allData=true) {
+        return $this->getUserData($apiKey, $allData,1);
     }
 
     function getStatistics($short_id){
@@ -245,6 +246,28 @@ class Database {
         return $result;
     }
 
+    function checkAndAssignNewApiKey($oldApiKey,$custid=""){
+        if (!isset($this->pdo)) $this->connect();
+        $newApiKey="";
+        $stmt = $this->pdo->prepare("select cust_id from customers where apikey = :newApiKey");
+        $i=0;
+        do{
+            $newApiKey = bin2hex(random_bytes(32));
+            $stmt->execute(['newApiKey' => $newApiKey]);
+            $exists = $stmt->fetchColumn();
+            if (!$exists) {
+                $stmt = $this->pdo->prepare("UPDATE customers SET apikey = :newApiKey WHERE ".($custid==""?"apikey = :field":"cust_id = :field"));
+                if ($custid!="")
+                    $oldApiKey=$custid;
+                if (!$stmt->execute(['newApiKey' => $newApiKey, 'field' => $oldApiKey]))
+                    $newApiKey="";
+                break;
+            }
+            if ($i++>200) break;
+        } while (true);
+        sleep(2);
+        return $newApiKey;
+    }
 
 // ----------------------------------------------------
 // Other private functions

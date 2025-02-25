@@ -30,6 +30,8 @@ function lng($key){
         case "unavailable_data": return "Informazioni non disponibili";
         case "front_reduced-link": return "Link ridotto";
         case "front_copied-link":return "Link copiato";
+        case "new apikey":return "Nuova API key";
+        case "change password":return "Cambia password";
         case "front_link-to-shrink": return "Link da ridurre";
         case "front_insert-correct":return "Inserire un link corretto nell'apposito spazio prima di premere &quot;<strong>".lng("front_shorten")."</strong>&quot;";
         case "error": return "Errore";

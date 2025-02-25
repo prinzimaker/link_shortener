@@ -76,9 +76,8 @@ function getUserContent(){
         $userData=$_SESSION["user"];
     if (empty($userData))
         return;
-
-
-//        $userLink="href='/user'><strong>".$userData["descr"]."</strong>";
+    $db=new Database();
+    $userData=$db->getUserByApiKey($userData["apikey"]);
 
     $content='
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -91,15 +90,24 @@ function getUserContent(){
         </script>
         <div class="alert alert-info">
             <table width="100%"><tr><td width="50%">
-                <label for="userid">'.lng("user").'</label>
+                <label for="userid">'.lng("user").'</label><br>
                 <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'">
                 </td><td>&nbsp;</td><td>
-                <label for="userid">API key</label>
+                <label for="userid">API key</label><br>
                 <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="API key" value="'.$userData["apikey"].'">
                 </td></tr>
+                <tr><td><label for="userid">'.lng("email").'</label><br>
+                    <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["email"].'">
+                </td><td>&nbsp;</td><td>
+                    <table><tr><td>
+                    <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>'.lng("change password").'</button>&nbsp;
+                    </td><td>
+                    <form method="post" action="newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form>
+                    </td><td>
+                    &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/logout"\'>Logout</button>
+                    </td></tr></table>
+                </td></tr>
             </table>
-            <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>'.lng("password").'</button>&nbsp;
-            <button type="button" class="btn btn-secondary" onclick=\'window.location.href="/logout"\'>Logout</button>
         </div>
         <div class="form-group">
         <label>User\'s Links</label>
