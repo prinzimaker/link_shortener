@@ -18,8 +18,15 @@ UPDATES
 2025.02.13 - Limited geolocation requests to max 200 records per link
 =====================================================================
 */
-function getCallsLog($db,$short_id){
-    $rows=$db->getDownloadInfo($short_id);
+function getCallsLog($db,$short_id,$cust_id=""){
+    if (trim($cust_id)==""){
+        $userData=[];
+        if (isset($_SESSION["user"]))
+            $userData=$_SESSION["user"];
+        if (isset($userData["cust_id"]))
+            $cust_id=$userData["cust_id"];
+    }
+    $rows=$db->getDownloadInfo($short_id,$cust_id);
     if (is_array($rows)){
         usort($rows, function ($a, $b) {
             $dateA = strtotime(explode(',', $a)[1]);

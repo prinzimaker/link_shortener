@@ -66,7 +66,7 @@ function replyToApiCall ($db){
                 $response['calls_count'] = $res["calls"];
             }
         } elseif (filter_var($calls, FILTER_SANITIZE_STRING)) {
-            $rows=getCallsLog($db,$calls);
+            $rows=getCallsLog($db,$calls, $cust_id);
             if (!isset($rows) || empty($rows)){
                 $response['status'] = 'error';
                 $response['message'] = 'Invalid SHORT_ID provided.';

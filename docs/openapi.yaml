@@ -99,7 +99,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: short_id
+        - name: calls
           in: query
           description: The code of the short link.
           required: true

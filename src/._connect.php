@@ -190,14 +190,17 @@ class Database {
         return $result;
     }
 
-    function getDownloadInfo($short_id){
+    function getDownloadInfo($short_id,$cust_id){
         $ret="";
-        if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("SELECT * FROM calls WHERE short_id = :short_id LIMIT 1");
-        $stmt->execute(['short_id' => $short_id]);
-        $result = $stmt->fetch();
-        if (isset($result["call_log"])){
-            $ret=explode(";",$result["call_log"]);
+        $shortInfo=$this->getShortlinkInfo($short_id, $cust_id);
+        if ($shortInfo!==false){
+            if (!isset($this->pdo)) $this->connect();
+            $stmt = $this->pdo->prepare("SELECT * FROM calls WHERE short_id = :short_id LIMIT 1");
+            $stmt->execute(['short_id' => $short_id]);
+            $result = $stmt->fetch();
+            if (isset($result["call_log"])){
+                $ret=explode(";",$result["call_log"]);
+            }
         }
         return $ret;
     }
