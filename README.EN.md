@@ -1,6 +1,6 @@
 # Prinzimaker's Link Shortener
 
-### **Quick and dirty link shortener** - **v1.3.2**
+### **Quick and dirty link shortener** - **v1.4.0**
 
 **This project is built in PHP and only requires Apache and MariaDB/MySQL.  
 Once implemented, it becomes a complete website (in Italian by default) that allows you to manage the shortening of complex links and the monitoring of their usage.**
@@ -34,6 +34,21 @@ Written in **PHP** (version **7.4** onward) for **Apache** and **MariaDB** or **
 ### Open Api documentation
 - Link:
 https://prinzimaker.github.io/link_shortener/
+---
+
+## API interface docs/samples
+### OpenApi documentation
+- Link: https://prinzimaker.github.io/link_shortener/
+
+### POSTMAN
+- Import an API definition into Postman:\
+- Select Import in the sidebar. 
+- Choose to upload the following URL: https://prinzimaker.github.io/link_shortener/openapi.yaml 
+
+Learn more about [importing an API into Postman](https://learning.postman.com/docs/designing-and-developing-your-api/importing-an-api/)
+
+### REDOC Api documentation
+- Link: https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml
 ---
 
 # Installation

@@ -10,7 +10,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.3.2 - Aldo Prinzi - 24 Feb 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 ---------
 UPDATES
 ---------
@@ -59,12 +59,16 @@ $back="/";
 if (isset($_SERVER["HTTP_REFERER"]))
     $back=$_SERVER["HTTP_REFERER"];
 
+$changeduri="";
+$newuri="";
 switch ($uri){
     case "setlang":
-        setNewLanguage($_SESSION["lang"]=="en"?"it":"en");
+        if (isset($_POST["lang"]))
+            $_SESSION["lang"]=strtolower($_POST["lang"]);
+        setNewLanguage($_SESSION["lang"]);
         header("Location: ".$back);
         die();
-    case "newapikey":
+    case "_this_prj_newapikey":
         $usr=new SLUsers();
         $usr->assignNewApiKey();
         header("Location: ".$back);
@@ -79,7 +83,7 @@ switch ($uri){
         $showApi=true;
         replyToApiCall($db);
         break;
-    case "login":   
+    case "_this_prj_login":   
         $header = "Short Link - Login";
         $pwd=trim($_POST["password"]);
         $usr=trim($_POST["userid"]);
@@ -88,6 +92,8 @@ switch ($uri){
             $_SESSION["user"]=[];
             $user=new SLUsers($usr,$pwd);
             if ($user->isLogged()){
+                if (stripos($back,"/_this_prj_login")!==false)
+                    $back="/";
                 if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="")
                     header("Location: ".$back, true);
                 else
@@ -98,63 +104,59 @@ switch ($uri){
         } else 
             $content=getLoginForm("");
         break;
-    case "user":
+    case "_this_prj_changecode":
         if (!empty($userData) && $userData["active"]>0){
-            $header = "Short Link - User";
-            $content=getUserContent();
+            $header = "Short Link - Change short code";
+            $ret=changeShortCode();
+            $content=$ret[1];    
+            $changeduri=$ret[0];
+        } 
+    case "_this_prj_shortinfo":
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - Link info";
+            $content.=getShortInfoDisplay($userData["cust_id"],$changeduri);
         } else {
             $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
             $header = "Short Link - Autenticate";
             $content=getLoginForm();
         }
         break;
-    case "shortinfo":
+    case "_this_prj_shorten":
         if (!empty($userData) && $userData["active"]>0){
-            $header = "Short Link - Link info";
-            $content=getShortInfoDisplay($userData["cust_id"]);
+            $header = "Short Link - Link shortened";
+            $ret=getShortLinkDisplay("");
+            $content=$ret[1];    
+            $newuri=getenv("URI").$ret[0];
+            $content.=getShortInfoDisplay($userData["cust_id"],$newuri);
         } else {
             $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
             $header = "Short Link - Autenticate";
             $content=getLoginForm();
         }
         break;
-    case "removeshortinfo":
+    case "_this_prj_removeshortinfo":
         if (!empty($userData) && $userData["active"]>0){
-            $header = "Short Link - Link info";
+            $header = "Short Link - Delete";
             $content=delShortData();
         } else {
             $_SESSION["dvalu"]="/";
-            $header = "Short Link - Delete";
+            $header = "Short Link - Link info";
             $content=getLoginForm();
         }
         break;
-    case "shorten":
-        if (!empty($userData) && $userData["active"]>0){
-            $header = "Short Link - Link shortened";
-            $content=getShortLinkDisplay("");
-        } else {
-            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
-            $header = "Short Link - Autenticate";
-            $content=getLoginForm();
-        }
-        break;
-    case "changecode":
-        if (!empty($userData) && $userData["active"]>0){
-            $header = "Short Link - Chenge short code";
-            $content=changeShortCode();
-        } else {
-            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
-            $header = "Short Link - Autenticate";
-            $content=getLoginForm();
-        }
-        break;
-    case "logout":   
+    case "_this_prj_logout":   
         $_SESSION["user"]=[];
+        header("Location: /", true);
     case "":
     case "index.htm":
     case "index.php":
-        $header = "Short Link - Home";
-        $content=getShortenContent("")."<br>&nbsp;<br>".getHomeContent($uri);
+    case "_this_prj_user":
+        if (!empty($userData) && $userData["active"]>0){
+            $header = "Short Link - User";
+            $content=getShortenContent($newuri)."<br>&nbsp;<br>".getUserContent();
+        } else {
+            $content=getIndexContent();
+        }
         break;
     case "info":
         if (!empty($userData) && $userData["active"]>0){

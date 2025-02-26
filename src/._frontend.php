@@ -10,6 +10,8 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 This file contains all the front-end html page/form generators 
 -
 Updated to
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
+
 v1.3.2 - Aldo Prinzi - 24 Feb 2025 
        - Solved a bug that will shrink a local link already shrinked.
        - Added user link datatable view
@@ -19,53 +21,49 @@ v1.3.0 - Aldo Prinzi - 25 Jan 2025
 */
 // form per lo shorten del link
 function getShortenContent($uri){
-    return '        <form action="shorten" method="post">
-        <div class="form-group">
-            <label for="uri">URI</label>
-            <input type="text" class="input-text" name="uri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
-        </div>
-        <button type="submit" class="btn btn-primary">'.lng("front_shorten").'</button>
-        <button type="button" class="btn btn-warning" onclick=\'window.location.href="info"\'>'.lng("front_information").' &gt;</button>
-        </form>';
+    return '<form action="_this_prj_shorten" method="post">
+    <div class="form-group">
+        <label for="uri">URI</label>
+        <input type="text" class="input-text" name="uri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
+    </div>
+    <button type="submit" class="btn btn-primary">'.lng("front_shorten").'</button>
+</form>';
 }
 
-function getShortInfoContent($uri=""){
-    $ret='        <form action="shortinfo" method="post">
-        <div class="form-group">
-            <label for="uri">'.lng("front_link-to-shrink").'</label>
-            <input type="text" class="input-text" name="smalluri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
-        </div>
-        <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>&lt; Home</button>
-        <button type="submit" class="btn btn-primary">'.lng("front_information").'</button>
-        </form><br>';
-    if ($uri==""){
-        $ret.='<p>'.lng("front_instr-small").'</p>';
-    }
+function getShortInfoContent($code="",$uri=""){
+    $ret='<div class="alert alert-warning"><form action="_this_prj_changecode"  method="post">
+    <input type="hidden" name="shortcode" value="'.$code.'">
+    <table><tr>
+    <td><label>'.lng("front_reduced-link").':<strong>'.getenv("URI").$uri.'</strong></label><td>&nbsp;-&nbsp;</td><td><label>'.lng("change_link_code").'</label></td>
+    <td><input type="text" class="input-text" name="newcode" placeholder="" value="'.$code.'"></td>
+    <td>&nbsp;</td><td><button type="submit" class="btn btn-primary">'.lng("change").'</button></td>
+    </tr></table>
+</form></div>';
     return $ret;
 }
 
 function getLoginForm($userid=""){
     isset($_SESSION["loginerr"])?$errMsg=lng($_SESSION["loginerr"]):"";
     $_SESSION["loginerr"]="";
-    $ret='        <div class="auth-div"><div class="login-header"><h3>'.lng("autentication").'</h3></div>
-        <form class="auth-form" action="login" method="post">
-            <div class="form-group">
-                <label for="userid">'.lng("user").'</label>
-                <input id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userid.'">
-                <label for="password">'.lng("password").'</label>
-                <input type="password" class="input-text2" name="password" placeholder="'.lng("password").'" value="">
-            </div>
-            <div class="forgotpass" onclick="forgotPass()">'.lng("forgot_pass").'</div>
-            <button type="submit" class="btn btn-primary">'.lng("login").'</button>
-        </form>
-        <div class="err-message">'.$errMsg.'</div>
-    </div><br>
-    <script>
-        function forgotPass(){
-            $uid=document.getElementById("userid").value;
-            window.location.href="/fgtpass?uid="+$uid;
-        }
-    </script>';
+    $ret='<div class="auth-div"><div class="login-header"><h3>'.lng("autentication").'</h3></div>
+    <form class="auth-form" action="_this_prj_login" method="post">
+        <div class="form-group">
+            <label for="userid">'.lng("user").'</label>
+            <input id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userid.'">
+            <label for="password">'.lng("password").'</label>
+            <input type="password" class="input-text2" name="password" placeholder="'.lng("password").'" value="">
+        </div>
+        <div class="forgotpass" onclick="forgotPass()">'.lng("forgot_pass").'</div>
+        <button type="submit" class="btn btn-primary">'.lng("login").'</button>
+    </form>
+    <div class="err-message">'.$errMsg.'</div>
+</div><br>
+<script>
+    function forgotPass(){
+        $uid=document.getElementById("userid").value;
+        window.location.href="/_this_prj_fgtpass?uid="+$uid;
+    }
+</script>';
     return $ret;
 }
 
@@ -100,11 +98,11 @@ function getUserContent(){
                     <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["email"].'">
                 </td><td>&nbsp;</td><td>
                     <table><tr><td>
-                    <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>'.lng("change password").'</button>&nbsp;
+                    <button type="button" class="btn btn-warning" onclick=\'window.location.href="/_this_prj_fgtpass"\'>'.lng("change password").'</button>&nbsp;
                     </td><td>
-                    <form method="post" action="newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form>
+                    <form method="post" action="_this_prj_newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form>
                     </td><td>
-                    &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/logout"\'>Logout</button>
+                    &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/_this_prj_logout"\'>Logout</button>
                     </td></tr></table>
                 </td></tr>
             </table>
@@ -152,8 +150,8 @@ function getUserContent(){
         $created = new DateTime($row['created'] );
 
         $content.='<tr>';
-        $content.= '<td><a href="/shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
-        $content.= '<td><a href="/removeshortinfo?code='. $row['short_id'] .'"><button class="btn btn-small btn-warning">DEL</button></a></td>';
+        $content.= '<td><a href="/_this_prj_shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
+        $content.= '<td><a href="/_this_prj_removeshortinfo?code='. $row['short_id'] .'"><button class="btn btn-small btn-warning">DEL</button></a></td>';
         $content.= '<td><a href="' . getenv("URI"). $row['short_id'] . '" target="_blank">'.htmlspecialchars($fu, ENT_QUOTES).'</a></td>';
         $content.= '<td align="right">' . $row['calls'] . '</td>';
         $content.= '<td>' . $created->format("d/m/y") . '</td>';
@@ -164,9 +162,13 @@ function getUserContent(){
 }
 
 // Contenuto della pagina home
-function getHomeContent($uri){
+function getUserHomeContent($uri){
     return lng("front_instructions");
 }
+function getIndexContent(){
+    return lng("site_index");
+}
+
 
 function checkIfSelfUri($uri) {
     $decodedUri = strtolower(urldecode(html_entity_decode($uri)));

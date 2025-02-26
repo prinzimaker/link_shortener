@@ -63,6 +63,83 @@ function lng($key){
             <h3>Example</h3>
             <p class="pad">If you want to create a short link for <a href="https://www.google.com/search?client=firefox-b-d&q=come+si+accorciano+i+link%3F">https://www.google.com/search?client=firefox-b-d&q=come+si+accorciano+i+link%3F</a>, 
             enter it into the text field and press the "Shorten" button. Once you have the short link, use it directly in your browser to see the result.</p>';
+            case "site_index": return '
+            <header class="bigtitle">
+                <h1>Shorten, Share, Track!</h1>
+                <p class="bigsubtitle">An open-source project for link management</p>
+            </header>
+            
+            <div class="container">
+                <main>
+                    <h2>Why is it useful and why do many people shorten links?</h2>
+                    <p>A shorter link is easier to share and visually cleaner. Many services like social media and messaging apps limit the number of characters in posts or messages, so a long URL can become cumbersome and hard to read.</p>
+                    <p>Another advantage is dynamic link management: with a shortening service, you can change the destination of your link even after sharing it, without needing to update it everywhere it\'s been posted.</p>
+                    <p>Finally, you can track the clicks, analyze traffic, discover where users are coming from, and optimize your sharing strategy.</p>
+                    <p>Our service isn\'t limited to manual use: thanks to open APIs, developers and businesses can integrate link generation and management into their own systems.</p>
+                    
+                    <h2>How does it work?</h2>
+                    <ul class="list">
+                    <li>🔒 To use our link shortening service, you need to be a registered user.</li>
+                    <li>1️⃣ On your main page, <strong>paste</strong> your long link into the box at the top.</li>
+                    <li>2️⃣ <strong>Click "Shorten"</strong> to get a short URL and its corresponding QR code.<div style="padding-left:20px">- A random short link will be generated, but <strong>you can change it</strong> to a more memorable one that suits you.</div></li>
+                    <li>3️⃣ <strong>Share it</strong> anywhere: social media, email, messages.</li>
+                    <li>4️⃣ <strong>Track</strong> visits with advanced statistics that provide details like date, time, and the geographic location of the user who clicked.</li>
+                    <li>💡 <strong>Supports QR Codes</strong> for instant sharing!</li>
+                    </ul>
+                    <div class="form-group center-content">
+                        <a href="/_this_prj_login" class="btn btn-primary">Log In</a>
+                        <a href="/register" class="btn btn-secondary">Sign Up</a>
+                    </div>
+                </main>
+            
+                <section>
+                    <h2>Why choose this project?</h2>
+                    <ul class="list">
+                        <li>💻 <strong>Open Source and Free</strong> - The code is available to all users.</li>
+                        <li>🔍 <strong>Transparent and Secure</strong> - No hidden tracking, no invasive practices, written creatively and differently to reduce hacking risks.</li>
+                        <li>🛠 <strong>Customizable</strong> - Modifiable to fit your needs.</li>
+                        <li>👥 <strong>Community Supported</strong> - Get support and contribute improvements.</li>
+                        <li>📡 <strong>Open APIs</strong> - Ideal for developers and businesses.</li>
+                        <li>🚀 <strong>Independent</strong> - No ads, no corporate influence, just open technology.</li>
+                        <li>🌍 <strong>European Project</strong> - Supported in the four main languages: English, Italian, French, and German. You can easily switch languages in the top right corner of the header.</li>
+                    </ul>
+                </section>
+                
+                <section><br> 
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="accordion">
+                        <div class="tab">
+                            <input type="checkbox" id="faq1">
+                            <label class="tab__label" for="faq1">Why should I shorten a link?</label>
+                            <div class="tab__content">
+                                <p>Shortening links makes them easier to share, improves readability, and lets you track their performance, helping you understand where your traffic comes from.</p>
+                            </div>
+                        </div>
+                        <div class="tab">
+                            <input type="checkbox" id="faq2">
+                            <label class="tab__label" for="faq2">Do I need an account to use the service?</label>
+                            <div class="tab__content">
+                                <p>Yes, you need to be a registered user to create short links. This ensures privacy, security, and gives you <strong>exclusive access</strong> to your statistics.</p>
+                            </div>
+                        </div>
+                        <div class="tab">
+                            <input type="checkbox" id="faq3">
+                            <label class="tab__label" for="faq3">Do my links expire?</label>
+                            <div class="tab__content">
+                                <p>Links remain active indefinitely unless you choose to delete them from your account settings, giving you full control over their lifespan.</p>
+                            </div>
+                        </div>
+                        <div class="tab">
+                            <input type="checkbox" id="faq4">
+                            <label class="tab__label" for="faq4">How much does the service cost?</label>
+                            <div class="tab__content">
+                                <p>This project is open source—go to GitHub, download it, and use it. If you want to use its features without downloading and installing it on your own server, follow the instructions from whoever made it available.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+                    ';
         default: return "unknown $key language label...";
     }
 }

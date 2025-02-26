@@ -7,7 +7,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains the cascadind stylesheet for the web app
 -
-v1.3.1 - Aldo Prinzi - 13 Feb 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 =====================================================================
 */
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
@@ -38,10 +38,12 @@ th{
 }
 
 body {
+    margin: 0;
+    padding: 0;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
     color: #333;
-    padding: 20px;
+    /*padding: 20px;*/
 }
 
 .container {
@@ -53,10 +55,21 @@ body {
     min-height:500px;
 }
 
+.bigtitle,
+.bigsubtitle {
+    font-size: 2.0em;
+    color: #033a74;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.bigsubtitle{
+    font-size: 0.7em;
+}
+
 .header {
     background: var(--mainbg);
     color: #fff;
-    padding: 20px 0;
+    padding: 20px 20px;
     text-align: center;
     border-bottom: solid 1px silver;
     margin-bottom:20px;
@@ -68,6 +81,7 @@ body {
 }
 
 .title_header    {
+    padding: 0 0 5px 20px;
     font-size: 0.9em;
     font-style: oblique;
 }
@@ -94,7 +108,7 @@ main {
 main h2 {
     margin-bottom: 10px;
     font-size: 2em;
-    color: #007BFF;
+    color: #00356e;
 }
 
 main p {
@@ -169,6 +183,12 @@ p.pad {
 .btn-warning {
     background-color: var(--btnbg); 
 }
+
+.list {
+    padding: 15px 0 0 30px;
+    list-style-type: none;
+}
+
 
 .center-content {
     text-align: center;
@@ -324,6 +344,48 @@ label {
 
 
   /* ACCORDION */
+
+  .accordion {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    }
+    .tab {
+        border-bottom: 1px solid #ddd;
+    }
+    .tab:last-child {
+        border-bottom: none;
+    }
+    .tab input {
+        display: none;
+    }
+    .tab__label {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+        background: var(--mainbg);
+        color: white;
+        cursor: pointer;
+    }
+    .tab__content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: #f9f9f9;
+        padding: 0 15px;
+    }
+    .tab input:checked ~ .tab__content {
+        max-height: 100px;
+        padding: 15px;
+    }
+
+
+
+
+
+
+
+
   .tab {
     position: relative;
   }

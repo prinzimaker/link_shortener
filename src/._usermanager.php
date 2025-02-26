@@ -9,7 +9,8 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Users-Management class/functions
 -
-v1.3.2 - Aldo Prinzi - 24 Feb 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
+
 =====================================================================
 
 NEED TO BE IMPLEMENTED!
@@ -112,7 +113,7 @@ class UserManager {
 
             $mail->isHTML(true);
             $mail->Subject = 'Verifica il tuo indirizzo email';
-            $verificationLink = getenv("URI")."/user?verify=".$verificationCode;
+            $verificationLink = getenv("URI")."/_this_prj_user?verify=".$verificationCode;
 
             $mail->Body = "
                 <h1>Verifica la tua Email</h1>

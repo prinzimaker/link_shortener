@@ -3,18 +3,21 @@
       Quick and Dirty Prinzimaker's Link Shortener
       Copyright (C) 2024-2025 - Aldo Prinzi
 =====================================================================
- This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+ This web app needs just Apache, PHP (7.4->8.3) and MariaDB to work.
 ---------------------------------------------------------------------
- This class contains the Database Creator for the link shortener
- -
- v1.3.1 - Aldo Prinzi - 24 Jan 2025
+ This SQL SCRIPT contains the complete database creation script.
 =====================================================================
  Copy the following sql commands and paste them in your MySQL client
- to create the database and the tables needed for the link shortener
+ to create the database and the tables.
+ Take care of "CREATE USER" at the start of the script and modify by
+ yourself using username and password you prefer.
 ---------------------------------------------------------------------
 */
 
 create database shortlinks;
+CREATE USER 'shlnkusr'@'localhost' IDENTIFIED BY 'chooseAPassword';
+GRANT ALL PRIVILEGES ON shortlinks.* TO 'shlnkusr'@'localhost';
+FLUSH PRIVILEGES;
 use shortlinks;
 create table link (
     short_id    varchar(10) not null,
@@ -63,7 +66,4 @@ create table ip2location (
     timezone  varchar(6) NOT NULL default '00:00',
     PRIMARY KEY (ip_from, ip_to)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-CREATE USER 'shlnkusr'@'localhost' IDENTIFIED BY 'laTuaPass';
-GRANT ALL PRIVILEGES ON shortlinks.* TO 'shlnkusr'@'localhost';
-FLUSH PRIVILEGES;
 

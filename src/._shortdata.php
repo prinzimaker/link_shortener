@@ -9,17 +9,16 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the data handling logic 
 -
-v1.3.2 - Aldo Prinzi - 24 Feb 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
+
 2025-02-24 - Added shortcode personalization
            - Added shortcode deletion
 2025-02-13 - Added the html/script for the chart.js display
 =====================================================================
 */
-function getShortInfoDisplay($cust_id){
-    $puri=$_POST["smalluri"]??$_GET["code"];
-    $chk=explode(getenv("URI"),$puri);
-    if (is_array($chk)&&count($chk)>1)
-        $puri=$chk[1];
+function getShortInfoDisplay($cust_id,$puri=""){
+    if ($puri=="")
+        $puri=$_POST["smalluri"]??$_GET["code"];
     if ($puri!=""){
         $uri=checkIfSelfUri($puri);
         if (empty($uri)){
@@ -28,7 +27,7 @@ function getShortInfoDisplay($cust_id){
             if ($res["conn"]){
                 $uri_code=str_replace(getenv("URI"),"",$puri);
                 $res=$db->getShortlinkInfo($uri_code,$cust_id);
-                $content=getShortInfoContent($puri);
+                $content=getShortInfoContent($uri_code,$puri);
                 if (empty($res)){
                     $content="<div class='alert alert-danger'>".lng("error").": <strong>uri</strong>".lng("not-found")."</div>";
                     $content.=getShortInfoContent();
@@ -175,7 +174,7 @@ function delShortData(){
         if ($res["conn"]){
             $res= $db->deleteShortCodeData($delCode);
             if ($res){
-                header("Location: ".getenv("URI")."/user");
+                header("Location: ".getenv("URI")."/_this_prj_user");
                 exit();
             } else {
                 $content="<div class='alert alert-danger'>".lng("error").": ".lng("database_generic_error")."</div>";
@@ -188,14 +187,14 @@ function delShortData(){
     return $content;
 }
 function getShortLinkDisplay($uri){
-    $content=getShortenContent($uri);
+    $content="";
+    $shortCode="";
     try{
         $puri=$_POST["uri"];
         if ($puri!=""){
             $uri=checkIfSelfUri($puri);
             if (empty($uri)){
                 $content="<div class='alert alert-danger'>".lng("error").": ".lng("front_incorrect-link")."</div>";
-                $content.=getShortenContent($puri);
             } else {
                 $userData="";
                 if (isset($_SESSION["user"]))
@@ -203,26 +202,23 @@ function getShortLinkDisplay($uri){
                 if (empty($userData))
                     return;
                 else {
-                    $content=getShortenContent($uri);
                     $db = new Database();
                     $res=$db->connect();
                     $user_id=$userData["cust_id"];
                     if ($res["conn"]){
                         $shortCode=$db->createShortlink($uri,$user_id);
-                        return buildShortenedDisplay($shortCode);
                     } else {
-                        $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>".$content;
+                        $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>";
                     }
                 }
             }
         } else {
-            $content="<div class='alert alert-danger'>".lng("error").": ".lng("front_insert-correct")."</div>".$content;
+            $content="<div class='alert alert-danger'>".lng("error").": ".lng("front_insert-correct")."</div>";
         }
     } catch (Exception $e){
-        $content="<div class='alert alert-danger'>".lng("error").": ".$e->getMessage()."</div>".$content;
+        $content="<div class='alert alert-danger'>".lng("error").": ".$e->getMessage()."</div>";
     }
-    $content.="<div style='margin-top:20px'><button type='button' class='btn btn-warning' onclick=\"window.location.href='/'\">&lt; Home</button>&nbsp;<button type='button' class='btn btn-warning' onclick=\"window.location.href='info'\">".lng("information")." &gt;</button></div>";
-    return $content;
+    return [$shortCode,$content];
 }
 
 function changeShortCode(){
@@ -248,36 +244,15 @@ function changeShortCode(){
                     $content="<div class='alert alert-danger'>".lng("error").": ".lng("database_generic_error")."</div>";
                     $newCode=$oldCode;
                 }
-                $content.=buildShortenedDisplay($newCode);
+                //$content.=getShortInfoDisplay($newCode);
             } else {
-                $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>".buildShortenedDisplay($oldCode);
+                $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>";
             }
         } else {
-            $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>".buildShortenedDisplay($oldCode);
+            $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>";
         }
     } else {
-        $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>".buildShortenedDisplay($oldCode);
+        $content="<div class='alert alert-danger'>".lng("error").": ".lng("api_invalid-short")."</div>";
     }
-    return $content;
-}
-
-function buildShortenedDisplay($shortCode){
-    return"
-    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
-    <div class='alert alert-info'>
-        <table width='100%'><tr>
-            <td width=50%><label>".lng("front_short-link-is")."</label><input type='text' class='input-text' id='shortLink' value='".getenv("URI").$shortCode."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>".lng("copy")."</button></td>
-            <td width='50%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$shortCode). "&amp;size=100x100' alt='' title='qr-code' width='100px' height='100px' /></td>
-        </tr></table>
-    </div>
-    <script>function copyShortLink(){var copyText=document.getElementById('shortLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>
-    <div class='alert alert-info'>
-        <form action='changecode'  method='post'>
-            <input type='hidden' name='shortcode' value='".$shortCode."'>
-            <label>".lng("change_link_code")."</label><br>
-            <input type='text' class='input-text' name='newcode' placeholder=''>
-            <button type='submit' class='btn btn-primary'>".lng("change")."</button>
-        </form>
-    </div>
-    ";
+    return [$newCode,$content];
 }

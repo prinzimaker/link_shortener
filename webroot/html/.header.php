@@ -8,6 +8,7 @@
 This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains the header part of the web app
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 -
 v1.3.2 - Aldo Prinzi - 24 Feb 2025
 - Added "user" link  
@@ -22,9 +23,9 @@ $userData="";
 if (isset($_SESSION["user"]))
     $userData=$_SESSION["user"];
 if (empty($userData))
-    $userLink="href='/login' class='nav-item btn btn-warning btn-small'>Login";
+    $userLink="href='/_this_prj_login' class='nav-item btn btn-warning btn-small'>Login";
 else
-    $userLink="href='/user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong>";
+    $userLink="href='/_this_prj_user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong>";
 
 ?><html>
     <head>

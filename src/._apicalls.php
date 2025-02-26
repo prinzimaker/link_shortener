@@ -9,12 +9,17 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the functions needed to handle api calls
 -
-v1.3.0 - Aldo Prinzi - 26 Jan 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
     - check for user key
 =====================================================================
 */
 function replyToApiCall ($db){
     header('Content-Type: application/json');
+
+    if (count($_GET)+count($_POST)<1){
+        die('{"name":"Prinzimaker\'s Link Shortener API Server","status":"ready","version":"1.4.0 - Open source","note":"You need to register and get an API KEY to use these functions. If you are a malicius hacker go away, thanks."}');
+    }
+
     $user = isset($_GET['key']) ? $_GET['key'] : null;
     $uri = isset($_GET['uri']) ? $_GET['uri'] : null;
     $short = isset($_GET['short']) ? $_GET['short'] : null;

@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains the footer part of the web app
 -
-v1.1.0 - Aldo Prinzi - 23 Dic 2024
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 =====================================================================
 */
 ?>        <div class="footer">

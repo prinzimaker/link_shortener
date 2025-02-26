@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (74->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the logic needed to set language labels 
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 =====================================================================
 */
 if (session_status() === PHP_SESSION_NONE) {
@@ -31,11 +31,19 @@ function setNewLanguage($lang){
     $_SESSION["lang"]=$lang;
     $subm="en";
     $lngBtn="<form action='setlang' method='post'><center>";
-    if ($lang=="en"){
-        $subm="it";
-        $lngBtn.="<table><tr><td class='langTd'><label class='langLbl'>en</label></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type=submit value='it'></td></tr></table>";
-    } else {
-        $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type=submit value='en'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>it</label></td></tr></table>";
+    switch ($lang){
+        case "en": 
+            $lngBtn.="<table><tr><td class='langTd'><label class='langLbl'>EN</label></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langLbl'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "it": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>IT</label></td><td>&nbsp;</td><td class='langLbl'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "fr": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>FR</label></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "de": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>DE</label></td></tr></table>";
+            break;
     }
     $_SESSION["langButtons"]=$lngBtn."</center></form>";
 }
