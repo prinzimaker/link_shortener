@@ -12,6 +12,7 @@ function lng($key){
         case "user": return "Identifiant utilisateur";
         case "password": return "Mot de passe";
         case "login": return "Connexion";
+        case "send": return "Envoyer";
         case "register": return "S'inscrire";
         case "ripeti_password": return "Répéter le mot de passe";
         case "email": return "Adresse e-mail";
@@ -39,6 +40,8 @@ function lng($key){
         case "ip-address": return "Adresse IP";
         case "geoloc": return "Géolocalisation";
         case "not-found": return "non trouvé";
+        case "change_pass_form":return "Changement de mot de passe";
+        case "repeat_password": return "Répéter le mot de passe";
         case "unavailable_data": return "Données indisponibles";
         case "front_link-is": return "Le lien original est";
         case "front_copied-link": return "Lien copié";
@@ -68,7 +71,6 @@ function lng($key){
                 <h1>Raccourcis, Partage, Suis !</h1>
                 <p class="bigsubtitle">Un projet open-source pour la gestion des liens</p>
             </header>
-            
             <div class="container">
                 <main>
                     <h2>Pourquoi est-ce utile et pourquoi beaucoup raccourcissent leurs liens ?</h2>
@@ -76,26 +78,32 @@ function lng($key){
                     <p>Un autre avantage est la gestion dynamique du lien : avec un service de raccourcissement, tu peux modifier la destination de ton lien même après l\'avoir partagé, sans avoir à mettre à jour tous les endroits où il a été publié.</p>
                     <p>Enfin, tu peux suivre les clics effectués, analyser le trafic, découvrir d\'où viennent les utilisateurs et optimiser ta stratégie de partage.</p>
                     <p>Notre service n\'est pas limité à une utilisation manuelle : grâce aux API ouvertes, les développeurs et les entreprises peuvent intégrer la génération et la gestion des liens dans leurs propres systèmes.</p>
-                    
-                    <h2>Comment ça fonctionne ?</h2>
-                    <ul class="list">
-                    <li>🔒 Pour utiliser notre service de raccourcissement de liens, il faut être un utilisateur enregistré.</li>
-                    <li>1️⃣ Sur ta page principale, <strong>colle</strong> ton lien long dans la boîte en haut.</li>
-                    <li>2️⃣ <strong>Clique sur "Raccourcir"</strong> et tu obtiendras une URL courte et un QR code correspondant.<div style="padding-left:20px">- Un lien court aléatoire sera généré, mais <strong>tu pourras le changer</strong> pour en utiliser un plus mémorisable qui te convient.</div></li>
-                    <li>3️⃣ <strong>Partage-le</strong> partout : réseaux sociaux, e-mails, messages.</li>
-                    <li>4️⃣ <strong>Suis</strong> les visites grâce aux statistiques avancées qui te fourniront des informations comme la date, l\'heure et la position géographique de l\'utilisateur qui a cliqué.</li>
-                    <li>💡 <strong>Supporte les QR Codes</strong> pour un partage immédiat !</li>
-                    </ul>
                     <div class="form-group center-content">
                         <a href="/_this_prj_login" class="btn btn-primary">Connexion</a>
-                        <a href="/register" class="btn btn-secondary">Inscription</a>
+                        <a href="/_this_prj_register" class="btn btn-secondary">Inscription</a>
+                    </div>
+                    <h2>Comment ça fonctionne ?</h2>
+                    <div style="padding-left:30px;">
+                        <h3>Via le web</h3>
+                        <ul class="list">
+                            <li>🔒 Pour utiliser notre service de raccourcissement de liens, il est n&eacute;cessaire d&apos;&ecirc;tre un utilisateur enregistr&eacute;.</li>
+                            <li>1️⃣ Sur votre page principale, <strong>collez</strong> votre lien long dans la bo&icirc;te en haut.</li>
+                            <li>2️⃣ <strong>Cliquez sur "Raccourcir"</strong> et vous obtiendrez une URL courte et un code QR correspondant.<div style="padding-left:20px">- Un lien court al&eacute;atoire sera g&eacute;n&eacute;r&eacute;, mais <strong>vous pourrez le modifier</strong> en utilisant un lien plus m&eacute;morisable.</div></li>
+                            <li>3️⃣ <strong>Partagez-le</strong> partout : r&eacute;seaux sociaux, email, messages.</li>
+                            <li>4️⃣ <strong>Surveillez</strong> les visites gr&acirc;ce aux statistiques avanc&eacute;es qui fourniront des informations telles que : date, heure et position g&eacute;ographique de l&apos;utilisateur qui a cliqu&eacute;.</li>
+                            <li>💡 <strong>Supporte les QR Codes</strong> pour un partage instantan&eacute; !</li>
+                        </ul>
+                        <h3>Via API</h3>
+                        <div style="padding-left:30px;">
+                            💻 <strong>Fonctionne via API</strong> : int&eacute;grez notre service dans vos projets en utilisant nos API puissantes et flexibles.
+                            <br>Voir : ><a class="nav-item" style="color:#A33" href="/pls_swagu" target="_blank">Documentation OpenAPI</a> - ou : ><a class="nav-item" style="color:#A33" href="/pls_redoc" target="_blank">Documentation Redoc API</a>
+                        </div>
                     </div>
                 </main>
-            
                 <section>
                     <h2>Pourquoi choisir ce projet ?</h2>
                     <ul class="list">
-                        <li>💻 <strong>Open Source et Gratuit</strong> - Le code est accessible à tous les utilisateurs.</li>
+                        <li>💻 <strong>Open Source et Gratuit</strong> - Le code est accessible à tous les utilisateurs.&nbsp;&gt;<a class="nav-item" style="color:#A33" href="/pls_about" target="_blank">GitHub</a></li>
                         <li>🔍 <strong>Transparent et Sécurisé</strong> - Pas de suivi caché, pas de pratiques invasives, écrit de manière créative et différente pour réduire les risques de piratage.</li>
                         <li>🛠 <strong>Personnalisable</strong> - Modifiable pour s\'adapter à tes besoins.</li>
                         <li>👥 <strong>Soutenu par la Communauté</strong> - Reçois du soutien et contribue avec des améliorations.</li>
@@ -104,7 +112,6 @@ function lng($key){
                         <li>🌍 <strong>Projet Européen</strong> - Supporté dans les quatre langues principales : anglais, italien, français et allemand. Tu peux facilement choisir la langue en haut à droite dans l\'en-tête.</li>
                     </ul>
                 </section>
-                
                 <section><br> 
                     <h2>Questions Fréquentes</h2>
                     <div class="accordion">
@@ -139,7 +146,7 @@ function lng($key){
                     </div>
                 </section>
             </div>
-                    ';
+        ';
         default: return "étiquette de langue $key inconnue...";
     }
 }

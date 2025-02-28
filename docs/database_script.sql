@@ -50,9 +50,9 @@ create table customers (
 	UNIQUE (email)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 insert into customers (descr, email, pass, active, apikey,is_admin, max_links) values ('the administrator', 'Admin', '', true, 'APYKEY123456',true, 9999);
-insert into link (short_id,full_uri,cust_id,sha_uri) values ('about','https://github.com/prinzimaker/link_shortener',1,'AAA1');
-insert into link (short_id,full_uri,cust_id,sha_uri) values ('Redoc','https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml',1,'AAA2');
-insert into link (short_id,full_uri,cust_id,sha_uri) values ('Swagger','https://prinzimaker.github.io/link_shortener/',1,'AAA3');
+insert into link (short_id,full_uri,cust_id,sha_uri) values ('pls_about','https://github.com/prinzimaker/link_shortener',1,'AAA1');
+insert into link (short_id,full_uri,cust_id,sha_uri) values ('pls_redoc','https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml',1,'AAA2');
+insert into link (short_id,full_uri,cust_id,sha_uri) values ('pls_swagger','https://prinzimaker.github.io/link_shortener/',1,'AAA3');
 create table ip2location (
     ip_from   int(10) unsigned NOT NULL,
     ip_to     int(10) unsigned NOT NULL,

@@ -5,7 +5,7 @@
       Copyright (C) 2024 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains the header part of the web app
 v1.4.0 - Aldo Prinzi - 03 Mar 2025
@@ -31,12 +31,21 @@ else
     <head>
         <title><?php echo $_SESSION["pageTitle"]; ?></title>
         <link rel="stylesheet" type="text/css" href="/html/site.css">
+        <script src="/html/site.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     </head>
     <body>
         <div>
-            <table class="header" width="100%"><tr><td width="90%" colspan="2"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
-            <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td></tr>
-            <tr><td align="left" width="80%" style="padding-top:5px">
-            <nav class="nav-row"><a class="nav-item" href="/">Home</a>&nbsp;|&nbsp;<a class="nav-item" href="/about" target='_blank'>About</a>&nbsp;|&nbsp;<a class="nav-item-doc" href="/Redoc" target='_blank'>Redoc&nbsp;API&nbsp;doc</a>&nbsp;|&nbsp;<a class="nav-item-doc" href="/Swagger" target='_blank'>OpenAPI&nbsp;doc</a>&nbsp;</nav></td><td>&nbsp;</td><td style="padding-right:20px"><a <?php echo $userLink; ?></a></td></tr>
+            <table class="header" border=0 width="100%"><tr>
+                <td width="40%" align="right" style="padding-right:10px"><img src="/html/logo_front.png"></td>
+                <td width="50%" align="left"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
+                <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="left" width="80%" style="padding-top:5px">
+                    <nav class="nav-row"><a class="nav-item" href="/">Home</a>&nbsp;|&nbsp;<a class="nav-item" href="/pls_about" target='_blank'>About</a></nav>
+                </td>
+                <td style="padding-right:20px"><a <?php echo $userLink; ?></a></td>
+            </tr>
         </table>
         </div>

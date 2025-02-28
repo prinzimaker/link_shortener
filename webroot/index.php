@@ -5,7 +5,7 @@
       Copyright (C) 2024-2025 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
@@ -73,9 +73,6 @@ switch ($uri){
         $usr->assignNewApiKey();
         header("Location: ".$back);
         die();
-    case "favicon.ico":
-        $ret=getFavicon();
-        die ($ret);
     case "api":
         $db = new Database();
         $res=$db->connect();
@@ -134,6 +131,14 @@ switch ($uri){
             $content=getLoginForm();
         }
         break;
+    case "_this_prj_fgtpass":
+        $header = "Short Link - Forgot password";
+        $UM=new UserManager();
+        $content=$UM->manageForgotPassword();
+
+
+        //$content=getForgotPasswordForm();        
+        break;
     case "_this_prj_removeshortinfo":
         if (!empty($userData) && $userData["active"]>0){
             $header = "Short Link - Delete";
@@ -158,6 +163,11 @@ switch ($uri){
             $content=getIndexContent();
         }
         break;
+    case "favicon":
+    case "favicon.ico":
+        $ret=getFavicon();
+        die ($ret);
+    /*
     case "info":
         if (!empty($userData) && $userData["active"]>0){
             $header = "Short Link - Info";
@@ -168,6 +178,7 @@ switch ($uri){
             $content=getLoginForm();
         }
         break;
+    */
     default:
         $showPage=false;
         break;

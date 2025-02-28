@@ -12,6 +12,7 @@ function lng($key){
         case "user": return "User-id";
         case "password": return "Password";
         case "login": return "Login";
+        case "send": return "Send";
         case "register": return "Registrer";
         case "ripeti_password": return "Ripeat password";
         case "email": return "E-mail address";
@@ -35,7 +36,9 @@ function lng($key){
         case "language":return "Lingua";
         case "new apikey":return "New API key";
         case "change password":return "Change password";
-        case "update":return "Aggiorna";
+        case "update":return "Update";
+        case "change_pass_form":return "Change password";
+        case "repeat_password": return "Repeat password";
         case "ip-address": return "ip address";
         case "geoloc": return "geolocalisation";
         case "not-found": return "not found";
@@ -77,25 +80,33 @@ function lng($key){
                     <p>Finally, you can track the clicks, analyze traffic, discover where users are coming from, and optimize your sharing strategy.</p>
                     <p>Our service isn\'t limited to manual use: thanks to open APIs, developers and businesses can integrate link generation and management into their own systems.</p>
                     
-                    <h2>How does it work?</h2>
-                    <ul class="list">
-                    <li>🔒 To use our link shortening service, you need to be a registered user.</li>
-                    <li>1️⃣ On your main page, <strong>paste</strong> your long link into the box at the top.</li>
-                    <li>2️⃣ <strong>Click "Shorten"</strong> to get a short URL and its corresponding QR code.<div style="padding-left:20px">- A random short link will be generated, but <strong>you can change it</strong> to a more memorable one that suits you.</div></li>
-                    <li>3️⃣ <strong>Share it</strong> anywhere: social media, email, messages.</li>
-                    <li>4️⃣ <strong>Track</strong> visits with advanced statistics that provide details like date, time, and the geographic location of the user who clicked.</li>
-                    <li>💡 <strong>Supports QR Codes</strong> for instant sharing!</li>
-                    </ul>
                     <div class="form-group center-content">
                         <a href="/_this_prj_login" class="btn btn-primary">Log In</a>
-                        <a href="/register" class="btn btn-secondary">Sign Up</a>
+                        <a href="/_this_prj_register" class="btn btn-secondary">Sign Up</a>
+                    </div>
+                    <h2>How does it work?</h2>
+                    <div style="padding-left:30px;">
+                        <h3>Via web</h3>
+                        <ul class="list">
+                            <li>🔒 To use our link shortening service, you need to be a registered user.</li>
+                            <li>1️⃣ On your main page, <strong>paste</strong> your long link into the box at the top.</li>
+                            <li>2️⃣ <strong>Click "Shorten"</strong> and you’ll get a short URL and a corresponding QR code.<div style="padding-left:20px">- A random short link will be generated, but <strong>you can change it</strong> to a more memorable one.</div></li>
+                            <li>3️⃣ <strong>Share it</strong> anywhere: social media, email, messages.</li>
+                            <li>4️⃣ <strong>Monitor</strong> visits with advanced statistics that provide details such as: date, time, and geographic location of the user who clicked.</li>
+                            <li>💡 <strong>Supports QR Code</strong> for instant sharing!</li>
+                        </ul>
+                        <h3>Via API</h3>
+                        <div style="padding-left:30px;">
+                            💻 <strong>Works via API</strong>: integrate our service into your projects using our powerful and flexible APIs.
+                            <br>See: ><a class="nav-item" style="color:#A33" href="/pls_swagu" target="_blank">OpenAPI doc</a> - or: ><a class="nav-item" style="color:#A33" href="/pls_redoc" target="_blank">Redoc API doc</a>
+                        </div>
                     </div>
                 </main>
             
                 <section>
                     <h2>Why choose this project?</h2>
                     <ul class="list">
-                        <li>💻 <strong>Open Source and Free</strong> - The code is available to all users.</li>
+                        <li>💻 <strong>Open Source and Free</strong> - The code is available to all users.&nbsp;&gt;<a class="nav-item" style="color:#A33" href="/pls_about" target="_blank">GitHub</a></li>
                         <li>🔍 <strong>Transparent and Secure</strong> - No hidden tracking, no invasive practices, written creatively and differently to reduce hacking risks.</li>
                         <li>🛠 <strong>Customizable</strong> - Modifiable to fit your needs.</li>
                         <li>👥 <strong>Community Supported</strong> - Get support and contribute improvements.</li>
@@ -139,7 +150,7 @@ function lng($key){
                     </div>
                 </section>
             </div>
-                    ';
+        ';
         default: return "unknown $key language label...";
     }
 }

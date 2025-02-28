@@ -5,7 +5,7 @@
       Copyright (C) 2024/2025 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Users-Management class/functions
 -
@@ -21,19 +21,31 @@ use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php'; 
 
 class UserManager {
-    private $db;
+    private $_db;
 
-    public function __construct($db) {
-        $this->db = $db; 
+    public function __construct() {
+        $this->_db = new Database(); 
     }
 
     public function getUserData($email,$allData=false) {
-        return $this->db->getUserData($email,$allData); 
+        return $this->_db->getUserData($email,$allData); 
     }
 
     public function checkUserApi($apiKey) {
-        $data=$this->db->getUserByApiKey($apiKey);
+        $data=$this->_db->getUserByApiKey($apiKey);
         return (!empty($data) && $data['active']>0);
+    }
+
+    public function manageForgotPassword(){
+        $userData=[];
+        if (isset($_SESSION["user"]))
+            $userData=$_SESSION["user"];
+        if (isset($userData["email"])) {
+            //$user = $this->getUserData($uid);
+            return getForgotPasswordForm($userData["descr"]);
+        } else {
+            return "<h2>User not logged in!</h2>";
+        }
     }
 
     public function registerUser($email, $password) {
@@ -48,7 +60,7 @@ class UserManager {
             ':api_key' => $apiKey
         ];
 
-        $res = $this->db->connect()->prepare($query);
+        $res = $this->_db->connect()->prepare($query);
         return $res->execute($params);
     }
 
@@ -56,7 +68,7 @@ class UserManager {
         $query = "SELECT password FROM customers WHERE email = :email";
         $params = [':email' => $email];
 
-        $stmt = $this->db->connect()->prepare($query);
+        $stmt = $this->_db->connect()->prepare($query);
         $stmt->execute($params);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -68,7 +80,7 @@ class UserManager {
                 ':email' => $email
             ];
 
-            $updateStmt = $this->db->connect()->prepare($updateQuery);
+            $updateStmt = $this->_db->connect()->prepare($updateQuery);
             return $updateStmt->execute($updateParams);
         }
         return false;
@@ -77,7 +89,7 @@ class UserManager {
         $query = "SELECT api_key_active FROM customers WHERE api_key = :api_key";
         $params = [':api_key' => $apiKey];
 
-        $stmt = $this->db->connect()->prepare($query);
+        $stmt = $this->__constructdb->connect()->prepare($query);
         $stmt->execute($params);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result && $result['api_key_active'];
@@ -87,7 +99,7 @@ class UserManager {
         $verificationCode = bin2hex(random_bytes(32));
         
         // Salva il codice nel database
-        $stmt = $this->db->prepare("UPDATE customers SET email_verification_code = :code WHERE email = :email");
+        $stmt = $this->__constructdb->prepare("UPDATE customers SET email_verification_code = :code WHERE email = :email");
         $stmt->execute([
             ':code' => $verificationCode,
             ':email' => $email
@@ -136,12 +148,12 @@ class UserManager {
      * @return bool
      */
     public function verifyEmail($code) {
-        $stmt = $this->db->prepare("SELECT id FROM customers WHERE email_verification_code = :code");
+        $stmt = $this->_db->prepare("SELECT id FROM customers WHERE email_verification_code = :code");
         $stmt->execute([':code' => $code]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            $updateStmt = $this->db->prepare("UPDATE customers SET email_verified = TRUE, email_verification_code = NULL WHERE id = :id");
+            $updateStmt = $this->_db->prepare("UPDATE customers SET email_verified = TRUE, email_verification_code = NULL WHERE id = :id");
             return $updateStmt->execute([':id' => $user['id']]);
         }
 
