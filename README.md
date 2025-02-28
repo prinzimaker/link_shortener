@@ -1,6 +1,6 @@
 # Prinzimaker's Link Shortener
 
-<img src="https://flu.lu/html/logo.jpg" alt="Logotipo del sito" style="width: 200px; height: auto;">
+<img src="https://flu.lu/pls_logo" alt="Logotipo del sito" style="width: 200px; height: auto;">
 
 ## **Quick and dirty link shortener** - **v1.4.0**
 ### _March 2025 release_

@@ -59,13 +59,13 @@ Scopri di più su [come importare un'API in Postman](https://learning.postman.co
 ```bash
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
----
+
 ### 2. Installa le dipendenze
 
 ```bash
 composer install
 ```
----
+
 ### 3. Configurazione di Apache
 (_trovi il file anche nella cartella /DOC_)
 
@@ -103,12 +103,12 @@ Il file di configurazione si trova in **docs/miosito.it.conf**
    sudo systemctl restart apache2
    ```
 
----
+
 
 ### 4. Configurazione di MySQL
 Nella cartella /docs/ trovi il file **database_script.sql** che serve a generare il database e le tabelle necessarie al funzionamento dell'applicazione. 
 
----
+
 ### 5. Configurazione dell'Applicazione
 
 * ### Variabili d'Ambiente
@@ -116,7 +116,7 @@ Nella cartella /docs/ trovi il file **database_script.sql** che serve a generare
 Rinomina il file `.env.sample`, che si trova nella directory principale del progetto, in `.env`  e inserisci i tuoi dati nelle variabili di configurazione.
 
 **Nota:** Assicurati che il file `.env` non sia accessibile pubblicamente e aggiungilo al tuo `.gitignore`.
----
+
 ### 6. Permessi delle Cartelle
 
 Imposta i permessi corretti alla cartella del progetto per consentire ad Apache di accedere ai file:

@@ -61,7 +61,7 @@ En savoir plus sur [l'importation d'une API dans Postman](https://learning.postm
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
 
----
+
 
 ### 2. Installer les Dépendances
 
@@ -69,7 +69,7 @@ git clone https://github.com/prinzimaker/link_shortener.git
 composer install
 ```
 
----
+
 
 ### 3. Configuration Apache
 (_Vous pouvez également trouver le fichier dans le dossier /DOC_)
@@ -108,12 +108,12 @@ Vous pouvez trouver un fichier de configuration exemple dans **docs/monsite.fr.c
    sudo systemctl restart apache2
    ```
 
----
+
 
 ### 4. Configuration MySQL
 Dans le dossier `/docs/`, vous trouverez le fichier **database_script.sql** qui crée la base de données et les tables nécessaires.
 
----
+
 
 ### 5. Configuration de l'Application
 
@@ -123,7 +123,7 @@ Renommez le fichier `.env.sample`, situé à la racine du projet, en `.env` et i
 
 **Remarque :** Assurez-vous que le fichier `.env` n'est pas accessible publiquement et ajoutez-le à votre `.gitignore`.
 
----
+
 
 ### 6. Permissions des Dossiers
 

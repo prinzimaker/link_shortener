@@ -59,7 +59,7 @@ Learn more about [importing an API into Postman](https://learning.postman.com/do
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
 
----
+
 
 ### 2. Install Dependencies
 
@@ -67,7 +67,7 @@ git clone https://github.com/prinzimaker/link_shortener.git
 composer install
 ```
 
----
+
 
 ### 3. Apache Configuration
 (_You can also find the file in the /DOC folder_)
@@ -106,12 +106,12 @@ You can find the sample configuration file in **docs/miosito.it.conf**.
    sudo systemctl restart apache2
    ```
 
----
+
 
 ### 4. MySQL Configuration
 In the /docs/ folder, you will find the **database_script.sql** file that creates the database and necessary tables.
 
----
+
 
 ### 5. Application Configuration
 
@@ -121,7 +121,7 @@ Rename the `.env.sample` file, located in the project's root directory, to `.env
 
 **Note:** Ensure that the `.env` file is not publicly accessible and add it to your `.gitignore`.
 
----
+
 
 ### 6. Folder Permissions
 
