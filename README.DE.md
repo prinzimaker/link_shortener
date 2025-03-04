@@ -180,6 +180,9 @@ http://meineseite.de/api?key=987697869&uri=https://www.example.com/page.php?myva
 
 ## Anpassung
 
+### Integration mit IFTTT
+Siehe /docs/IFTTT für Anleitungen zur Integration von CLICK-Ereignissen mit IFTTT.
+
 ### Benutzerdefinierte Fehlerseiten
 
 Die Fehlerseiten `403.html` und `404.html` befinden sich im Verzeichnis `/errors/`. Sie können sie anpassen.

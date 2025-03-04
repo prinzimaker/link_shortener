@@ -23,9 +23,9 @@ $userData="";
 if (isset($_SESSION["user"]))
     $userData=$_SESSION["user"];
 if (empty($userData))
-    $userLink="href='/_this_prj_login' class='nav-item btn btn-warning btn-small'>Login";
+    $userLink="href='/_pls_fnc_login' class='nav-item btn btn-warning btn-small'>Login";
 else
-    $userLink="href='/_this_prj_user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong>";
+    $userLink="href='/_pls_fnc_user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong>";
 
 ?><html>
     <head>

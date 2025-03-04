@@ -56,7 +56,7 @@ function getShortInfoDisplay($cust_id,$puri=""){
                     $content.="<script>function copyShortLink(){var copyText=document.getElementById('originalLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>";
                     $content.="<table style='padding-top:15px' width=100%><tr><td width=65%><label>".lng("front_link-created-on").":</label><input type='text' class='input-text' id='createdLink' value='".$formattedDate."' readonly></td><td>&nbsp;</td>";
                     $content.="<td width=35%><label>".lng("front_was-req").":</label><input type='text' class='input-text' id='createdLink' value='".$res["calls"]." ".lng("times")."' readonly></div></td></tr></table>";
-                    $content.="<td width='15%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 5px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$uri_code). "&amp;size=100x100&amp;color=0800A0' alt='' title='qr-code' width='100px' height='100px' /></td></tr></table></div>";
+                    $content.="<td width='15%' align='left' style='padding-left:30px'><img id='qrcode' style='border:solid 10px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$uri_code). "&amp;size=100x100&amp;color=0800A0' alt='qr-code' title='qr-code' width='160px' height='160px' /></td></tr></table></div>";
                     $content.='<section class="accordion"><div class="tab"><input type="radio" name="accordion-2" id="rd1"><label for="rd1" class="tab__label">'.lng("front_downloads-info").'</label>';
                     $content.='<div class="tab__content"><p>'.$hret.'</p>';
                     $content.='</div><div class="tab"><input type="radio" name="accordion-2" id="rd3"><label for="rd3" class="tab__close">'.lng("close").' &times;</label></div></div></section>';
@@ -174,7 +174,7 @@ function delShortData(){
         if ($res["conn"]){
             $res= $db->deleteShortCodeData($delCode);
             if ($res){
-                header("Location: ".getenv("URI")."/_this_prj_user");
+                header("Location: ".getenv("URI")."/_pls_fnc_user");
                 exit();
             } else {
                 $content="<div class='alert alert-danger'>".lng("error").": ".lng("database_generic_error")."</div>";

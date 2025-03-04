@@ -27,6 +27,14 @@ function setSessionLanguage($lang=""){
     setNewLanguage($lang);
 }
 
+function getSessionLanguage(){
+    $lang="en";
+    if (isset($_SESSION["lang"]))
+        $lang=$_SESSION["lang"];
+    return $lang;
+}
+
+
 function setNewLanguage($lang){
     $_SESSION["lang"]=$lang;
     $subm="en";

@@ -14,9 +14,10 @@ function lng($key){
         case "login": return "Connexion";
         case "send": return "Envoyer";
         case "register": return "S'inscrire";
-        case "ripeti_password": return "Répéter le mot de passe";
+        case "repeat_password": return "Répéter le mot de passe";
         case "email": return "Adresse e-mail";
         case "verify": return "Vérifier";
+        case "user_registration": return "Inscription utilisateur";
         case "autentication": return "Authentification";
         case "forgot_pass": return "J'ai oublié mon mot de passe";
         case "invalid_uid_or_pass": return "Identifiant ou mot de passe invalide";
@@ -28,6 +29,7 @@ function lng($key){
         case "information": return "Informations";
         case "front_reduced-link": return "Lien raccourci";
         case "front_link-to-shrink": return "Lien à raccourcir";
+        case "subjverifyemail":return "Vérification de l'adresse e-mail";
         case "error": return "Erreur";
         case "date": return "date";
         case "copy": return "copier";
@@ -41,7 +43,6 @@ function lng($key){
         case "geoloc": return "Géolocalisation";
         case "not-found": return "non trouvé";
         case "change_pass_form":return "Changement de mot de passe";
-        case "repeat_password": return "Répéter le mot de passe";
         case "unavailable_data": return "Données indisponibles";
         case "front_link-is": return "Le lien original est";
         case "front_copied-link": return "Lien copié";
@@ -57,6 +58,7 @@ function lng($key){
         case "database_generic_error": return "Erreur lors de l'enregistrement dans la base de données";
         case "front_incorrect-link": return "URI incorrect ou boucle URI (il n'est pas possible de raccourcir un lien <strong>".getenv("URI")."</strong>)";
         case "front_instr-small": return "Entrez le lien raccourci et appuyez sur le bouton « <strong>Informations</strong> » pour obtenir des détails sur le lien raccourci.";
+        case "check-email-body": return "<h1>Vérification de l'adresse e-mail</h1><p>Veuillez cliquer sur le lien suivant pour vérifier votre adresse e-mail :</p>{{link}}<p>Si vous n'avez pas demandé cette vérification, ignorez simplement cet e-mail.</p>";
         case "front_instructions": return '<p><strong>Ceci est un site pour créer des liens courts.</strong></p>
             <p>Cela signifie que vous me fournissez un lien long, et je vous renvoie un lien court qui peut remplacer l’original.</p>
             <h3>Comment ça marche ?</h3>
@@ -79,8 +81,8 @@ function lng($key){
                     <p>Enfin, tu peux suivre les clics effectués, analyser le trafic, découvrir d\'où viennent les utilisateurs et optimiser ta stratégie de partage.</p>
                     <p>Notre service n\'est pas limité à une utilisation manuelle : grâce aux API ouvertes, les développeurs et les entreprises peuvent intégrer la génération et la gestion des liens dans leurs propres systèmes.</p>
                     <div class="form-group center-content">
-                        <a href="/_this_prj_login" class="btn btn-primary">Connexion</a>
-                        <a href="/_this_prj_register" class="btn btn-secondary">Inscription</a>
+                        <a href="/_pls_fnc_login" class="btn btn-primary">Connexion</a>
+                        <a href="/_pls_fnc_register" class="btn btn-secondary">Inscription</a>
                     </div>
                     <h2>Comment ça fonctionne ?</h2>
                     <div style="padding-left:30px;">
@@ -147,6 +149,34 @@ function lng($key){
                 </section>
             </div>
         ';
+        case "0select": return "S&eacute;lectionnez ";
+        case "0star": return "l'&eacute;toile";
+        case "0house": return "la maison";
+        case "0computer": return "le moniteur de l'ordinateur";
+        case "0car": return "la voiture";
+        case "0robot": return "la t&ecirc;te de le robot";
+        case "0cloud": return "le nuage";
+        case "0lock": return "le cadenas";
+        case "0rocket": return "la fus&eacute;e";
+        case "0heart": return "le coeur";
+        case "0tree": return "l'arbre";
+        case "0plane": return "l'avion";
+        case "0envelope": return "l'enveloppe";
+        case "0eye": return "l'oeil";
+        case "0nouid": return "Vous devez saisir un identifiant utilisateur.";
+        case "0noemail": return "L'adresse e-mail est obligatoire.";
+        case "0nopass": return "Vous devez choisir un mot de passe.";
+        case "0nospam": return "Vous devez s&eacute;lectionner l'ic&ocirc;ne antispam.";
+        case "0invemail": return "L'adresse e-mail n'est pas valide.";
+        case "0smallpass": return "Le mot de passe doit contenir au moins 8 caract&egrave;res.";
+        case "0diffpass": return "Les mots de passe ne correspondent pas.";
+        case "1diffpass": return "Mots de passe diff&eacute;rents";
+        case "0poor": return "Faible";
+        case "0mean": return "Moyen";
+        case "0strong": return "Fort";
+        case "0regok": return "<h2>Inscription termin&eacute;e avec succ&egrave;s</h2><p>Nous avons envoy&eacute; un e-mail de v&eacute;rification &agrave; l'adresse {{email}}. Veuillez v&eacute;rifier votre bo&icirc;te de r&eacute;ception et suivre les instructions pour finaliser votre inscription.</p>";
+        case "0uexist": return "<h2>Utilisateur d&eacute;j&agrave; pr&eacute;sent</h2><p>Bonjour, un utilisateur avec cette adresse e-mail existe d&eacute;j&agrave;. Avez-vous peut-&ecirc;tre <a href='/_pls_fnc_fgtpass'>oubli&eacute; votre mot de passe</a> ?</p>";
+        
         default: return "étiquette de langue $key inconnue...";
     }
 }

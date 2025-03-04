@@ -14,8 +14,9 @@ function lng($key){
         case "login": return "Accedi";
         case "send": return "Invia";
         case "register": return "Registrati";
-        case "ripeti_password": return "Ripeti password";
+        case "repeat_password": return "Ripeti password";
         case "email": return "Indirizzo e-mail";
+        case "user_registration": return "Registrazione utente";
         case "verify": return "Verifica";
         case "update":return "Update";
         case "autentication": return "Autenticazione";
@@ -26,7 +27,7 @@ function lng($key){
         case "front_insert-long": return "Inserisci qui il link lungo...";
         case "front_shorten": return "Riduci il link";
         case "change_pass_form":return "Modifica password";
-        case "repeat_password": return "Ripeti password";
+        case "subjverifyemail":return "Verifica il tuo indirizzo email";
         case "front_information":
         case "information":return "Informazioni";
         case "language":return "Language";
@@ -56,6 +57,7 @@ function lng($key){
         case "front_was-req":return "Ed &egrave; stato richiesto";
         case "geoloc": return "geolocalizazione";
         case "front_link-is": return "Il link originale &egrave;";
+        case "check-email-body": return "<h1>Verifica la tua Email</h1><p>Clicca sul seguente link per verificare il tuo indirizzo email:</p>{{link}}<p>Se non hai richiesto la registrazione, ignora questa email.</p>";
         case "front_instructions": return '<p><strong>Questo &egrave; un sito per la creazione di link corti.</strong></p>
                 <p>Vuol dire che tu mi passi un link lungo e io ti restituisco un link corto che pu&ograve; essere sostituito al link originale.</p>
                 <h3>Come funziona?</h3>
@@ -78,8 +80,8 @@ function lng($key){
                     <p>Infine, puoi monitorare i clic effettuati, analizzare il traffico, scoprire da dove provengono gli utenti e ottimizzare la tua strategia di condivisione.</p>
                     <p>Il nostro servizio non &egrave; limitato all\'uso manuale: grazie alle API aperte, gli sviluppatori e le aziende possono integrare la generazione e la gestione dei link nei propri sistemi.</p>
                     <div class="form-group center-content">
-                        <a href="/_this_prj_login" class="btn btn-primary">Accedi</a>
-                        <a href="/_this_prj_register" class="btn btn-secondary">Registrati</a>
+                        <a href="/_pls_fnc_login" class="btn btn-primary">Accedi</a>
+                        <a href="/_pls_fnc_register" class="btn btn-secondary">Registrati</a>
                     </div>
                     <h2>Come funziona?</h2>
                     <div style="padding-left:30px;">
@@ -146,6 +148,34 @@ function lng($key){
                 </section>
             </div>
         ';
+        case "0select": return "Seleziona ";
+        case "0star": return "la stella";
+        case "0house": return "la casetta";
+        case "0computer": return "il monitor di computer";
+        case "0car": return "l'auto";
+        case "0robot": return "la testa del robot";
+        case "0cloud": return "la nuvoletta";
+        case "0lock": return "il catenaccio";
+        case "0rocket": return "il razzo";
+        case "0heart": return "il cuore";
+        case "0tree": return "l'albero";
+        case "0plane": return "l'aeroplano'";
+        case "0envelope": return "la busta";
+        case "0eye": return "l'occhio'";
+        case "0nouid": return "Il valore di user-id &egrave; obbligatorio.";
+        case "0noemail": return "L'e-mail &egrave; obbligatoria.";
+        case "0nopass": return "Devi inserire una password.";
+        case "0nospam": return "Devi selezionare la giusta icona antispam.";
+        case "0invemail": return "Inserisci un indirizzo email valido.";
+        case "0smallpass": return "La password deve essere di almeno 8 caratteri.";
+        case "0diffpass": return "Le password non coincidono.";
+        case "1diffpass": return "password DIVERSE.";
+        case "0poor": return "Insicura";
+        case "0mean": return "Media";
+        case "0strong": return "Sicura";
+        case "0regok": return "<h2>Registrazione completata con successo</h2><p>Abbiamo inviato un'email di verifica all'indirizzo {{email}}. Controlla la tua casella di posta elettronica e segui le istruzioni per completare la registrazione.</p>";
+        case "0uexist": return "<h2>Utente gi&agrave; presente</h2><p>Salve, esiste gi&agrave; un utente con questo indirizzo e-mail. Ha per caso <a href='/_pls_fnc_fgtpass'>dimenticato la password</a>?.</p>";
+        
         default: return "valore label $key sconosciuto...";
     }
 }

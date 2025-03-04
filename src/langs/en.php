@@ -14,7 +14,8 @@ function lng($key){
         case "login": return "Login";
         case "send": return "Send";
         case "register": return "Registrer";
-        case "ripeti_password": return "Ripeat password";
+        case "user_registration": return "User registration";
+        case "repeat_password": return "Repeat password";
         case "email": return "E-mail address";
         case "verify": return "Verify";
         case "autentication": return "Autentication";
@@ -28,6 +29,7 @@ function lng($key){
         case "information":return "Information";
         case "front_reduced-link": return "Reduced link";
         case "front_link-to-shrink": return "Link to shrink";
+        case "subjverifyemail":return "Verify your email address";
         case "error": return "Error";
         case "date": return "date";
         case "copy": return "copy";
@@ -38,7 +40,6 @@ function lng($key){
         case "change password":return "Change password";
         case "update":return "Update";
         case "change_pass_form":return "Change password";
-        case "repeat_password": return "Repeat password";
         case "ip-address": return "ip address";
         case "geoloc": return "geolocalisation";
         case "not-found": return "not found";
@@ -57,6 +58,7 @@ function lng($key){
         case "database_generic_error": return "Error during database registration";
         case "front_incorrect-link":return "Incorrect <strong>uri</strong> or loop-<strong>uri</strong> (isn't possible to shrink a <strong>".getenv("URI")."</strong> link)";
         case "front_instr-small": return "Enter the shortened link and press the <strong>Information</strong> button to get details about the shortened link.";
+        case "check-email-body": return "<h1>E-mail address verification</h1><p>Please click on the following link to make us known that this is your right e-mail address:</p>{{link}}<p>If you cannot ask for this verification, simply ignore this message.</p>";
         case "front_instructions": return '<p><strong>This is a website for creating short links.</strong></p>
             <p>It means that you provide me with a long link, and I return a short link that can replace the original one.</p>
             <h3>How does it work?</h3>
@@ -81,8 +83,8 @@ function lng($key){
                     <p>Our service isn\'t limited to manual use: thanks to open APIs, developers and businesses can integrate link generation and management into their own systems.</p>
                     
                     <div class="form-group center-content">
-                        <a href="/_this_prj_login" class="btn btn-primary">Log In</a>
-                        <a href="/_this_prj_register" class="btn btn-secondary">Sign Up</a>
+                        <a href="/_pls_fnc_login" class="btn btn-primary">Log In</a>
+                        <a href="/_pls_fnc_register" class="btn btn-secondary">Sign Up</a>
                     </div>
                     <h2>How does it work?</h2>
                     <div style="padding-left:30px;">
@@ -151,6 +153,33 @@ function lng($key){
                 </section>
             </div>
         ';
+        case "0select": return "Select ";
+        case "0star": return "the star";
+        case "0house": return "the house";
+        case "0computer": return "the computer's monitor";
+        case "0car": return "the car";
+        case "0robot": return "the robot's head";
+        case "0cloud": return "the cloud";
+        case "0lock": return "the lock";
+        case "0rocket": return "the rocket";
+        case "0heart": return "the heart";
+        case "0tree": return "the tree";  
+        case "0plane": return "the airplane";
+        case "0envelope": return "the envelope";
+        case "0eye": return "the eye";
+        case "0nouid":return "You must insert an user-id.";
+        case "0noemail":return "The e-mail address is mandatory.";
+        case "0nopass":return "You must choose a password.";
+        case "0nospam":return "You must select the antispam icon.";
+        case "0invemail":return "The e-mail adress is not valid.";
+        case "0smallpass":return "The password must contain at least 8 characters.";
+        case "0diffpass":return "The passwords does not match.";
+        case "1diffpass":return "DIFFERENT passwords";
+        case "0poor":return "Weak";
+        case "0mean":return "Medium";
+        case "0strong":return "Strong";
+        case "0regok": return "<h2>Registration completed successfully</h2><p>We have sent a verification email to the address {{email}}. Please check your inbox and follow the instructions to complete your registration.</p>";
+        case "0uexist": return "<h2>User already exists</h2><p>Hello, a user with this email address already exists. Have you perhaps <a href='/_pls_fnc_fgtpass'>forgotten your password</a>?</p>";
         default: return "unknown $key language label...";
     }
 }

@@ -248,12 +248,57 @@ label {
   line-height: 20px;
   cursor: pointer;
 }
+.iconbtn {
+    width: 58px;
+    height: 58px;
+}
+.icontd {
+    text-align: center;
+    vertical-align: middle;
+}
+input[type="radio"].styled-radio {
+    display: none;
+}
+input[type="radio"].styled-radio + label {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    background-color: #eee;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+input[type="radio"].styled-radio + label::before {
+    padding-top:5px;
+    padding-left:3px;
+    font-size: 22px;
+    font-weight:800;
+    content: "^";
+    color: #333;
+}
+input[type="radio"].styled-radio:checked + label::before {
+    padding-left:4px;
+    font-size: 15px;
+    font-weight:600;
+    content: "X";
+    color: #fff;
+}
+input[type="radio"].styled-radio:checked + label {
+    background-color: #007BFF;
+    border-color: #0056b3;
+    text-align: center;
+}
 .tdsep{
   border-right: 1px solid #ccc;
 }
 .tdcont{
   padding: 5px;
 }
+.data-div,
 .auth-div{
     text-align: center;
     background-color: #f8f8f8;
@@ -266,6 +311,11 @@ label {
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
     margin-left: auto;
     margin-right: auto;
+}
+.data-div 
+{
+    min-width:400px;
+    min-width:600px;    
 }
 .auth-form{
     padding:10px;
