@@ -1,6 +1,6 @@
 # Prinzimaker's Link Shortener
 
-### **Quick and dirty link shortener** - **v1.3.2**
+### **Quick and dirty link shortener** - **v1.4.0**
 
 **This project is built in PHP and only requires Apache and MariaDB/MySQL.  
 Once implemented, it becomes a complete website (in Italian by default) that allows you to manage the shortening of complex links and the monitoring of their usage.**
@@ -36,6 +36,21 @@ Written in **PHP** (version **7.4** onward) for **Apache** and **MariaDB** or **
 https://prinzimaker.github.io/link_shortener/
 ---
 
+## API interface docs/samples
+### OpenApi documentation
+- Link: https://prinzimaker.github.io/link_shortener/
+
+### POSTMAN
+- Import an API definition into Postman:\
+- Select Import in the sidebar. 
+- Choose to upload the following URL: https://prinzimaker.github.io/link_shortener/openapi.yaml 
+
+Learn more about [importing an API into Postman](https://learning.postman.com/docs/designing-and-developing-your-api/importing-an-api/)
+
+### REDOC Api documentation
+- Link: https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml
+---
+
 # Installation
 
 ### 1. Clone the Repository
@@ -44,7 +59,7 @@ https://prinzimaker.github.io/link_shortener/
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
 
----
+
 
 ### 2. Install Dependencies
 
@@ -52,7 +67,7 @@ git clone https://github.com/prinzimaker/link_shortener.git
 composer install
 ```
 
----
+
 
 ### 3. Apache Configuration
 (_You can also find the file in the /DOC folder_)
@@ -91,12 +106,12 @@ You can find the sample configuration file in **docs/miosito.it.conf**.
    sudo systemctl restart apache2
    ```
 
----
+
 
 ### 4. MySQL Configuration
 In the /docs/ folder, you will find the **database_script.sql** file that creates the database and necessary tables.
 
----
+
 
 ### 5. Application Configuration
 
@@ -106,7 +121,7 @@ Rename the `.env.sample` file, located in the project's root directory, to `.env
 
 **Note:** Ensure that the `.env` file is not publicly accessible and add it to your `.gitignore`.
 
----
+
 
 ### 6. Folder Permissions
 
@@ -163,6 +178,9 @@ http://miosito.it/api?key=987697869&uri=https://www.example.com/page.php?myvalue
 - **Loop protection**: prevents the creation of shortened links pointing to `miosito.it`.
 
 ## Customization
+
+### Integration with IFTTT
+See /docs/IFTTT for instructions on how to integrate CLICK events with IFTTT.
 
 ### Custom Error Pages
 

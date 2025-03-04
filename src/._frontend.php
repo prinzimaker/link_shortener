@@ -5,11 +5,13 @@
       Copyright (C) 2024/2025 - Aldo Prinzi
       Open source project - under MIT License     
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the front-end html page/form generators 
 -
 Updated to
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
+
 v1.3.2 - Aldo Prinzi - 24 Feb 2025 
        - Solved a bug that will shrink a local link already shrinked.
        - Added user link datatable view
@@ -19,56 +21,351 @@ v1.3.0 - Aldo Prinzi - 25 Jan 2025
 */
 // form per lo shorten del link
 function getShortenContent($uri){
-    return '        <form action="shorten" method="post">
-        <div class="form-group">
-            <label for="uri">URI</label>
-            <input type="text" class="input-text" name="uri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
-        </div>
-        <button type="submit" class="btn btn-primary">'.lng("front_shorten").'</button>
-        <button type="button" class="btn btn-warning" onclick=\'window.location.href="info"\'>'.lng("front_information").' &gt;</button>
-        </form>';
+    return '<form action="_pls_fnc_shorten" method="post">
+    <div class="form-group">
+        <label for="uri">URI</label>
+        <input type="text" class="input-text" name="uri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
+    </div>
+    <button type="submit" class="btn btn-primary">'.lng("front_shorten").'</button>
+</form>';
 }
 
-function getShortInfoContent($uri=""){
-    $ret='        <form action="shortinfo" method="post">
-        <div class="form-group">
-            <label for="uri">'.lng("front_link-to-shrink").'</label>
-            <input type="text" class="input-text" name="smalluri" placeholder="'.lng("front_insert-long").'" value="'.$uri.'">
-        </div>
-        <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>&lt; Home</button>
-        <button type="submit" class="btn btn-primary">'.lng("front_information").'</button>
-        </form><br>';
-    if ($uri==""){
-        $ret.='<p>'.lng("front_instr-small").'</p>';
-    }
+function getShortInfoContent($code="",$uri=""){
+    if (stripos($uri,getenv("URI"))!==false)
+        $uri=substr($uri,strlen(getenv("URI")));
+    $ret='<div class="alert alert-warning"><form action="_pls_fnc_changecode"  method="post"><input type="hidden" name="shortcode" value="'.$code.'">
+    <table><tr><td><label>'.lng("front_reduced-link").':&nbsp;<strong>
+    <a class="input-text" style="background-color:#fff" target="_blank" href="'.getenv("URI").$uri.'">'.getenv("URI").$uri.'</a>
+    </strong></label><td>&nbsp;-&nbsp;</td><td><label>'.lng("change_link_code").'</label></td>
+    <td><input type="text" class="input-text" name="newcode" placeholder="" value="'.$code.'"></td>
+    <td>&nbsp;</td><td><button type="submit" class="btn btn-primary">'.lng("change").'</button></td></tr></table>
+</form></div>';
     return $ret;
 }
 
 function getLoginForm($userid=""){
     isset($_SESSION["loginerr"])?$errMsg=lng($_SESSION["loginerr"]):"";
     $_SESSION["loginerr"]="";
-    $ret='        <div class="auth-div"><div class="login-header"><h3>'.lng("autentication").'</h3></div>
-        <form class="auth-form" action="login" method="post">
-            <div class="form-group">
-                <label for="userid">'.lng("user").'</label>
-                <input id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userid.'">
-                <label for="password">'.lng("password").'</label>
-                <input type="password" class="input-text2" name="password" placeholder="'.lng("password").'" value="">
-            </div>
-            <div class="forgotpass" onclick="forgotPass()">'.lng("forgot_pass").'</div>
-            <button type="submit" class="btn btn-primary">'.lng("login").'</button>
-        </form>
-        <div class="err-message">'.$errMsg.'</div>
-    </div><br>
-    <script>
-        function forgotPass(){
-            $uid=document.getElementById("userid").value;
-            window.location.href="/fgtpass?uid="+$uid;
+    $ret='<div class="auth-div"><div class="login-header"><h3>'.lng("autentication").'</h3></div>
+    <form class="auth-form" action="_pls_fnc_login" method="post">
+        <div class="form-group"><label for="userid">'.lng("user").'</label>
+            <input id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userid.'">
+            <label for="password">'.lng("password").'</label>
+            <input type="password" class="input-text2" name="password" placeholder="'.lng("password").'" value="">
+            <br><a class="forgotpass" href="/_pls_fnc_fgtpass">'.lng("forgot_pass").'</a></div>
+        <button type="submit" class="btn btn-primary">'.lng("login").'</button>
+        <input id="fgtpass" type="hidden" name="forgot_password" value="">
+    </form>
+    <div class="err-message">'.$errMsg.'</div>
+</div><br>
+<script>
+    document.querySelector(".auth-form").addEventListener("submit", function(event) {
+        const passwordInput = document.querySelector("input[name=\'password\']").value.trim();
+        if (passwordInput === "") {
+            event.preventDefault();
+            return false;
         }
-    </script>';
+    });
+    document.querySelector(".forgotpass").addEventListener("click", function(event) {
+        event.preventDefault(); 
+        const useridInput = document.getElementById("userid").value.trim();
+        const fgtpassInput = document.getElementById("fgtpass");
+        const form = document.querySelector(".auth-form");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(useridInput)) {
+            fgtpassInput.value = useridInput;
+            form.action = "/_pls_fnc_fgtpass"; 
+            form.submit();
+        } else {
+            alert("'.lng("email_needed").'");
+        }
+    });
+</script>
+';
     return $ret;
 }
 
+function getForgotPasswordForm($userEmail,$verifyCode=""){
+    generateRandomIcons();
+    return "
+        <div class='data-div'>
+            <div class='login-header'>".$_SESSION["langButtons"]."<hr>&nbsp;<br><h3>".lng("change_pass_form")."</h3></div>
+            <form id='registrationForm' class='auth-form' action='_pls_fnc_forgotpass' method='post'>
+                <div class='form-group'>
+                    <label for='userid'>".lng("user")."</label>
+                    <div id='userid' type='text' class='input-text2'>".$userEmail."</div>
+                </div>
+                <div class='form-group'>
+                    <label for='password'>" . lng("password") . "</label>
+                    <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
+                        <input id='password' type='password' class='input-text2' name='password' placeholder='" . lng("password") . "' value=''>
+                    </td><td width='28%'><div class='input-text' 'background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
+                </div>
+                <div class='form-group'>
+                    <label for='password_confirm'>" . lng("repeat_password") . "</label>
+                    <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
+                        <input id='password_confirm' type='password' class='input-text2' name='password_confirm' placeholder='" . lng("repeat_password") . "' value=''>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
+                </div>
+                <input type='hidden' name='verifycode' value='".$verifyCode."'>
+"._addPassFormChecks();
+}
+
+function handleUserData() {
+    // Verifica se l'utente è loggato
+    if (!isset($_SESSION["user"]) || empty($_SESSION["user"])) {
+        return getLoginForm();
+    }
+    
+    $msg = "";
+    // Istanzia l'oggetto SLUsers per gestire le operazioni sull'utente
+    $userObj = new SLUsers();
+
+    // Se il form è stato inviato, processa l'aggiornamento dei dati o il cambio password
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        // Aggiornamento dati (profilo)
+        if (isset($_POST['updateProfile'])) {
+            $descr = isset($_POST['descr']) ? trim($_POST['descr']) : "";
+            $email = isset($_POST['email']) ? trim($_POST['email']) : "";
+            
+            // Il metodo updateUserData() va implementato nella classe SLUsers
+            if ($userObj->updateUserData($_SESSION["user"]["cust_id"], $descr, $email)) {
+                // Aggiorna anche i dati in sessione
+                $_SESSION["user"]["descr"] = $descr;
+                $_SESSION["user"]["email"] = $email;
+                $msg .= "<div class='alert alert-success'>Dati aggiornati correttamente.</div>";
+            } else {
+                $msg .= "<div class='alert alert-danger'>Errore durante l'aggiornamento dei dati.</div>";
+            }
+        }
+        
+        // Cambio password
+        if (isset($_POST['changePassword'])) {
+            $oldPassword = isset($_POST['oldPassword']) ? trim($_POST['oldPassword']) : "";
+            $newPassword = isset($_POST['newPassword']) ? trim($_POST['newPassword']) : "";
+            
+            if ($userObj->changePassword($_SESSION["user"]["email"], $oldPassword, $newPassword)) {
+                $msg .= "<div class='alert alert-success'>Password cambiata con successo.</div>";
+            } else {
+                $msg .= "<div class='alert alert-danger'>Errore nel cambio password. Verifica la vecchia password.</div>";
+            }
+        }
+    }
+    
+    // Recupera i dati correnti dalla sessione per pre-compilare il form
+    $descr = isset($_SESSION["user"]["descr"]) ? $_SESSION["user"]["descr"] : "";
+    $email = isset($_SESSION["user"]["email"]) ? $_SESSION["user"]["email"] : "";
+    
+    // Genera il form HTML per l'aggiornamento dei dati utente e il cambio password
+    $html = "<h2>Gestione Dati Utente</h2>";
+    $html .= $msg;
+    $html .= "
+        <form method='post' action='_pls_fnc_handleuserdata'>
+            <h3>Aggiorna Profilo</h3>
+            <div class='form-group'>
+                <label for='descr'>Nome Utente</label>
+                <input type='text' name='descr' id='descr' class='input-text2' value='" . htmlspecialchars($descr, ENT_QUOTES) . "'>
+            </div>
+            <div class='form-group'>
+                <label for='email'>Email</label>
+                <input type='email' name='email' id='email' class='input-text2' value='" . htmlspecialchars($email, ENT_QUOTES) . "'>
+            </div>
+            <button type='submit' name='updateProfile' class='btn btn-primary'>Aggiorna Dati</button>
+        </form>
+        <hr>
+        <form method='post' action='_pls_fnc_handleuserdata'>
+            <h3>Cambio Password</h3>
+            <div class='form-group'>
+                <label for='oldPassword'>Vecchia Password</label>
+                <input type='password' name='oldPassword' id='oldPassword' class='input-text2'>
+            </div>
+            <div class='form-group'>
+                <label for='newPassword'>Nuova Password</label>
+                <input type='password' name='newPassword' id='newPassword' class='input-text2'>
+            </div>
+            <button type='submit' name='changePassword' class='btn btn-primary'>Cambia Password</button>
+        </form>
+    ";
+    
+    return $html;
+}
+function getRegistrationForm($descr = "", $email = "") 
+{
+    $_SESSION["icons"] = "";
+    $_SESSION["iconNames"] = "";
+    $_SESSION["_iconSelect"] = "";
+
+    $userId=isset($_POST["descr"])?$_POST["descr"]:"";
+    $userEmail=isset($_POST["email"])?$_POST["email"]:"";
+    $userPass=isset($_POST["password"])?$_POST["password"]:"";
+    $antiIcon=isset($_POST["icon"])?$_POST["icon"]:"";
+
+    if ($userId!="" && $userEmail!="" && $userPass!="" && $antiIcon!="" && isset($_SESSION["_icon"])){
+        if ($antiIcon==$_SESSION["_icon"]){
+            $_SESSION["icons"] = "";
+            $um=new UserManager();
+            $normEmail=$um->normalizeEmail($userEmail);                
+            $res=$um->getUserData($normEmail);
+            if ($res===false){
+                if ($um->registerUser($normEmail,$userPass,$userId))
+                    return "<div class='alert alert-success'>".str_replace("{{email}}","<strong>".$userEmail."</strong>",lng("0regok"))."</div>";
+            } else 
+                return "<div class='alert alert-warning'>".lng("0uexist")."</div>";
+        }
+    }
+    generateRandomIcons();
+    return "
+        <div class='data-div'>
+            <div class='login-header'>".$_SESSION["langButtons"]."<hr>&nbsp;<br><h3>".lng("user_registration")."</h3></div>
+            <form id='registrationForm' class='auth-form' action='_pls_fnc_register' method='post'>
+                <div class='form-group'>
+                    <label for='descr'>" . lng("user") . "</label>
+                    <input id='descr' type='text' class='input-text2' name='descr' placeholder='" . lng("username") . "' value='" . htmlspecialchars($userId, ENT_QUOTES) . "'>
+                </div>
+                <div class='form-group'>
+                    <label for='email'>" . lng("email") . "</label>
+                    <input id='email' type='email' class='input-text2' name='email' placeholder='" . lng("email") . "' value='" . htmlspecialchars($userEmail, ENT_QUOTES) . "'>
+                </div>
+                <div class='form-group'>
+                    <label for='password'>" . lng("password") . "</label>
+                    <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
+                        <input id='password' type='password' class='input-text2' name='password' placeholder='" . lng("password") . "' value=''>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
+                </div>
+                <div class='form-group'>
+                    <label for='password_confirm'>" . lng("repeat_password") . "</label>
+                    <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
+                        <input id='password_confirm' type='password' class='input-text2' name='password_confirm' placeholder='" . lng("repeat_password") . "' value=''>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
+                </div>
+"._addPassFormChecks();
+}
+
+function _addPassFormChecks(){
+    return "
+                    <input type='hidden' name='icon' id='icon' value=''>    
+                <div class='form-group' style='margin-top:10px;'><center>
+                    <div><h3>".$_SESSION["_iconSelect"]."</h3></div>
+                    <table><tr>
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=0' onclick='document.getElementById(\"opt0\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=1' onclick='document.getElementById(\"opt1\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=2' onclick='document.getElementById(\"opt2\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=3' onclick='document.getElementById(\"opt3\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=4' onclick='document.getElementById(\"opt4\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=5' onclick='document.getElementById(\"opt5\").click()'></td>    
+                    </tr><tr>
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=0' class='styled-radio' type='radio' id='opt0'><label for='opt0'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=1' class='styled-radio' type='radio' id='opt1'><label for='opt1'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=2' class='styled-radio' type='radio' id='opt2'><label for='opt2'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=3' class='styled-radio' type='radio' id='opt3'><label for='opt3'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=4' class='styled-radio' type='radio' id='opt4'><label for='opt4'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=5' class='styled-radio' type='radio' id='opt5'><label for='opt5'></label></td>       
+                    </tr></table></center>
+                </div>
+                <button type='submit' class='btn btn-primary'>" . lng("register") . "</button>
+            </form>
+        </div>"._addPassFormScripts("registrationForm");
+}
+function _addPassFormScripts($formName){
+    return "
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('".$formName."').addEventListener('submit', function(e) {
+                var userid ='';
+                var nouserid=false;
+                var email ='';
+                var noemail=false;
+                var icon ='';
+                var noicon=false;
+                if (document.getElementById('descr'))
+                    userid = document.getElementById('descr').value.trim();
+                else
+                    nouserid=true;
+                if (document.getElementById('email'))
+                    email = document.getElementById('email').value.trim();
+                else
+                    noemail=true;
+                var password = document.getElementById('password').value.trim();
+                var passwordConfirm = document.getElementById('password_confirm').value.trim();
+                if (document.getElementById('icon'))
+                    icon = document.getElementById('icon').value.trim();
+                else
+                    noicon=true;
+                var errorMessages = [];
+                if (userid === '' & !nouserid) 
+                    errorMessages.push(\"".lng("0nouid")."\");
+                if (email === '' & !noemail) 
+                    errorMessages.push(\"".lng("0noemail")."\");
+                if (password === '')
+                    errorMessages.push(\"".lng("0nopass")."\");
+                if (icon === '' & !noicon) 
+                    errorMessages.push(\"".lng("0nospam")."\");
+                if (!noemail){
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (email !== '' && !emailPattern.test(email)) 
+                        errorMessages.push(\"".lng("0invemail")."\");
+                }
+                if (password !== '' && password.length < 8) 
+                    errorMessages.push(\"".lng("0smallpass")."\");
+                if (errorMessages.length > 0) {
+                    alert(errorMessages.join(\"\\n\"));
+                    e.preventDefault();
+                    return false;
+                }
+                if (password !== passwordConfirm) {
+                    alert(\"".lng("0diffpass")."\");
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            document.getElementById('password').addEventListener('keyup', function() {
+                updatePasswordStrength();
+                checkPasswordsMatch();
+            });
+            document.getElementById('password_confirm').addEventListener('keyup', checkPasswordsMatch);
+        });
+        function checkPasswordsMatch() {
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('password_confirm').value;
+            const matchMessage = document.getElementById('passwordMatchMessage');
+            if (password === passwordConfirm) {
+                matchMessage.style.color = 'green';
+                matchMessage.innerText = 'OK';
+            } else {
+                matchMessage.style.color = 'red';
+                matchMessage.innerText = \"".lng("1diffpass")."\";
+            }
+        }
+        function updatePasswordStrength() {
+            var password = document.getElementById('password').value;
+            var strength = 0;
+            if (password.length < 8) {
+                strength = 0;
+            } else {
+                var hasUpper   = /[A-Z]/.test(password);
+                var hasLower   = /[a-z]/.test(password);
+                var hasDigit   = /\d/.test(password);
+                var hasSpecial = /[^A-Za-z0-9]/.test(password);
+                if (hasUpper && hasLower && hasDigit && hasSpecial)
+                    strength = 2;
+                else if ((hasUpper || hasLower) && hasDigit)
+                    strength = 1;
+                else
+                    strength = 0;
+            }
+            var strengthText = '';
+            var elm=document.getElementById('passwordStrength');
+            switch (strength) {
+                case 0: strengthText = \"".lng("0poor")."\"; elm.style.color = 'red'; break;
+                case 1: strengthText = \"".lng("0mean")."\"; elm.style.color = 'orange'; break;
+                case 2: strengthText = \"".lng("0strong")."\"; elm.style.color = 'green'; break;
+            }
+            elm.innerText = strengthText;
+            return strength;
+        }
+    </script>
+    ";
+}
 
 function getUserContent(){
     $userData="";
@@ -78,7 +375,6 @@ function getUserContent(){
         return;
     $db=new Database();
     $userData=$db->getUserByApiKey($userData["apikey"]);
-
     $content='
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
@@ -88,33 +384,44 @@ function getUserContent(){
                 $("#userCodesTable").DataTable({"paging": true, "ordering": true, "info": true});
             });
         </script>
+        <div id="modal" class="modal hidden appear">
+            <form id="changePassForm" class="auth-form" action="_pls_fnc_register" method="post">
+                <div class="modal-header">
+                    '.strtoupper(lng("change_pass_form")).'
+                    <span class="modal-closer" onclick="closemodal()">&times;</span>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label for="password">' . lng("password") . '</label>
+                        <input id="password" type="password" class="input-text2" name="password" value=""><br>
+                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordStrength" ></div>   
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm">' . lng("repeat_password") . '</label>
+                        <input id="password_confirm" type="password" class="input-text2" name="password_confirm" value=""><br>
+                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordMatchMessage"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Change Password">
+                </div>
+            </form>
+        </div>
+'._addPassFormScripts("changePassForm").'
         <div class="alert alert-info">
             <table width="100%"><tr><td width="50%">
                 <label for="userid">'.lng("user").'</label><br>
-                <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'">
-                </td><td>&nbsp;</td><td>
-                <label for="userid">API key</label><br>
-                <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="API key" value="'.$userData["apikey"].'">
-                </td></tr>
+                <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'"></td>
+                <td>&nbsp;</td><td><label for="userid">API key</label><br><input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="API key" value="'.$userData["apikey"].'"></td></tr>
                 <tr><td><label for="userid">'.lng("email").'</label><br>
                     <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["email"].'">
-                </td><td>&nbsp;</td><td>
-                    <table><tr><td>
-                    <button type="button" class="btn btn-warning" onclick=\'window.location.href="/"\'>'.lng("change password").'</button>&nbsp;
-                    </td><td>
-                    <form method="post" action="newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form>
-                    </td><td>
-                    &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/logout"\'>Logout</button>
-                    </td></tr></table>
-                </td></tr>
-            </table>
-        </div>
-        <div class="form-group">
-        <label>User\'s Links</label>
-        <div class="userTabLinks">
-        <table id="userCodesTable" class="display"><thead>
-        <tr><th>short_id</th><th>&nbsp;</th><th>Uri</th><th>Calls</th><th>Created</th><th>Last call</th></tr>
-        </thead><tbody>
+                </td><td>&nbsp;</td><td><table><tr><td>
+                    <button type="button" class="btn btn-warning" onclick="openmodal()" o-n-click=\'window.location.href="/_pls_fnc_fgtpass"\'>'.lng("change password").'</button>&nbsp;</td><td>
+                    <form method="post" action="_pls_fnc_newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form></td><td>
+                    &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/_pls_fnc_logout"\'>Logout</button></td></tr></table>
+                </td></tr></table></div>
+        <div class="form-group"><label>User\'s Links</label><div class="userTabLinks"><table id="userCodesTable" class="display"><thead>
+        <tr><th>short_id</th><th>&nbsp;</th><th>Uri</th><th>Calls</th><th>Created</th><th>Last call</th></tr></thead><tbody>
     ';
     
     $db = new Database();
@@ -152,8 +459,8 @@ function getUserContent(){
         $created = new DateTime($row['created'] );
 
         $content.='<tr>';
-        $content.= '<td><a href="/shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
-        $content.= '<td><a href="/removeshortinfo?code='. $row['short_id'] .'"><button class="btn btn-small btn-warning">DEL</button></a></td>';
+        $content.= '<td><a href="/_pls_fnc_shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
+        $content.= '<td><a href="/_pls_fnc_removeshortinfo?code='. $row['short_id'] .'"><button class="btn btn-small btn-warning">DEL</button></a></td>';
         $content.= '<td><a href="' . getenv("URI"). $row['short_id'] . '" target="_blank">'.htmlspecialchars($fu, ENT_QUOTES).'</a></td>';
         $content.= '<td align="right">' . $row['calls'] . '</td>';
         $content.= '<td>' . $created->format("d/m/y") . '</td>';
@@ -164,8 +471,11 @@ function getUserContent(){
 }
 
 // Contenuto della pagina home
-function getHomeContent($uri){
+function getUserHomeContent($uri){
     return lng("front_instructions");
+}
+function getIndexContent(){
+    return lng("site_index");
 }
 
 function checkIfSelfUri($uri) {
@@ -186,11 +496,212 @@ function checkIfSelfUri($uri) {
     return $uri; 
 }
 
-function getFavicon(){
-    $ret="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAdCAMAAAGLR64jAAAKN2lDQ1BzUkdCIElFQzYxOTY2LTIuMQAAeJydlndUU9kWh8+9N71QkhCKlNBraFICSA29SJEuKjEJEErAkAAiNkRUcERRkaYIMijggKNDkbEiioUBUbHrBBlE1HFwFBuWSWStGd+8ee/Nm98f935rn73P3Wfvfda6AJD8gwXCTFgJgAyhWBTh58WIjYtnYAcBDPAAA2wA4HCzs0IW+EYCmQJ82IxsmRP4F726DiD5+yrTP4zBAP+flLlZIjEAUJiM5/L42VwZF8k4PVecJbdPyZi2NE3OMErOIlmCMlaTc/IsW3z2mWUPOfMyhDwZy3PO4mXw5Nwn4405Er6MkWAZF+cI+LkyviZjg3RJhkDGb+SxGXxONgAoktwu5nNTZGwtY5IoMoIt43kA4EjJX/DSL1jMzxPLD8XOzFouEiSniBkmXFOGjZMTi+HPz03ni8XMMA43jSPiMdiZGVkc4XIAZs/8WRR5bRmyIjvYODk4MG0tbb4o1H9d/JuS93aWXoR/7hlEH/jD9ld+mQ0AsKZltdn6h21pFQBd6wFQu/2HzWAvAIqyvnUOfXEeunxeUsTiLGcrq9zcXEsBn2spL+jv+p8Of0NffM9Svt3v5WF485M4knQxQ143bmZ6pkTEyM7icPkM5p+H+B8H/nUeFhH8JL6IL5RFRMumTCBMlrVbyBOIBZlChkD4n5r4D8P+pNm5lona+BHQllgCpSEaQH4eACgqESAJe2Qr0O99C8ZHA/nNi9GZmJ37z4L+fVe4TP7IFiR/jmNHRDK4ElHO7Jr8WgI0IABFQAPqQBvoAxPABLbAEbgAD+ADAkEoiARxYDHgghSQAUQgFxSAtaAYlIKtYCeoBnWgETSDNnAYdIFj4DQ4By6By2AE3AFSMA6egCnwCsxAEISFyBAVUod0IEPIHLKFWJAb5AMFQxFQHJQIJUNCSAIVQOugUqgcqobqoWboW+godBq6AA1Dt6BRaBL6FXoHIzAJpsFasBFsBbNgTzgIjoQXwcnwMjgfLoK3wJVwA3wQ7oRPw5fgEVgKP4GnEYAQETqiizARFsJGQpF4JAkRIauQEqQCaUD";
-    $ret.="akB6kH7mKSJGnyFsUBkVFMVBMlAvKHxWF4qKWoVahNqOqUQdQnag+1FXUKGoK9RFNRmuizdHO6AB0LDoZnYsuRlegm9Ad6LPoEfQ4+hUGg6FjjDGOGH9MHCYVswKzGbMb0445hRnGjGGmsVisOtYc64oNxXKwYmwxtgp7EHsSewU7jn2DI+J0cLY4X1w8TogrxFXgWnAncFdwE7gZvBLeEO+MD8Xz8MvxZfhGfA9+CD+OnyEoE4wJroRIQiphLaGS0EY4S7hLeEEkEvWITsRwooC4hlhJPEQ8TxwlviVRSGYkNimBJCFtIe0nnSLdIr0gk8lGZA9yPFlM3kJuJp8h3ye/UaAqWCoEKPAUVivUKHQqXFF4pohXNFT0VFysmK9YoXhEcUjxqRJeyUiJrcRRWqVUo3RU6YbStDJV2UY5VDlDebNyi/IF5UcULMWI4kPhUYoo+yhnKGNUhKpPZVO51HXURupZ6jgNQzOmBdBSaaW0b2iDtCkVioqdSrRKnkqNynEVKR2hG9ED6On0Mvph+nX6O1UtVU9Vvuom1TbVK6qv1eaoeajx1UrU2tVG1N6pM9R91NPUt6l3qd/TQGmYaYRr5Grs0Tir8XQObY7LHO6ckjmH59zWhDXNNCM0V2ju0xzQnNbS1vLTytKq0jqj9VSbru2hnaq9Q/uE9qQOVcdNR6CzQ+ekzmOGCsOTkc6oZPQxpnQ1df11Jbr1uoO6M3rGelF6hXrtevf0Cfos/ST9Hfq9+lMGOgYhBgUGrQa3DfGGLMMUw12G/YavjYyNYow2GHUZPTJWMw4wzjduNb5rQjZxN1lm0mByzRRjyjJNM91tetkMNrM3SzGrMRsyh80dzAXmu82HLdAWThZCiwaLG0wS05OZw2xljlrSLYMtCy27LJ9ZGVjFW22z6rf6aG1vnW7daH3HhmITaFNo02Pzq62ZLde2xvbaXPJc37mr53bPfW5nbse322N3055qH2K/wb7X/oODo4PIoc1h0tHAMdGx1vEGi8YKY21mnXdCO3k5rXY65vTW2cFZ7HzY+RcXpkuaS4vLo3nG8/jzGueNueq5clzrXaVuDLdEt71uUnddd457g/sDD30PnkeTx4SnqWeq50HPZ17WXiKvDq/XbGf2SvYpb8Tbz7vEe9CH4";
-    $ret.="hPlU+1z31fPN9m31XfKz95vhd8pf7R/kP82/xsBWgHcgOaAqUDHwJWBfUGkoAVB1UEPgs2CRcE9IXBIYMj2kLvzDecL53eFgtCA0O2h98KMw5aFfR+OCQ8Lrwl/GGETURDRv4C6YMmClgWvIr0iyyLvRJlESaJ6oxWjE6Kbo1/HeMeUx0hjrWJXxl6K04gTxHXHY+Oj45vipxf6LNy5cDzBPqE44foi40V5iy4s1licvvj4EsUlnCVHEtGJMYktie85oZwGzvTSgKW1S6e4bO4u7hOeB28Hb5Lvyi/nTyS5JpUnPUp2Td6ePJninlKR8lTAFlQLnqf6p9alvk4LTduf9ik9Jr09A5eRmHFUSBGmCfsytTPzMoezzLOKs6TLnJftXDYlChI1ZUPZi7K7xTTZz9SAxESyXjKa45ZTk/MmNzr3SJ5ynjBvYLnZ8k3LJ/J9879egVrBXdFboFuwtmB0pefK+lXQqqWrelfrry5aPb7Gb82BtYS1aWt/KLQuLC98uS5mXU+RVtGaorH1futbixWKRcU3NrhsqNuI2ijYOLhp7qaqTR9LeCUXS61LK0";
-    $ret.="rfb+ZuvviVzVeVX33akrRlsMyhbM9WzFbh1uvb3LcdKFcuzy8f2x6yvXMHY0fJjpc7l+y8UGFXUbeLsEuyS1oZXNldZVC1tep9dUr1SI1XTXutZu2m2te7ebuv7PHY01anVVda926vYO/Ner/6zgajhop9mH05+x42Rjf2f836urlJo6m06cN+4X7pgYgDfc2Ozc0tmi1lrXCrpHXyYMLBy994f9Pdxmyrb6e3lx4ChySHHn+b+O31w0GHe4+wjrR9Z/hdbQe1o6QT6lzeOdWV0iXtjusePhp4tLfHpafje8vv9x/TPVZzXOV42QnCiaITn07mn5w+lXXq6enk02O9S3rvnIk9c60vvG/wbNDZ8+d8z53p9+w/ed71/LELzheOXmRd7LrkcKlzwH6g4wf7HzoGHQY7hxyHui87Xe4Znjd84or7ldNXva+euxZw7dLI/JHh61HXb95IuCG9ybv56Fb6ree3c27P3FlzF3235J7SvYr7mvcbfjT9sV3qID0+6j068GDBgztj3LEnP2X/9H686CH5YcWEzkTzI9tHxyZ9Jy8/Xvh4/EnWk5mnxT8r/1z7zOTZd794/DIwFTs1/lz0/NOvm1+ov9j/0u5l73TY9P1XGa9mXpe8UX9z4C3rbf+7mHcTM7nvse8rP5h+6PkY9PHup4xPn34D94Tz+49wZioAAADDUExURer65eDz6f///9zx5tbv4eH32vD77N321dLt3sjp18Lm0vz++9b1zP3+/LThyLzkzqzewsTxtszywLftpqbbvYLNpP7+/pTUsOv48YvQqv///qjpkpvmgnPGmGvDkmbBj/L69FW6g5Lkdo3jcPn9+IfhaYribHbdU3veWn7fXXzeW2raRGzaR064fkOzdfv++juwbySmXhqjVxGfUQqcTA2eTgibSmbZP1/XNlPUKE/TI+X17EnSGzrOCTbNBDPMAAAAAPtjXe0AAAB";
-    $ret.="BdFJOU[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[8AMFXsxwAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAk1JREFUeJxtU21P2mAUPW0vFUERp/IidHOOsYUME0W+LPjE314/aOJL3EhwihKjLgUnc4O1RcA+e1paxISTNM099/Tec+9NabcGk2prcAjPygUV7hogeRkF2rGHnFAtgs6ejhjJO/BAyxiG9rDD6QHEK+CcmM7cjES7dx3xfmB0m824zDFlz9YQ6isaIX1S2UNeIhhbVyWobRKV14VGpQ2+54oZQWKjFruHmTQC8L9VutvG4NKPh8V4mjoZmGtu9L14UrpPLJCXOs5yawOlX2FRwwbix4oBnAIfEjCopCtfS0HR1m2ZwGpH5YBIpURb6LNRP441GEgvVqSxD/mwTNE4XpB+1ikmmkb8OK9kJVpA23GN8cc32K+gI4z1PYE07HVVdzjxfDmIfx4cANq8T/ye0/SZjRBw7RIcS2f5IbPcMqZLNBPqyumoiboNca+3XFpdHRup2rR4uKkEoXPwLHZpD9tq1WeY16V5w9iLe0HcTITwxk91u5lICK8xsH7OzzfFOnBRDIcxDTn0Vi7ypDs5b1/97mSSx9y5wzPfmlS0RJ7vF66DnT32IS/i3pTFZaSPETKWBWmozU/Bx9p5Z8up55QfrSQQMkZ3lnKXxpIvaG3iVOv078NSMJaHuWTbyta3rpKyZiGPMrfDmBDwxns5PqfEda0W0byBpSXTGQnSrvtVqxn7B9PEbaLV9vh3lpoSr16MqrOpkDtzgLFZb1stW/wQVbUgT92UU+vZ4joM+vn6DPrn5qvsUzRqmyww2a0r+MOmVfEF1/b0rMB/IHDOM4DGM/UAAAAASUVORK5CYII=";
-    return str_replace("[","/",$ret);
+function getFavicon(){  
+    $ret=file_get_contents("assets/logo_icon.png");
+    return $ret;
+}
+
+function hexToRGB($hex) {
+    $hex = ltrim($hex, '#');
+    if (strlen($hex) == 3) {
+        $hex = $hex[0].$hex[0] . $hex[1].$hex[1] . $hex[2].$hex[2];
+    }
+    return [
+        'red'   => hexdec(substr($hex, 0, 2)),
+        'green' => hexdec(substr($hex, 2, 2)),
+        'blue'  => hexdec(substr($hex, 4, 2))
+    ];
+}
+
+/**
+ * Genera un'immagine per l'icona specificata.
+ *
+ * @param string $iconName  Nome dell'icona (es. "stella", "casa", "computer", "auto", "bici", "robot")
+ * @param string|null $bgColor Colore di sfondo (in formato esadecimale con #, es. "#000000")
+ * @param string|null $fgColor Colore in primo piano (in formato esadecimale con #)
+ * @param int|null $rotation Angolo di rotazione (in gradi)
+ */
+function generateIconImage($iconName) {
+    $seed = (int)(microtime(true) * 1000000);
+    $width = 100;
+    $height = 100;
+    $im = imagecreatetruecolor($width, $height);
+    $bgColor = isset($_GET['bg']) ? '#' . $_GET['bg'] : null;
+    $fgColor = isset($_GET['fg']) ? '#' . $_GET['fg'] : null;
+    $rotation = isset($_GET['rot']) ? intval($_GET['rot']) : null;
+    $bgColors = ['#404040', '#109099', '#801020', '#203020', '#007000', '#700033'];
+    $fgColors = ['#FFAAC0', '#FFFFFF', '#FBA5A3', '#CCA0FF', '#A8B5A3', '#D7FF70'];
+    srand($seed);
+    $randomNumber = mt_rand(0, 5);
+    $bgColor = $bgColors[$randomNumber];
+    do{
+        $randomNumber = mt_rand(0, 5);
+        $fgColor = $fgColors[$randomNumber];
+        if ($fgColor!=$bgColor) break;
+    } while (true);
+
+    $randomNumber = mt_rand(-45, 45);
+    $rotation = $randomNumber;
+    $bgRGB = hexToRGB($bgColor);
+    $fgRGB = hexToRGB($fgColor);
+    $background = imagecolorallocate($im, $bgRGB['red'], $bgRGB['green'], $bgRGB['blue']);
+    $foreground = imagecolorallocate($im, $fgRGB['red'], $fgRGB['green'], $fgRGB['blue']);
+    imagefilledrectangle($im, 0, 0, $width, $height, $background);
+    switch (strtolower($iconName)) {
+        case '0star':
+            $cx = $width / 2;
+            $cy = $height / 2;
+            $r_outer = 40;
+            $r_inner = 20;
+            $points = [];
+            for ($i = 0; $i < 10; $i++) {
+                $angle = deg2rad(-90 + $i * 36);
+                $r = ($i % 2 == 0) ? $r_outer : $r_inner;
+                $points[] = $cx + cos($angle) * $r;
+                $points[] = $cy + sin($angle) * $r;
+            }
+            imagefilledpolygon($im, $points, 10, $foreground);
+            break;
+        case '0house':
+            imagefilledrectangle($im, 20, 40, 80, 80, $foreground);
+            $triangle = [20, 40, 80, 40, 50, 10];
+            imagefilledpolygon($im, $triangle, 3, $foreground);
+            imagefilledrectangle($im, 25, 50, 35, 60, $background);
+            imagefilledrectangle($im, 65, 50, 75, 60, $background);
+            imagefilledrectangle($im, 45, 60, 55, 80, $background);
+            break;
+        case '0computer':
+            imagefilledrectangle($im, 20, 20, 80, 60, $foreground);
+            imagefilledrectangle($im, 35, 65, 65, 75, $foreground);
+            break;
+        case '0car':
+            $triangle = [25, 40, 65, 40, 45, 30];
+            imagefilledpolygon($im, $triangle, 3, $foreground);
+            imagefilledrectangle($im, 45, 25, 70, 40, $foreground);
+            imagefilledrectangle($im, 20, 40, 80, 60, $foreground);
+            imagefilledellipse($im, 35, 65, 15, 15, $foreground);
+            imagefilledellipse($im, 65, 65, 15, 15, $foreground);
+            break;
+        case '0robot':
+            imagefilledrectangle($im, 20, 20, 80, 80, $foreground);
+            imagefilledellipse($im, 35, 40, 10, 10, $background);
+            imagefilledellipse($im, 65, 40, 10, 10, $background);
+            imagefilledrectangle($im, 35, 65, 65, 75, $background);
+            break;
+        case '0cloud':
+            imagefilledellipse($im, 50, 50, 50, 30, $foreground);
+            imagefilledellipse($im, 70, 40, 40, 25, $foreground);
+            imagefilledellipse($im, 55, 30, 40, 25, $foreground);
+            imagefilledrectangle($im, 30, 40, 80, 50, $foreground);
+            break;
+        case '0lock':
+            imagefilledrectangle($im, 20, 40, 80, 80, $foreground);
+            imagefilledarc($im, 50, 35, 40, 40, 180, 0, $foreground, IMG_ARC_PIE);
+            imagefilledrectangle($im, 45, 60, 55, 70, $background);
+            break;
+        case '0rocket':
+            $tipPoints = [
+                50, 10,  // Vertice superiore (punta del razzo)
+                30, 30,  // Angolo sinistro della base del triangolo
+                70, 30   // Angolo destro della base del triangolo
+            ];
+            imagefilledpolygon($im, $tipPoints, 3, $foreground);
+            imagefilledrectangle($im, 35, 30, 65, 70, $foreground);
+            $leftFinPoints = [
+                35, 70,  // Punto in cui il corpo incontra l'alette (sinistra)
+                25, 80,  // Estremità sinistra dell'auretta
+                35, 80   // Punto in basso a sinistra del corpo
+            ];
+            imagefilledpolygon($im, $leftFinPoints, 3, $foreground);
+            $rightFinPoints = [
+                65, 70,  // Punto in cui il corpo incontra l'auretta (destra)
+                65, 80,  // Punto in basso a destra del corpo
+                75, 80   // Estremità destra dell'auretta
+            ];
+            imagefilledpolygon($im, $rightFinPoints, 3, $foreground);
+            imagefilledellipse($im, 50, 50, 10, 10, $background);
+            break;
+        case '0heart':
+            imagefilledellipse($im, 35, 35, 30, 30, $foreground);
+            imagefilledellipse($im, 65, 35, 30, 30, $foreground);
+            $points = [20, 40, 75, 40, 55, 70];
+            imagefilledpolygon($im, $points, 3, $foreground);
+            break;
+        case '0tree':
+            $points_top = [
+                20, 40,   // angolo sinistro della base
+                80, 40,   // angolo destro della base
+                50, 10    // vertice (punto più alto)
+            ];
+            imagefilledpolygon($im, $points_top, 3, $foreground);
+            $points_bottom = [
+                20, 70,   // angolo sinistro della base
+                80, 70,   // angolo destro della base
+                50, 20    // vertice (punto più alto del triangolo inferiore)
+            ];
+            imagefilledpolygon($im, $points_bottom, 3, $foreground);
+            imagefilledrectangle($im, 45, 70, 55, 90, $foreground);
+            break;
+        case '0plane':
+            $body = [
+                50, 10,  // 1.  Naso (alto, al centro)
+                53, 20,  // 2.  Lato destro del naso
+                53, 30,  // 3.  Fuseliera destra (parte alta)
+                85, 40,  // 4.  Punta ala destra
+                70, 45,  // 5.  Bordo posteriore ala destra
+                55, 50,  // 6.  Fuseliera destra (parte centrale)
+                52, 55,  // 7.  Fianco destro vicino alla coda
+                48, 55,  // 8.  Fianco sinistro vicino alla coda
+                45, 50,  // 9.  Fuseliera sinistra (parte centrale)
+                30, 45,  // 10. Bordo posteriore ala sinistra
+                15, 40,  // 11. Punta ala sinistra
+                47, 30,  // 12. Fuseliera sinistra (parte alta)
+                47, 20   // 13. Lato sinistro del naso
+            ];
+            imagefilledpolygon($im, $body, count($body) / 2, $foreground);
+            $tailStab = [
+                40, 60,  // Estremo sinistro dello stabilizzatore
+                65, 56,  // Estremo destro dello stabilizzatore
+                60, 60,  // Bordo inferiore destro
+                50, 65   // Bordo inferiore sinistro
+            ];
+            imagefilledpolygon($im, $tailStab, count($tailStab) / 2, $foreground);
+            break;
+        case '0eye':
+            imagefilledellipse($im, 50, 50, 80, 40, $foreground);
+            imagefilledellipse($im, 50, 50, 25, 25, $background);
+            break;
+        case '0envelope':
+            imagefilledrectangle($im, 20, 30, 80, 70, $foreground);
+            $flapPoints = [20, 30, 80, 30, 50, 50];
+            imagefilledpolygon($im, $flapPoints, 3, $foreground);
+            imagesetthickness($im, 5);
+            imageline($im, 20, 30, 50, 50, $background);
+            imageline($im, 80, 30, 50, 50, $background);
+            break;
+        default:
+            // Se iconName non è riconosciuto, scrivi "N/D"
+            imagestring($im, 5, 10, 40, "N/D", $foreground);
+            break;
+    }
+    $im = imagerotate($im, $rotation, $background);
+    ob_start();
+    imagejpeg($im); // genera l'immagine JPEG e la manda in output
+    $imageData = ob_get_clean();
+    return base64_encode($imageData);
+}
+
+function generateRandomIcons() {
+    // Array di icone disponibili
+    $seed = (int)(microtime(true) * 1000000);
+    $icons = array("0star", "0house", "0computer", "0car",  "0robot", "0cloud", "0lock", "0rocket", "0heart", "0tree", "0plane", "0envelope", "0eye");
+    srand($seed);
+    shuffle($icons);
+    $images = array(generateIconImage($icons[0]), generateIconImage($icons[1]), generateIconImage($icons[2]),generateIconImage($icons[3]), generateIconImage($icons[4]), generateIconImage($icons[5]));
+    $_SESSION["icons"] = $images;
+    $_SESSION["iconNames"] = $icons;
+    $randomNumber = mt_rand(0, 5);
+    $_SESSION["_icon"] = $randomNumber;
+    $_SESSION["_iconSelect"] = lng("0select").lng($icons[$randomNumber]);
+    return $icons;
 }

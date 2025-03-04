@@ -1,7 +1,9 @@
 # Prinzimaker's Link Shortener
 
-## **Quick and dirty link shortener** - **v1.3.2**
-### Feb 2025 release
+<img src="https://flu.lu/pls_logo" alt="Logotipo del sito" style="width: 200px; height: auto;">
+
+## **Quick and dirty link shortener** - **v1.4.0**
+### _March 2025 release_
 
 This is a good and functional release, and security seems good too.\
 You can use this app out of the box, simply copying it on a minimal LAMP server (see the DOC folder).
@@ -12,21 +14,19 @@ Write to aldo@milleisole.com if interested, thank you.
 
 ### 📚 Choose info and instruction in one of the following languages:
 
-- 🇬🇧 [English Version](README.EN.md)
-- 🇮🇹 [Versione Italiana](README.IT.md) 
+- 🇬🇧 [English version](README.EN.md)
+- 🇮🇹 [Versione italiana](README.IT.md) 
+- 🇫🇷 [Version française](README.FR.md) 
+- 🇫🇷 [Version espanol](README.SP.md) 
+- 🇩🇪 [Deutsche version](README.DE.md) 
 
+### Test site:
+You can test it on the following full funcitional website **https://flu.lu**
 
-----   
-## API interface docs/samples
-### OpenApi documentation
-- Link: https://prinzimaker.github.io/link_shortener/
+### NOTE
+This project was developed with the malicious hacking perspective in mind. Consequently, it was built in a somewhat non-standard way and uses techniques that make hacking and spam more difficult. Of course, more can be done, but it was my precise intention to write this software by adopting creative, out-of-the-box methods so that “standard” hacking tools would not easily apply to the project. 
 
-### POSTMAN
-- Import an API definition into Postman:\
-- Select Import in the sidebar. 
-- Choose to upload the following URL: https://prinzimaker.github.io/link_shortener/openapi.yaml 
+Feel free, of course, to modify anything you want in your fork, or actively participate in this project—always keeping hacking and spam in mind. 
 
-Learn more about [importing an API into Postman](https://learning.postman.com/docs/designing-and-developing-your-api/importing-an-api/)
-
-### REDOC Api documentation
-- Link: https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml
+Thank you :) \
+A:

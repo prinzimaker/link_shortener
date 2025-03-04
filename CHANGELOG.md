@@ -1,4 +1,9 @@
 # Changelog
+## [1.4.0] - 2025-03-03
+## EU (GB, IT, FR, DE) version
+
+
+
 ## [1.3.2] - 2025-02-24
 ### Removed
 - Removed geolocalisation by API

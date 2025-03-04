@@ -5,11 +5,11 @@
       Copyright (C) 2024/2025 - Aldo Prinzi
       Open source project - under MIT License     
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the logic needed to set language labels 
 -
-v1.2.1 - Aldo Prinzi - 30 Dic 2024
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 =====================================================================
 */
 if (session_status() === PHP_SESSION_NONE) {
@@ -27,15 +27,33 @@ function setSessionLanguage($lang=""){
     setNewLanguage($lang);
 }
 
+function getSessionLanguage(){
+    $lang="en";
+    if (isset($_SESSION["lang"]))
+        $lang=$_SESSION["lang"];
+    return $lang;
+}
+
+
 function setNewLanguage($lang){
     $_SESSION["lang"]=$lang;
-    $subm="en";
     $lngBtn="<form action='setlang' method='post'><center>";
-    if ($lang=="en"){
-        $subm="it";
-        $lngBtn.="<table><tr><td class='langTd'><label class='langLbl'>en</label></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type=submit value='it'></td></tr></table>";
-    } else {
-        $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type=submit value='en'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>it</label></td></tr></table>";
+    switch ($lang){
+        case "en": 
+            $lngBtn.="<table><tr><td class='langTd'><label class='langLbl'>EN</label></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langLbl'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td><input class='langSbm' type='submit' name='lang' value='sp'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "it": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>IT</label></td><td>&nbsp;</td><td class='langLbl'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td><input class='langSbm' type='submit' name='lang' value='sp'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "fr": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>FR</label></td><td>&nbsp;</td><td><input class='langSbm' type='submit' name='lang' value='sp'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "sp": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langLbl'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>SP</label></td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='de'></td></tr></table>";
+            break;
+        case "de": 
+            $lngBtn.="<table><tr><td class='langTd'><input class='langSbm' type='submit' name='lang' value='en'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='it'></td><td>&nbsp;</td><td class='langTd'><input class='langSbm' type='submit' name='lang' value='fr'></td><td>&nbsp;</td><td><input class='langSbm' type='submit' name='lang' value='sp'></td><td>&nbsp;</td><td class='langTd'><label class='langLbl'>DE</label></td></tr></table>";
+            break;
     }
     $_SESSION["langButtons"]=$lngBtn."</center></form>";
 }

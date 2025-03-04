@@ -5,11 +5,11 @@
       Copyright (C) 2024/2025 - Aldo Prinzi
       Open source project - under MIT License
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the DB logic for the link shortener
 -
-v1.3.2 - Aldo Prinzi - 24 Feb 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
 ---------
 UPDATES
 ---------
@@ -94,9 +94,9 @@ class Database {
                     ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
                 ");
                 $updateStmt2->execute(['code' => $code, 'log' => $log, 'log2' => $log]);
+                $this->pdo->commit();
+                return ["uri"=>$result["full_uri"],"log"=>$log];
             }
-            $this->pdo->commit();
-            return $result["full_uri"];
         } catch (PDOException $e) {
             // Roll back the transaction if an error occurs
             $this->pdo->rollBack();
@@ -106,6 +106,7 @@ class Database {
             header("HTTP/1.1 404 Not Found");
             exit();
         }
+        return null;
     }
     
     function createShortlink($uri,$user_id){
@@ -176,6 +177,13 @@ class Database {
         $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'cust_id'=>$user_id , 'shuri' => hash("sha512", $user_id."!".$uri)]);
     }
 
+    function getCountLink($user_id){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("select count(distinct(short_id)) as cnt from link where cust_id=:cust_id");
+        $stmt->execute(['cust_id' => $user_id]);
+        $result = $stmt->fetch();
+        return $result["cnt"];
+    }
     function getShortlinkInfo($short_id, $cust_id){
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare("SELECT * FROM link WHERE short_id = :short_id and cust_id= :cust_id LIMIT 1");
@@ -233,6 +241,92 @@ class Database {
         return $this->getUserData($apiKey, $allData,1);
     }
 
+    public function getUserById($userId) {
+        $query = "SELECT cust_id, descr, email, pass, apikey, email_verified, email_verif_code, active, is_admin, max_links FROM customers WHERE cust_id = :id";
+        $params = [':id' => $userId];
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetch();
+    }
+    public function createUser($descr,$email,$passHash,$apiKey,$verificationCode) {
+        $query = "INSERT INTO customers (descr, email, pass, apikey, email_verif_code, email_verified, active, is_admin, max_links)
+        VALUES (:descr, :email, :pass, :apikey, :verif_code, 0, 0, 0, 10)";
+        $params = [
+        ':descr'      => $descr,
+        ':email'      => $email,
+        ':pass'       => $passHash,
+        ':apikey'     => $apiKey,
+        ':verif_code' => $verificationCode
+        ];
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute($params);
+    }
+
+    public function updateUserData($custId, $descr, $email) {
+        $query = "UPDATE customers SET descr = :descr, email = :email WHERE cust_id = :cust_id";
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([
+            ':descr'   => $descr,
+            ':email'   => $email,
+            ':cust_id' => $custId
+        ]);
+    }
+    public function updateUserPassword($custId,$passHash) {
+        $query = "UPDATE customers SET pass = :passHash WHERE cust_id = :cust_id";
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([
+            ':passHash'   => $passHash,
+            ':cust_id' => $custId
+        ]);
+    }
+    public function changePassword($email, $newPassword) {
+        // Recupera l'hash della password corrente (campo "pass")
+        $query = "SELECT pass FROM customers WHERE email = :email limit 1";
+        
+        if (!isset($this->pdo)) $this->connect();
+        $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
+        $updateQuery = "UPDATE customers SET pass = :newPass WHERE email = :email";
+        $stmt = $this->pdo->prepare($updateQuery);
+        return $stmt->execute([
+            ':newPass' => $newHash,
+            ':email'   => $email
+        ]);
+    }
+    public function verifyUserCode($emailCode){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("SELECT cust_id,email FROM customers WHERE email_verif_code = :code");
+        $stmt->execute([':code' => $emailCode]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user) {
+            $updateStmt = $this->pdo->prepare("UPDATE customers SET email_verified = 1, email_verif_code = NULL, active = 1 WHERE cust_id = :id");
+            if ($updateStmt->execute([':id' => $user['cust_id']]))
+                return [$user['cust_id'],$user['email']];
+        }
+        return [0,""];
+    }
+
+    public function updateUserVerifyCode($userId, $verifyCode){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("UPDATE customers SET email_verif_code = :code WHERE cust_id = :id");
+        return $stmt->execute([':code' => $verifyCode, ':id' => $userId]);
+    }
+ 
+    public function getApiKeyInfo($apiKey) {
+        $query = "SELECT cust_id,api_key_active FROM customers WHERE api_key = :api_key";
+        $params = [':api_key' => $apiKey];
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!empty($result))
+            return ["apiKey"=>$apiKey,"cust_id"=>$result["cust_id"],"isActive"=>$result["api_key_active"]];
+        return false;
+    }
+
     function getStatistics($short_id){
         $query = "
         SELECT 
@@ -256,25 +350,33 @@ class Database {
         return $result;
     }
 
-    function checkAndAssignNewApiKey($oldApiKey,$custid=""){
+    function createAndCheckNewApiKey(){
         if (!isset($this->pdo)) $this->connect();
         $newApiKey="";
         $stmt = $this->pdo->prepare("select cust_id from customers where apikey = :newApiKey");
         $i=0;
         do{
-            $newApiKey = bin2hex(random_bytes(32));
+            srand((int)(microtime(true) * 1000000)); // converte i microsecondi in un intero
+            $newApiKey ="";
+            for ($i = 0; $i < 24; $i++) {
+                $newApiKey .= bin2hex(chr(mt_rand(0, 254)));
+            }
             $stmt->execute(['newApiKey' => $newApiKey]);
             $exists = $stmt->fetchColumn();
-            if (!$exists) {
-                $stmt = $this->pdo->prepare("UPDATE customers SET apikey = :newApiKey WHERE ".($custid==""?"apikey = :field":"cust_id = :field"));
-                if ($custid!="")
-                    $oldApiKey=$custid;
-                if (!$stmt->execute(['newApiKey' => $newApiKey, 'field' => $oldApiKey]))
-                    $newApiKey="";
+            if (!$exists)
                 break;
-            }
             if ($i++>200) break;
         } while (true);
+        return $newApiKey;
+    }
+
+    function checkAndAssignNewApiKey($oldApiKey,$custid=""){
+        $newApiKey=$this->createAndCheckNewApiKey();
+        $stmt = $this->pdo->prepare("UPDATE customers SET apikey = :newApiKey WHERE ".($custid==""?"apikey = :field":"cust_id = :field"));
+        if ($custid!="")
+            $oldApiKey=$custid;
+        if (!$stmt->execute(['newApiKey' => $newApiKey, 'field' => $oldApiKey]))
+            $newApiKey="";
         sleep(2);
         return $newApiKey;
     }

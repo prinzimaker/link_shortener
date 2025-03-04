@@ -1,6 +1,6 @@
 # Prinzimaker's Link Shortener
 
-### **Quick and dirty link shortener** - **v1.3.2**
+### **Quick and dirty link shortener** - **v1.4.0**
 
 **Questo progetto è realizzato in php e necessita solo di apache e di mariadb/mysql.
 Una volta implementato diventa un completo sito web (in italiano) che permette di gestire la riduzione dei link complessi e la gestione delle informazioni sull'uso di questi link.**
@@ -34,6 +34,24 @@ Scritto in **PHP** (dalla versione **7.4** in poi) per **apache** e **mariaDB** 
 - Link:
 https://prinzimaker.github.io/link_shortener/
 ---
+
+## Documentazione API - Interfaccia e Esempi  
+
+### Documentazione OpenApi  
+- Link: [https://prinzimaker.github.io/link_shortener/](https://prinzimaker.github.io/link_shortener/)  
+
+### POSTMAN  
+- Importare una definizione API in Postman:  
+- Selezionare **Importa** nella barra laterale.  
+- Scegliere di caricare il seguente URL:  
+  [https://prinzimaker.github.io/link_shortener/openapi.yaml](https://prinzimaker.github.io/link_shortener/openapi.yaml)  
+
+Scopri di più su [come importare un'API in Postman](https://learning.postman.com/docs/designing-and-developing-your-api/importing-an-api/)  
+
+### Documentazione API con REDOC  
+- Link: [https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml](https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml)  
+---
+
 # Installazione
 
 ### 1. Clona il Repository
@@ -41,13 +59,13 @@ https://prinzimaker.github.io/link_shortener/
 ```bash
 git clone https://github.com/prinzimaker/link_shortener.git
 ```
----
+
 ### 2. Installa le dipendenze
 
 ```bash
 composer install
 ```
----
+
 ### 3. Configurazione di Apache
 (_trovi il file anche nella cartella /DOC_)
 
@@ -85,12 +103,12 @@ Il file di configurazione si trova in **docs/miosito.it.conf**
    sudo systemctl restart apache2
    ```
 
----
+
 
 ### 4. Configurazione di MySQL
 Nella cartella /docs/ trovi il file **database_script.sql** che serve a generare il database e le tabelle necessarie al funzionamento dell'applicazione. 
 
----
+
 ### 5. Configurazione dell'Applicazione
 
 * ### Variabili d'Ambiente
@@ -98,7 +116,7 @@ Nella cartella /docs/ trovi il file **database_script.sql** che serve a generare
 Rinomina il file `.env.sample`, che si trova nella directory principale del progetto, in `.env`  e inserisci i tuoi dati nelle variabili di configurazione.
 
 **Nota:** Assicurati che il file `.env` non sia accessibile pubblicamente e aggiungilo al tuo `.gitignore`.
----
+
 ### 6. Permessi delle Cartelle
 
 Imposta i permessi corretti alla cartella del progetto per consentire ad Apache di accedere ai file:
@@ -199,6 +217,9 @@ http://miosito.it/api?key=987697869&calls=DUNNO?
 - **Protezione contro loop**: verifica che non vengano creati link abbreviati che puntano a `miosito.it` stesso.
 
 ## Personalizzazione
+
+### Integrazione con IFTTT
+Vedi /docs/IFTTT per le istruzioni su come integrare gli eventi CLICK con IFTTT.
 
 ### Pagine di Errore Personalizzate
 

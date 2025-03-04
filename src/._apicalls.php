@@ -5,16 +5,21 @@
       Copyright (C) 2024/2025 - Aldo Prinzi
       Open source project - under MIT License     
 =====================================================================
-This web app needs just Apache, PHP (74->8.3) and MySQL to work.
+This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the functions needed to handle api calls
 -
-v1.3.0 - Aldo Prinzi - 26 Jan 2025
+v1.4.0 - Aldo Prinzi - 03 Mar 2025
     - check for user key
 =====================================================================
 */
 function replyToApiCall ($db){
     header('Content-Type: application/json');
+
+    if (count($_GET)+count($_POST)<1){
+        die('{"name":"Prinzimaker\'s Link Shortener API Server","status":"ready","version":"1.4.0 - Open source","note":"You need to register and get an API KEY to use these functions. If you are a malicius hacker go away, thanks."}');
+    }
+
     $user = isset($_GET['key']) ? $_GET['key'] : null;
     $uri = isset($_GET['uri']) ? $_GET['uri'] : null;
     $short = isset($_GET['short']) ? $_GET['short'] : null;
@@ -86,3 +91,92 @@ function replyToApiCall ($db){
     die( json_encode($response));
 }
 
+function callIfThisEvent ($uri,$log){
+    $thisServ=getenv("URI");
+    $ifttt_key=getenv("IFTTT_KEY");
+    if (empty($ifttt_key)){
+        return false;
+    }
+    $url = 'https://maker.ifttt.com/triggers/click/json/with/key/'.$ifttt_key;
+    $data = array('value1' => $thisServ, 'value2' => $uri, 'value3' => $log);
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/json\r\nAccept: application/json\r\nAuthorization: Bearer ".$ifttt_key."\r\n",
+            'method'  => 'POST',
+            'content' => json_encode($data)
+        )
+    );
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    return $result;
+}
+
+function handleIFTTTCall(){
+    $db=new database();
+    $chK=$_SERVER['HTTP_IFTTT_CHANNEL_KEY'];
+    $svK=$_SERVER['HTTP_IFTTT_SERVICE_KEY'];
+    $myK=getenv("IFTTT_KEY");
+    if (stripos($_SERVER['REQUEST_URI'],"/status")!==false){
+        // get Status Info
+        $data=["accessToken"=>getenv("IFTTT_KEY")];
+        if ($myK==$svK){
+            http_response_code(200);
+            die('{"status":"active","data":'.getenv("URI").'}');
+        }
+        http_response_code(401);
+        die('{"status":"error","data":"Invalid key"}');
+
+    }
+    if (stripos($_SERVER['REQUEST_URI'],"/user/info")!==false){
+        // get User Info
+        $key = isset($_GET['api_key']) ? $_GET['api_key'] : "";
+        $usr=$db->getUserData($key, $allData=false,1);
+        if (!empty($usr)){
+            $data=["name"=>$usr["descr"],"id"=>$usr["descr"],"url"=>getenv("URI")];
+            die('{"data":'.json_encode($data).'}');
+        }
+    }
+    if (stripos($_SERVER['REQUEST_URI'],"/test/setup")!==false){
+        if ($myK==$svK){
+            http_response_code(200);
+            $data=[
+                "data" => [
+                    "api_key" => "",
+                    "access_token" => "",
+                    "samples"=>[
+                        "triggers"=>[
+                            "click"=>[
+                                "short_uri"=>"Any request",
+                                "api_key"=>""
+                            ],
+                        ],
+                        "action"=>[
+                            "shortlink" => [
+                                "full_uri"=>"https://example.com/long_url/link?with=parameters",
+                                "api_key"=>""
+                            ]
+                        ],
+                        "queries"=>[
+                            "getlog"=>[
+                                "shorturi"=>"[the flu.lu short_id]",
+                                "api_key"=>""
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+        } else {
+            http_response_code(401);
+            $data=["error"=>"Invalid key"];
+        }
+        die(json_encode($data));
+    }
+    http_response_code(401);
+    $mess=[["message"=>"Invalid key"]];
+    //$mess=str_replace(  ["[{","}]"],["[","]"],json_encode($mess));
+    //$data=["status"=>"error","errors"=>"{{mess}}"];
+    $data=["status"=>"error","errors"=>$mess];
+    //$strrep=str_replace('"{{mess}}"',$mess,json_encode($data));
+    $strrep=json_encode($data);
+    die($strrep);
+}
