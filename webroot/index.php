@@ -131,7 +131,7 @@ switch ($uri){
             }
             $content=getLoginForm($usr);
         } else { 
-            if (!empty($userData) && $userData["active"]>0){
+            if (!empty($userData) && is_array($userData) && $userData["active"]>0){
                 $header = "Short Link - Link info";
                 $content=getShortenContent($newuri)."<br>&nbsp;<br>".getUserContent();
             } else
@@ -139,14 +139,14 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_changecode":
-        if (!empty($userData) && $userData["active"]>0){
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Change short code";
             $ret=changeShortCode();
             $content=$ret[1];    
             $changeduri=$ret[0];
         } 
     case "_pls_fnc_shortinfo":
-        if (!empty($userData) && $userData["active"]>0){
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Link info";
             $content.=getShortInfoDisplay($userData["cust_id"],$changeduri);
         } else {
@@ -154,7 +154,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_shorten":
-        if (!empty($userData) && $userData["active"]>0){
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Link shortened";
             $ret=getShortLinkDisplay("");
             $content=$ret[1];    
@@ -165,19 +165,51 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_fgtpass":
-        $header = "Short Link - Forgot password";
-        $UM=new UserManager();
-        $content=$UM->manageForgotPassword();
-        //$content=getForgotPasswordForm();        
+        $header = "Short Link - User login";
+        $content=getLoginForm($usr);
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0){
+            $header = "User - Forgot password";
+            $content=getForgotPasswordForm ($userData);
+        } else {
+            $usr=trim($_POST["userid"]);
+            if ((is_string($usr) && strlen($usr)<60 && strlen($usr)>5)){
+                $header = "Short Link - Forgot password";
+                $UM=new UserManager();
+                $content=$UM->manageForgotPassword($usr);
+            } else {
+                $UM=new UserManager();
+                $VFC= preg_replace('/[^A-Z0-9]/', '', $_GET["verify"]);
+                $ret=$UM->verifyPassLost($VFC);
+                if ($ret[0]>0){
+                    $header = "Short Link - Change Password";
+                    $content=$UM->manageForgotPassword($ret[1],true);
+                }
+            }
+        }
+        //
         break;
     case "_pls_fnc_register":
-        if (!(!empty($userData) && $userData["active"]>0)){
+        if (!(!empty($userData) && is_array($userData) && $userData["active"]>0)){
             $header = "Short Link User - Register";
             $content=getRegistrationForm();
             break;
+        } else {
+            $header = "Short Link - error";
+            $content="<h2>Unknown error!</h2><p>Can't register user.</p>";
         }
+    case "_pls_fnc_forgotpass":
+        $UM=new UserManager();
+        if ($UM->handleChangePass()){
+            $header = "Short Link - Password changed";
+            $content="<h2>Password changed</h2><p>Your password has been changed.</p>";
+            $content.=getLoginForm();
+        } else {
+            $header = "Short Link - error";
+            $content="<h2>Unknown error!</h2><p>Can't change password.</p>";
+        }
+        break;
     case "_pls_fnc_handleuserdata":
-        if (!empty($userData) && $userData["active"] > 0) {
+        if (!empty($userData) && is_array($userData) && $userData["active"] > 0) {
             $header = "Short Link User - Handle";
             $content = handleUserData();
         } else {
@@ -187,7 +219,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_removeshortinfo":
-        if (!empty($userData) && $userData["active"]>0){
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Delete";
             $content=delShortData();
         } else {
@@ -214,8 +246,9 @@ switch ($uri){
                     $content="<div>".lng("email_verified")."</div><hr>".getLoginForm();
                 }
             } else {
-                $header = "Short Link - Autenticate";
-                $content=getLoginForm();
+                $header = "Short Link - Home";
+                $_SESSION["user"]=[];
+                $content=getIndexContent();          
             }
         }
         break;

@@ -29,7 +29,6 @@ function lng($key){
         case "information": return "Informations";
         case "front_reduced-link": return "Lien raccourci";
         case "front_link-to-shrink": return "Lien à raccourcir";
-        case "subjverifyemail":return "Vérification de l'adresse e-mail";
         case "error": return "Erreur";
         case "date": return "date";
         case "copy": return "copier";
@@ -58,7 +57,6 @@ function lng($key){
         case "database_generic_error": return "Erreur lors de l'enregistrement dans la base de données";
         case "front_incorrect-link": return "URI incorrect ou boucle URI (il n'est pas possible de raccourcir un lien <strong>".getenv("URI")."</strong>)";
         case "front_instr-small": return "Entrez le lien raccourci et appuyez sur le bouton « <strong>Informations</strong> » pour obtenir des détails sur le lien raccourci.";
-        case "check-email-body": return "<h1>Vérification de l'adresse e-mail</h1><p>Veuillez cliquer sur le lien suivant pour vérifier votre adresse e-mail :</p>{{link}}<p>Si vous n'avez pas demandé cette vérification, ignorez simplement cet e-mail.</p>";
         case "front_instructions": return '<p><strong>Ceci est un site pour créer des liens courts.</strong></p>
             <p>Cela signifie que vous me fournissez un lien long, et je vous renvoie un lien court qui peut remplacer l’original.</p>
             <h3>Comment ça marche ?</h3>
@@ -178,7 +176,12 @@ function lng($key){
         case "0uexist": return "<h2>Utilisateur d&eacute;j&agrave; pr&eacute;sent</h2><p>Bonjour, un utilisateur avec cette adresse e-mail existe d&eacute;j&agrave;. Avez-vous peut-&ecirc;tre <a href='/_pls_fnc_fgtpass'>oubli&eacute; votre mot de passe</a> ?</p>";
         case "email_not_verified": return "<h2>Attention</h2><p>Votre adresse e-mail n'a pas &eacute;t&eacute; v&eacute;rifi&eacute;e.<br>Veuillez v&eacute;rifier votre bo&icirc;te de r&eacute;ception et suivre les instructions pour finaliser votre inscription, merci.</p>";
         case "email_verified": return "<h2>Adresse e-mail v&eacute;rifi&eacute;e</h2><p>Votre adresse e-mail a &eacute;t&eacute; v&eacute;rifi&eacute";
-
+        case "email_needed": return "Pour pouvoir demander le changement du mot de passe, vous devez saisir votre adresse e-mail.";
+        case "subjchangepass":return "Changement de mot de passe";
+        case "subjverifyemail":return "Vérification de l'adresse e-mail";
+        case "change_pass_msg": return "<h2>Attention</h2><p>Vous avez demand&eacute; le changement du mot de passe&nbsp;; si votre adresse e-mail correspond &agrave; un utilisateur enregistr&eacute;, vous recevrez bient&ocirc;t un message &agrave; l'adresse <strong>{{email}}</strong> avec les instructions n&eacute;cessaires pour changer votre mot de passe.</p>";
+        case "chngpass-email-body": return "<h1>Changement de mot de passe</h1><p>Ch&egrave;re {{username}},<br>Une demande de changement de mot de passe a &eacute;t&eacute; effectu&eacute;e pour votre compte.<br>Si cette demande vous concerne, cliquez sur le lien suivant :</p>{{link}}<p>Si vous n&apos;avez pas effectu&eacute; cette demande, veuillez ignorer simplement cet e-mail.</p>";
+        case "check-email-body": return "<h1>Vérification de l'adresse e-mail</h1><p>Veuillez cliquer sur le lien suivant pour vérifier votre adresse e-mail :</p>{{link}}<p>Si vous n'avez pas demandé cette vérification, ignorez simplement cet e-mail.</p>";
         default: return "étiquette de langue $key inconnue...";
     }
 }

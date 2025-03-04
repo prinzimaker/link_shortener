@@ -19,73 +19,65 @@ NEED TO BE IMPLEMENTED!
 class SLUsers {
     private $_mng;
     private $_logged = false;
+    private $_data = [];
     
-    public function __construct($userId = "", $password = "") {
+    public function __construct($userId = "") {
         $db = new Database();
         $this->_mng = new UserManager(); // Potresti passarvi il database se necessario
-        if ($userId != "" && $password != "")
-            $this->load($userId, $password);
+        if ($userId != "" )
+            $this->load($userId,"",false);
     }
     
-    public function load($userId, $password = "") {
-        $_SESSION["loginerr"] = "";
-        $data = $this->_mng->getUserData($userId, true);
+    public function load($userId, $password = "",$dosess=true) {
+        if ($dosess) $_SESSION["loginerr"] = "";
+        $this->_data = $this->_mng->getUserData($userId, true);
         $this->_logged = true;
-        if ($data && $data !== false) {
+        if ($this->_data && $this->_data !== false) {
             if ($password != "")
-                $this->_logged = $this->_password_verify($password, $data['email'], $data['pass']);
+                $this->_logged = $this->_password_verify($password, $this->_data['email'], $this->_data['pass']);
         } else {
             $this->_logged = false;
         }
         if ($this->_logged){
-            if ($data['email_verified']>0){
-                $_SESSION["user"] = $data;
+            if ($this->_data['email_verified']>0){
+                if ($dosess) $_SESSION["user"] = $this->_data;
             } else {
-                $_SESSION["user"] = "NOTVF";
-                $_SESSION["loginerr"] = "email_not_verified";
+                if ($dosess) $_SESSION["user"] = "NOTVF";
+                if ($dosess) $_SESSION["loginerr"] = "email_not_verified";
                 $this->_logged = false;
             }
         }
-        else 
-            $_SESSION["user"] = "";
+        else {
+            if ($dosess) $_SESSION["user"] = "";
+        }
         
-        if (!$this->_logged && empty($_SESSION["loginerr"]))
-            $_SESSION["loginerr"] = "invalid_uid_or_pass";
+        if (!$this->_logged && $dosess && empty($_SESSION["loginerr"]))
+            if ($dosess) $_SESSION["loginerr"] = "invalid_uid_or_pass";
     }
     
     public function isLogged() {
         return $this->_logged;
     }
-    
-    public function register($email, $password) {
-        return $this->_mng->registerUser($email, $password);
-    }
-    
-    // Funzione per aggiornare i dati dell'utente (nome/descrizione ed email)
+        
     public function updateUserData($custId, $descr, $email) {
         $db = new Database();
         return $db->updateUserData($custId, $descr, $email);
     }
-    
-    // Funzione per il cambio password: verifica la vecchia password e, se corretta, aggiorna con quella nuova
-    public function changePassword($email, $newPassword) {
+
+    public function updateUserVerifyCode($verifyCode) {
         $db = new Database();
-        if ($this->_logged){
-            $userData = "";
-            if (isset($_SESSION["user"]))
-                $userData = $_SESSION["user"];
-            if (empty($userData)){
-                $this->_logged = false;
-            } else {
-                $newHash=$this->_createUserHash($email, $newPassword);
-                return $db->updateUserPassword($userData["cust_id"],$newHash);
-            }
+        return $db->updateUserVerifyCode($this->_data["cust_id"], $verifyCode);
+    }
+
+    // Funzione per il cambio password: verifica la vecchia password e, se corretta, aggiorna con quella nuova
+    public function changePassword($verifyCode, $newPassword) {
+        $db = new Database();
+        $res=$db->verifyUserCode($verifyCode);
+        if ($res[0]>0){
+            $newHash=$this->_createUserHash($res[1], $newPassword);
+            return $db->updateUserPassword($res[0],$newHash);
         }
         return false;
-    }
-    
-    public function sendVerificationEmail($email) {
-        return $this->_mng->sendVerificationEmail($email);
     }
     
     public function verifyEmailCode($emailCode) {

@@ -29,7 +29,6 @@ function lng($key){
         case "information":return "Information";
         case "front_reduced-link": return "Reduced link";
         case "front_link-to-shrink": return "Link to shrink";
-        case "subjverifyemail":return "Verify your email address";
         case "error": return "Error";
         case "date": return "date";
         case "copy": return "copy";
@@ -58,7 +57,6 @@ function lng($key){
         case "database_generic_error": return "Error during database registration";
         case "front_incorrect-link":return "Incorrect <strong>uri</strong> or loop-<strong>uri</strong> (isn't possible to shrink a <strong>".getenv("URI")."</strong> link)";
         case "front_instr-small": return "Enter the shortened link and press the <strong>Information</strong> button to get details about the shortened link.";
-        case "check-email-body": return "<h1>E-mail address verification</h1><p>Please click on the following link to make us known that this is your right e-mail address:</p>{{link}}<p>If you cannot ask for this verification, simply ignore this message.</p>";
         case "front_instructions": return '<p><strong>This is a website for creating short links.</strong></p>
             <p>It means that you provide me with a long link, and I return a short link that can replace the original one.</p>
             <h3>How does it work?</h3>
@@ -182,7 +180,13 @@ function lng($key){
         case "0uexist": return "<h2>User already exists</h2><p>Hello, a user with this email address already exists. Have you perhaps <a href='/_pls_fnc_fgtpass'>forgotten your password</a>?</p>";
         case "email_not_verified": return "<h2>Attention</h2><p>Your email address has not been verified.<br>Please check your inbox and follow the instructions to complete the registration, thank you.</p>";
         case "email_verified": return "<h2>Email verified</h2><p>Your email address has been verified.<br>You can now log in to the service, thank you.</p>";
-
+        case "change_pass": return "<h2>Password changed</h2><p>Your password has been changed successfully.<br>You can now log in to the service, thank you.</p>";
+        case "email_needed": return "To request a password change, you must enter your email address.";
+        case "subjverifyemail":return "Verify your email address";
+        case "subjchangepass":return "Password change request";
+        case "change_pass_msg": return "<h2>Attention</h2><p>You have requested a password change; if your email address corresponds to a registered user, you will shortly receive a message at the address <strong>{{email}}</strong> with the necessary instructions to change your password.</p>";
+        case "check-email-body": return "<h1>E-mail address verification</h1><p>Please click on the following link to make us known that this is your right e-mail address:</p>{{link}}<p>If you cannot ask for this verification, simply ignore this message.</p>";
+        case "chngpass-email-body": return "<h1>Password Change</h1><p>Dear {{username}},<br>A request has been made to change the password for your account.<br>If you made this request, please click on the following link:</p>{{link}}<p>If you did not make this request, simply ignore this email.</p>";
         default: return "unknown $key language label...";
     }
 }

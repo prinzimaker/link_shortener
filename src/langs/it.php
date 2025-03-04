@@ -27,7 +27,6 @@ function lng($key){
         case "front_insert-long": return "Inserisci qui il link lungo...";
         case "front_shorten": return "Riduci il link";
         case "change_pass_form":return "Modifica password";
-        case "subjverifyemail":return "Verifica il tuo indirizzo email";
         case "front_information":
         case "information":return "Informazioni";
         case "language":return "Language";
@@ -57,7 +56,6 @@ function lng($key){
         case "front_was-req":return "Ed &egrave; stato richiesto";
         case "geoloc": return "geolocalizazione";
         case "front_link-is": return "Il link originale &egrave;";
-        case "check-email-body": return "<h1>Verifica la tua Email</h1><p>Clicca sul seguente link per verificare il tuo indirizzo email:</p>{{link}}<p>Se non hai richiesto la registrazione, ignora questa email.</p>";
         case "front_instructions": return '<p><strong>Questo &egrave; un sito per la creazione di link corti.</strong></p>
                 <p>Vuol dire che tu mi passi un link lungo e io ti restituisco un link corto che pu&ograve; essere sostituito al link originale.</p>
                 <h3>Come funziona?</h3>
@@ -177,6 +175,12 @@ function lng($key){
         case "0uexist": return "<h2>Utente gi&agrave; presente</h2><p>Salve, esiste gi&agrave; un utente con questo indirizzo e-mail. Ha per caso <a href='/_pls_fnc_fgtpass'>dimenticato la password</a>?.</p>";
         case "email_not_verified": return "<h2>Attenzione</h2><p>Il suo indirizzo email non &egrave; stato verificato.<br>Controlli la sua casella di posta elettronica e segua le istruzioni per completare la registrazione, grazie.</p>";
         case "email_verified": return "<h2>Verifica completata</h2><p>Bene, il suo indirizzo email &egrave; stato verificato, acceda quindi con le sue credenziali.</p>";
+        case "email_needed":return "Per potere richiedere il cambio della password, devi inserire il tuo indirizzo email.";
+        case "subjverifyemail":return "Verifica il tuo indirizzo email";
+        case "subjchangepass":return "Richiesta cambio password";
+        case "change_pass_msg": return "<h2>Attenzione</h2><p>Ha richiesto il cambio della password, se il suo indirizzo e-mail corrisponde ad un utente registrato, ricever&agrave; a breve un messaggio all'indirizzo <strong>{{email}}</strong> con le istruzioni necessarie a cambiare la sua password.</p>";
+        case "check-email-body": return "<h1>Verifica la tua Email</h1><p>Clicca sul seguente link per verificare il tuo indirizzo email:</p>{{link}}<p>Se non hai richiesto la registrazione, ignora questa email.</p>";
+        case "chngpass-email-body": return "<h1>Cambio password</h1><p>Gentile {{username}},<br>&egrave; stato richiesto il cambio password del suo account.<br>Se la richiesta &egrave; sua, clicchi sul seguente link:</p>{{link}}<p>.Se non ha fatto questa richiesta, semplicemente ignori questa email.</p>";
         default: return "valore label $key sconosciuto...";
     }
 }

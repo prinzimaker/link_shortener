@@ -264,41 +264,40 @@ class Database {
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare($query);
         return $stmt->execute([
-            ':pass'   => $passHash,
+            ':passHash'   => $passHash,
             ':cust_id' => $custId
         ]);
     }
-    public function changePassword($email, $oldPassword, $newPassword) {
+    public function changePassword($email, $newPassword) {
         // Recupera l'hash della password corrente (campo "pass")
         $query = "SELECT pass FROM customers WHERE email = :email limit 1";
         
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([':email' => $email]);
-        $user = $stmt->fetch();
-        
-        // Se la vecchia password è corretta, aggiorna con quella nuova
-        if ($user && password_verify($oldPassword, $user['pass'])) {
-            $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
-            $updateQuery = "UPDATE customers SET pass = :newPass WHERE email = :email";
-            $stmt = $this->pdo->prepare($updateQuery);
-            return $stmt->execute([
-                ':newPass' => $newHash,
-                ':email'   => $email
-            ]);
-        }
-        return false;
+        $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
+        $updateQuery = "UPDATE customers SET pass = :newPass WHERE email = :email";
+        $stmt = $this->pdo->prepare($updateQuery);
+        return $stmt->execute([
+            ':newPass' => $newHash,
+            ':email'   => $email
+        ]);
     }
     public function verifyUserCode($emailCode){
         if (!isset($this->pdo)) $this->connect();
-        $stmt = $this->pdo->prepare("SELECT cust_id FROM customers WHERE email_verif_code = :code");
+        $stmt = $this->pdo->prepare("SELECT cust_id,email FROM customers WHERE email_verif_code = :code");
         $stmt->execute([':code' => $emailCode]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($user) {
             $updateStmt = $this->pdo->prepare("UPDATE customers SET email_verified = 1, email_verif_code = NULL, active = 1 WHERE cust_id = :id");
-            return $updateStmt->execute([':id' => $user['cust_id']]);
+            if ($updateStmt->execute([':id' => $user['cust_id']]))
+                return [$user['cust_id'],$user['email']];
         }
-        return false;
+        return [0,""];
+    }
+
+    public function updateUserVerifyCode($userId, $verifyCode){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("UPDATE customers SET email_verif_code = :code WHERE cust_id = :id");
+        return $stmt->execute([':code' => $verifyCode, ':id' => $userId]);
     }
  
     public function getApiKeyInfo($apiKey) {

@@ -27,7 +27,6 @@ function lng($key){
         case "front_insert-long": return "Inserta aqu&iacute; el enlace largo...";
         case "front_shorten":  return "Acortar enlace";
         case "change_pass_form": return "Cambiar contrase&ntilde;a";
-        case "subjverifyemail": return "Verifica tu direcci&oacute;n de correo";
         case "front_information":
         case "information": return "Informaci&oacute;n";
         case "language": return "Idioma";
@@ -57,7 +56,6 @@ function lng($key){
         case "front_was-req": return "Y ha sido solicitado";
         case "geoloc": return "geolocalizaci&oacute;n";
         case "front_link-is": return "El enlace original es";
-        case "check-email-body": return "<h1>Verifica tu correo electr&oacute;nico</h1><p>Haz clic en el siguiente enlace para verificar tu direcci&oacute;n de correo:</p>{{link}}<p>Si no solicitaste el registro, ignora este correo.</p>";
         case "front_instructions": return '<p><strong>Este es un sitio para la creaci&oacute;n de enlaces cortos.</strong></p>
                 <p>Significa que me pasas un enlace largo y yo te devuelvo un enlace corto que puede reemplazar al enlace original.</p>
                 <h3>&iquest;C&oacute;mo funciona?</h3>
@@ -178,6 +176,12 @@ function lng($key){
         case "0uexist": return "<h2>Usuario ya existente</h2><p>Hola, ya existe un usuario con este correo electr&oacute;nico. &iquest;Olvidaste <a href='/_pls_fnc_fgtpass'>la contrase&ntilde;a</a>?</p>";
         case "email_not_verified": return "<h2>Atenci&oacute;n</h2><p>Su direcci&oacute;n de correo electr&oacute;nico no ha sido verificada.<br>Por favor, revise su bandeja de entrada y siga las instrucciones para completar el registro, gracias.</p>";
         case "email_verified": return "<h2>Correo electr&oacute;nico verificado</h2><p>Su direcci&oacute;n de correo electr&oacute;nico ha sido verificada con &eacute;xito. Ahora puede iniciar sesi&oacute;n.</p>";
+        case "email_needed": return "Para poder solicitar el cambio de la contrase&ntilde;a, debes introducir tu direcci&oacute;n de correo electr&oacute;nico.";
+        case "subjchangepass":return "Cambio de contrase&ntilde;a";
+        case "subjverifyemail": return "Verifica tu direcci&oacute;n de correo";
+        case "change_pass_msg": return "<h2>Atenci&oacute;n</h2><p>Has solicitado el cambio de la contrase&ntilde;a; si tu direcci&oacute;n de correo electr&oacute;nico coincide con un usuario registrado, recibir&aacute;s en breve un mensaje en la direcci&oacute;n <strong>{{email}}</strong> con las instrucciones necesarias para cambiar tu contrase&ntilde;a.</p>";
+        case "chngpass-email-body": return "<h1>Changement de mot de passe</h1><p>Ch&egrave;re {{username}},<br>Une demande de changement de mot de passe a &eacute;t&eacute; effectu&eacute;e pour votre compte.<br>Si cette demande vous concerne, cliquez sur le lien suivant :</p>{{link}}<p>Si vous n&apos;avez pas effectu&eacute; cette demande, veuillez ignorer simplement cet e-mail.</p>";
+        case "check-email-body": return "<h1>Verifica tu correo electr&oacute;nico</h1><p>Haz clic en el siguiente enlace para verificar tu direcci&oacute;n de correo:</p>{{link}}<p>Si no solicitaste el registro, ignora este correo.</p>";
         default: return "valor de etiqueta $key desconocido...";
     }
 }

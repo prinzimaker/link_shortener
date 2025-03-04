@@ -72,18 +72,46 @@ class UserManager {
         return $local . '@' . $domain;
     }
     
-    public function manageForgotPassword(){
+    public function manageForgotPassword($extEmail="",$changeRequest=false) {
         $userData=[];
         if (isset($_SESSION["user"]))
             $userData=$_SESSION["user"];
-        if (isset($userData["email"])) {
-            //$user = $this->getUserData($uid);
-            return getForgotPasswordForm($userData["descr"]);
+        if (!$changeRequest && $extEmail!=""){
+            $extEmail=$this->normalizeEmail($extEmail);
+            $userData=$this->getUserData($extEmail);
+            if ($userData!==false){
+                $mmng=new MailManager();
+                $vrfyCode=$this->generateVerificationCode(6)."-".$this->generateVerificationCode(8).".".$this->generateVerificationCode(4);
+                if ($mmng->sendUserChangePassEmail($extEmail,$userData["descr"],$vrfyCode)){
+                    $US=new SLUsers($extEmail);
+                    $vrfyCode= preg_replace('/[^A-Z0-9]/', '', $vrfyCode);
+                    $US->updateUserVerifyCode($vrfyCode);
+                    return str_replace("{{email}}",$extEmail,lng("change_pass_msg"));
+                }
+                return "<h2>Unknown Error!</h2>";
+            }
         } else {
-            return "<h2>User not logged in!</h2>";
+            if ($changeRequest) {
+                $vrfyCode=$this->generateVerificationCode($length = 30);
+                $US=new SLUsers($extEmail);
+                $vrfyCode2= preg_replace('/[^A-Z0-9]/', '', $vrfyCode);
+                $US->updateUserVerifyCode($vrfyCode2);
+                return getForgotPasswordForm($userData["descr"],$vrfyCode);
+            } else {
+                return "<h2>User not logged in!</h2>";
+            }
         }
     }
 
+    function handleChangePass(){
+        $userNewPass=trim(isset($_POST["password"])?$_POST["password"]:"");
+        $vrfy=$vrfyCode2= preg_replace('/[^A-Z0-9]/', '', isset($_POST["verifycode"])?$_POST["verifycode"]:"");
+        if ($userNewPass=="" || $vrfy==""){
+            return false;
+        }
+        $US=new SLUsers();
+        return $US->changePassword($vrfy,$userNewPass);
+    }
     public function registerUser($email, $password, $descr = '') {
         $user=new SLUsers();
         $verificationCode=$this->generateVerificationCode();
@@ -112,9 +140,14 @@ class UserManager {
 
     public function verifyEmail($code) {
         $user=new SLUsers();
+        return $user->verifyEmailCode($code)[0]>0;
+    }
+    public function verifyPassLost($code) {
+        $user=new SLUsers();
         return $user->verifyEmailCode($code);
     }
 
+    /*
     public function changePassword($email, $oldPassword, $newPassword) {
         $user=new SLUsers();
         return $user->changePassword($email, $newPassword);
@@ -139,8 +172,8 @@ class UserManager {
             return $updateStmt->execute($updateParams);
         }
         return false;
-        */
-    }
+        
+    }*/
 }
 
 

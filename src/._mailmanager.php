@@ -59,8 +59,25 @@ class MailManager {
 
             $mail->addAddress($email);
             $mail->isHTML(true);
-            $mail->Subject = $sitename." - ".lng("subjverifyemail");
+            $mail->Subject = $sitename." - ".lng("subjverifyemail ");
             $mail->Body =str_replace("{{link}}",$link,lng("check-email-body"));
+            return $mail->send();
+        } 
+        return false;
+    }
+
+    public function sendUserChangePassEmail($email,$userDescr,$verificationCode){
+        $mail = $this->_prepareMailSend();
+        if ($mail!==false)
+        {
+            $sitename=rtrim(str_replace(["http://","https://"],["",""],getenv("URI")),"/");
+            $vLink = getenv("URI") . "/_pls_fnc_fgtpass?verify=" . $verificationCode;
+            $link="<a href='".$vLink."'>".$vLink."</a>";
+
+            $mail->addAddress($email);
+            $mail->isHTML(true);
+            $mail->Subject = $sitename." - ".lng("subjchangepass");
+            $mail->Body =str_replace(["{{link}}","{{username}}"],[$link,$userDescr],lng("chngpass-email-body"));
             return $mail->send();
         } 
         return false;

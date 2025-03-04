@@ -54,25 +54,61 @@ function getLoginForm($userid=""){
             <input type="password" class="input-text2" name="password" placeholder="'.lng("password").'" value="">
             <br><a class="forgotpass" href="/_pls_fnc_fgtpass">'.lng("forgot_pass").'</a></div>
         <button type="submit" class="btn btn-primary">'.lng("login").'</button>
+        <input id="fgtpass" type="hidden" name="forgot_password" value="">
     </form>
     <div class="err-message">'.$errMsg.'</div>
-</div><br>';
+</div><br>
+<script>
+    document.querySelector(".auth-form").addEventListener("submit", function(event) {
+        const passwordInput = document.querySelector("input[name=\'password\']").value.trim();
+        if (passwordInput === "") {
+            event.preventDefault();
+            return false;
+        }
+    });
+    document.querySelector(".forgotpass").addEventListener("click", function(event) {
+        event.preventDefault(); 
+        const useridInput = document.getElementById("userid").value.trim();
+        const fgtpassInput = document.getElementById("fgtpass");
+        const form = document.querySelector(".auth-form");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(useridInput)) {
+            fgtpassInput.value = useridInput;
+            form.action = "/_pls_fnc_fgtpass"; 
+            form.submit();
+        } else {
+            alert("'.lng("email_needed").'");
+        }
+    });
+</script>
+';
     return $ret;
 }
 
-function getForgotPasswordForm($user){
-    $ret="<div class='auth-div'><div class='login-header'><h3>".lng("change_pass_form")."</h3></div>
-    <form class='auth-form' action='_pls_fnc_forgotpass' method='post'>
-        <div class='form-group'>
-            <label for='userid'>".lng("user")."</label>
-            <input id='userid' type='text' class='input-text2' name='userid' placeholder='".lng("user")."' value=''>
-            <label for='pass1'>".lng("password")."</label>
-            <input id='pass1' type='password' class='input-text2' name='password1' value=''>
-            <label for='pass2'>".lng("repeat_password")."</label>
-            <input id='passe' type='password' class='input-text2' name='password2' value=''>
-        </div><button type='submit' class='btn btn-primary'>".lng("send")."</button>
-    </form></div>";
-    return $ret;
+function getForgotPasswordForm($userEmail,$verifyCode=""){
+    generateRandomIcons();
+    return "
+        <div class='data-div'>
+            <div class='login-header'>".$_SESSION["langButtons"]."<hr>&nbsp;<br><h3>".lng("change_pass_form")."</h3></div>
+            <form id='registrationForm' class='auth-form' action='_pls_fnc_forgotpass' method='post'>
+                <div class='form-group'>
+                    <label for='userid'>".lng("user")."</label>
+                    <div id='userid' type='text' class='input-text2'>".$userEmail."</div>
+                </div>
+                <div class='form-group'>
+                    <label for='password'>" . lng("password") . "</label>
+                    <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
+                        <input id='password' type='password' class='input-text2' name='password' placeholder='" . lng("password") . "' value=''>
+                    </td><td width='28%'><div class='input-text' 'background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
+                </div>
+                <div class='form-group'>
+                    <label for='password_confirm'>" . lng("repeat_password") . "</label>
+                    <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
+                        <input id='password_confirm' type='password' class='input-text2' name='password_confirm' placeholder='" . lng("repeat_password") . "' value=''>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
+                </div>
+                <input type='hidden' name='verifycode' value='".$verifyCode."'>
+"._addPassFormChecks();
 }
 
 function handleUserData() {
@@ -203,7 +239,12 @@ function getRegistrationForm($descr = "", $email = "")
                     </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
 
                 </div>
-                <input type='hidden' name='icon' id='icon' value=''>    
+"._addPassFormChecks();
+}
+
+function _addPassFormChecks(){
+    return "
+                    <input type='hidden' name='icon' id='icon' value=''>    
                 <div class='form-group' style='margin-top:10px;'><center>
                     <div><h3>".$_SESSION["_iconSelect"]."</h3></div>
                     <table><tr>
@@ -214,12 +255,12 @@ function getRegistrationForm($descr = "", $email = "")
                     <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=4' onclick='document.getElementById(\"opt4\").click()'></td><td>&nbsp;</td>    
                     <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=5' onclick='document.getElementById(\"opt5\").click()'></td>    
                     </tr><tr>
-                    <td class='icontd'><input onclick='document.getElementById(\"icon\").value=0' class='styled-radio' type='radio' id='opt0'><label for='opt0'></label></td><td>&nbsp;</td>    
-                    <td class='icontd'><input onclick='document.getElementById(\"icon\").value=1' class='styled-radio' type='radio' id='opt1'><label for='opt1'></label></td><td>&nbsp;</td>    
-                    <td class='icontd'><input onclick='document.getElementById(\"icon\").value=2' class='styled-radio' type='radio' id='opt2'><label for='opt2'></label></td><td>&nbsp;</td>    
-                    <td class='icontd'><input onclick='document.getElementById(\"icon\").value=3' class='styled-radio' type='radio' id='opt3'><label for='opt3'></label></td><td>&nbsp;</td>    
-                    <td class='icontd'><input onclick='document.getElementById(\"icon\").value=4' class='styled-radio' type='radio' id='opt4'><label for='opt4'></label></td><td>&nbsp;</td>    
-                    <td class='icontd'><input onclick='document.getElementById(\"icon\").value=5' class='styled-radio' type='radio' id='opt5'><label for='opt5'></label></td>       
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=0' class='styled-radio' type='radio' id='opt0'><label for='opt0'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=1' class='styled-radio' type='radio' id='opt1'><label for='opt1'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=2' class='styled-radio' type='radio' id='opt2'><label for='opt2'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=3' class='styled-radio' type='radio' id='opt3'><label for='opt3'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=4' class='styled-radio' type='radio' id='opt4'><label for='opt4'></label></td><td>&nbsp;</td>    
+                    <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=5' class='styled-radio' type='radio' id='opt5'><label for='opt5'></label></td>       
                     </tr></table></center>
                 </div>
                 <button type='submit' class='btn btn-primary'>" . lng("register") . "</button>
@@ -305,6 +346,7 @@ function getRegistrationForm($descr = "", $email = "")
     </script>
     ";
 }
+
 function getUserContent(){
     $userData="";
     if (isset($_SESSION["user"]))

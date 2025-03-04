@@ -29,7 +29,6 @@ function lng($key){
         case "information": return "Informationen";
         case "front_reduced-link": return "Gek&uuml;rzter Link";
         case "front_link-to-shrink": return "Zu k&uuml;rzender Link";
-        case "subjverifyemail":return "Verifiziere deine E-Mail-Adresse";
         case "error": return "Fehler";
         case "date": return "Datum";
         case "copy": return "kopieren";
@@ -55,7 +54,6 @@ function lng($key){
         case "change_link_code": return "Link-Code &auml;ndern";
         case "change": return "&Auml;ndern";
         case "code_exists": return "Dieser Kurzcode existiert bereits!";
-        case "check-email-body": return "<h1>E-Mail-Adressverifizierung</h1><p>Bitte klicken Sie auf den folgenden Link, um Ihre E-Mail-Adresse zu best&auml;tigen:</p>{{link}}<p>Wenn Sie diese E-Mail nicht angefordert haben, ignorieren Sie sie einfach.</p>";
         case "database_generic_error": return "Fehler bei der Registrierung in der Datenbank";
         case "front_incorrect-link": return "Ung&uuml;ltige <strong>URI</strong> oder Schleifen-<strong>URI</strong> (es ist nicht m&ouml;glich, einen <strong>".getenv("URI")."</strong>-Link zu k&uuml;rzen)";
         case "front_instr-small": return "Geben Sie den gek&uuml;rzten Link ein und dr&uuml;cken Sie die &laquo; <strong>Informationen</strong> &raquo;-Schaltfl&auml;che, um Details &uuml;ber den gek&uuml;rzten Link zu erhalten.";
@@ -192,6 +190,12 @@ function lng($key){
         case "0uexist": return "<h2>Benutzer bereits vorhanden</h2><p>Hallo, es existiert bereits ein Benutzer mit dieser E-Mail-Adresse. Haben Sie vielleicht <a href='/_pls_fnc_fgtpass'>Ihr Passwort vergessen</a>?</p>";
         case "email_not_verified": return "<h2>Achtung</h2><p>Ihre E-Mail-Adresse wurde nicht verifiziert.<br>Bitte &uuml;berpr&uuml;fen Sie Ihren Posteingang und folgen Sie den Anweisungen, um die Registrierung abzuschlie&szlig;en, danke.</p>";
         case "email_verified": return "<h2>Best&auml;tigung abgeschlossen</h2><p>Ihre E-Mail-Adresse wurde erfolgreich verifiziert. Sie k&ouml;nnen sich jetzt anmelden.</p>";
+        case "email_needed": return "Um eine Passwort&auml;nderung anfordern zu k&ouml;nnen, m&uuml;ssen Sie Ihre E-Mail-Adresse eingeben.";
+        case "subjchangepass":return "Passwort&auml;nderung";
+        case "subjverifyemail":return "Verifiziere deine E-Mail-Adresse";
+        case "change_pass_msg": return "<h2>Achtung</h2><p>Sie haben eine Passwort&auml;nderung angefordert; wenn Ihre E-Mail-Adresse einem registrierten Benutzer entspricht, erhalten Sie in K&uuml;rze eine Nachricht an die Adresse <strong>{{email}}</strong> mit den notwendigen Anweisungen, um Ihr Passwort zu &auml;ndern.</p>";
+        case "chngpass-email-body": return "<h1>Passwort&auml;nderung</h1><p>Sehr geehrte/r {{username}},<br>Es wurde eine Anfrage zur Passwort&auml;nderung Ihres Kontos gestellt.<br>Falls Sie diese Anfrage veranlasst haben, klicken Sie bitte auf den folgenden Link:</p>{{link}}<p>Falls Sie diese Anfrage nicht gestellt haben, ignorieren Sie bitte diese E-Mail.</p>";
+        case "check-email-body": return "<h1>E-Mail-Adressverifizierung</h1><p>Bitte klicken Sie auf den folgenden Link, um Ihre E-Mail-Adresse zu best&auml;tigen:</p>{{link}}<p>Wenn Sie diese E-Mail nicht angefordert haben, ignorieren Sie sie einfach.</p>";
         default: return "unbekanntes Sprachlabel $key...";
     }
 }
