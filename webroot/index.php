@@ -189,14 +189,21 @@ switch ($uri){
         //
         break;
     case "_pls_fnc_register":
-        if (!(!empty($userData) && is_array($userData) && $userData["active"]>0)){
-            $header = "Short Link User - Register";
-            $content=getRegistrationForm();
-            break;
+        $au=getenv("accept_users");
+        $au=filter_var($au==""?"true":$au, FILTER_VALIDATE_BOOLEAN); 
+        if ($au){
+            if (!(!empty($userData) && is_array($userData) && $userData["active"]>0)){
+                $header = "Short Link User - Register";
+                $content=getRegistrationForm();
+            } else {
+                $header = "Short Link - error";
+                $content="<h2>Unknown error!</h2><p>Can't register user.</p>";
+            }
         } else {
-            $header = "Short Link - error";
-            $content="<h2>Unknown error!</h2><p>Can't register user.</p>";
+            $header = "Short Link - users";
+            $content="<h2>No new users!</h2><p>This projcet does note accept new users.</p>";
         }
+        break;
     case "_pls_fnc_forgotpass":
         $UM=new UserManager();
         if ($UM->handleChangePass()){
@@ -347,7 +354,7 @@ function execRedirect($uri){
         */
         $res='<div class="container404"><div class="copy-container404 center-xy404"><p class="p404"><span style="font-size:2em;font-weight:900">'.$uri.' ???</span><br>410: Gone -or- page not found.</p><span class="handle404"></span></div></div>';
         http_response_code(410);
-        die( '<html class="html404"><head><title>Page not found (hex 32768)</title><link rel="stylesheet" type="text/css" href="/html/site.css"></head><body class="body404">'.$res.'</body></html>');
+        die( '<html class="html404"><head><title>Page not found (hex 32768)</title><link rel="stylesheet" type="text/css" href="/assets/site.css"></head><body class="body404">'.$res.'</body></html>');
         /*
             411 Length Required
             412 Precondition Failed

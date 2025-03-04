@@ -29,6 +29,7 @@ function lng($key){
         case "information": return "Informations";
         case "front_reduced-link": return "Lien raccourci";
         case "front_link-to-shrink": return "Lien à raccourcir";
+        case "link_limit-reached": return "Vous avez atteint le nombre maximum de liens qui peuvent &ecirc;tre cr&eacute;&eacute;s. Pour cr&eacute;er un nouveau lien, vous devez supprimer un existant.";
         case "error": return "Erreur";
         case "date": return "date";
         case "copy": return "copier";

@@ -356,7 +356,7 @@ input[type="radio"].styled-radio:checked + label {
     padding-bottom: 10px;
 }
 /*MODAL*/
-.modal{z-index: 500;width:400px;height:300px;display: flex;background-color: #fff;padding: 3px;position: fixed;top:0;bottom:0;left:0;right:0;margin: auto;box-shadow:2px 3px 5px #444;border-radius:10px;animation: blowUp 0.2s ease-out forwards;}
+.modal{z-index: 500;width:500px;height:400px;display: flex;background-color: #fff;padding: 3px;position: fixed;top:0;bottom:0;left:0;right:0;margin: auto;box-shadow:2px 3px 5px #444;border-radius:10px;animation: blowUp 0.2s ease-out forwards;}
 @keyframes blowUp {0% {transform: scale(0); opacity: 0;}100% {transform: scale(1); opacity: 1;}}
 .modal-content {width:96%;height: 80%;position: absolute;top: 10%;overflow: auto;padding: 30px 15px 15px 15px;}
 .modal-footer { border-radius:0 0 10px 10px;text-align: center;line-height: 60px;height: 60px;width:100%;position: absolute;left: 0;bottom: 0; background-color: #f0f0f0;padding-top: 10px;}

@@ -43,6 +43,7 @@ function lng($key){
         case "geoloc": return "geolocalisation";
         case "not-found": return "not found";
         case "unavailable_data": return "Unavailable data";
+        case "link_limit-reached": return "You have reached the maximum number of links that can be created. To create a new link, you must delete an existing one."; 
         case "front_link-is": return "The original link is";
         case "front_copied-link":return "Link copied";
         case "front_was-req":return "And was requested";

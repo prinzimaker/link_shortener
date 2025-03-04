@@ -147,6 +147,13 @@ class UserManager {
         return $user->verifyEmailCode($code);
     }
 
+    public function userLinkLimit($user_id){
+        $nxl=intval($this->_db->getCountLink($user_id));
+        $user=new SLUsers($user_id);
+        $mxl=intval($user->getData()["max_links"]);
+        return ($nxl+1)>=$mxl;
+    }
+
     /*
     public function changePassword($email, $oldPassword, $newPassword) {
         $user=new SLUsers();

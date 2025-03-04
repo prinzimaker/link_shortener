@@ -27,6 +27,7 @@ function lng($key){
         case "front_insert-long": return "Inserisci qui il link lungo...";
         case "front_shorten": return "Riduci il link";
         case "change_pass_form":return "Modifica password";
+        case "link_limit-reached": return "Hai raggiunto il numero massimo di link che possono essere creati. Per creare un nuovo link, devi eliminarne uno esistente.";
         case "front_information":
         case "information":return "Informazioni";
         case "language":return "Language";

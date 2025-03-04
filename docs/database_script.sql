@@ -49,7 +49,7 @@ create table customers (
 	PRIMARY KEY (cust_id),
 	UNIQUE (email)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-insert into customers (descr, email, pass, active, apikey,is_admin, max_links) values ('the administrator', 'Admin', '', true, 'APYKEY123456',true, 9999);
+insert into customers (descr, email, pass, active, apikey,is_admin, max_links,email_verified) values ('the administrator', 'youremail@example.com', '', true, 'APYKEY123456',true, 1,1);
 insert into link (short_id,full_uri,cust_id,sha_uri) values ('pls_about','https://github.com/prinzimaker/link_shortener',1,'AAA1');
 insert into link (short_id,full_uri,cust_id,sha_uri) values ('pls_redoc','https://redocly.github.io/redoc/?url=https://prinzimaker.github.io/link_shortener/openapi.yaml',1,'AAA2');
 insert into link (short_id,full_uri,cust_id,sha_uri) values ('pls_swagger','https://prinzimaker.github.io/link_shortener/',1,'AAA3');

@@ -37,6 +37,7 @@ function lng($key){
         case "change password": return "Cambiar contrase&ntilde;a";
         case "front_link-to-shrink": return "Enlace a acortar";
         case "front_insert-correct":  return "Inserta un enlace correcto antes de presionar &quot;<strong>".lng("front_shorten")."</strong>&quot;";
+        case "link_limit-reached": return "Has alcanzado el n&uacute;mero m&aacute;ximo de enlaces que se pueden crear. Para crear un nuevo enlace, debes eliminar uno existente.";
         case "error":  return "Error";
         case "front_copy-error": return "Error al copiar";
         case "front_link-created-on": return "Ha sido creado el";

@@ -24,10 +24,17 @@ class SLUsers {
     public function __construct($userId = "") {
         $db = new Database();
         $this->_mng = new UserManager(); // Potresti passarvi il database se necessario
-        if ($userId != "" )
-            $this->load($userId,"",false);
+        if ($userId != "" ){
+            if (is_numeric($userId))
+                $this->loadById($userId,"",false);
+            else
+                $this->load($userId,"",false);
+        }
     }
     
+    public function getData() {
+        return $this->_data;
+    }
     public function load($userId, $password = "",$dosess=true) {
         if ($dosess) $_SESSION["loginerr"] = "";
         $this->_data = $this->_mng->getUserData($userId, true);
@@ -54,7 +61,17 @@ class SLUsers {
         if (!$this->_logged && $dosess && empty($_SESSION["loginerr"]))
             if ($dosess) $_SESSION["loginerr"] = "invalid_uid_or_pass";
     }
-    
+
+    public function loadById($userId) {
+        $db = new Database();
+        $this->_data = $db->getUserById($userId);
+        $this->_logged = false;
+        if ($this->_data && $this->_data !== false) {
+            $this->_logged = true;
+        }
+        return $this->_data;
+    }
+
     public function isLogged() {
         return $this->_logged;
     }

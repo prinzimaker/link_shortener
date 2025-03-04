@@ -230,14 +230,13 @@ function getRegistrationForm($descr = "", $email = "")
                     <label for='password'>" . lng("password") . "</label>
                     <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
                         <input id='password' type='password' class='input-text2' name='password' placeholder='" . lng("password") . "' value=''>
-                    </td><td width='28%'><div class='input-text' 'background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
                 </div>
                 <div class='form-group'>
                     <label for='password_confirm'>" . lng("repeat_password") . "</label>
                     <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
                         <input id='password_confirm' type='password' class='input-text2' name='password_confirm' placeholder='" . lng("repeat_password") . "' value=''>
                     </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
-
                 </div>
 "._addPassFormChecks();
 }
@@ -248,12 +247,12 @@ function _addPassFormChecks(){
                 <div class='form-group' style='margin-top:10px;'><center>
                     <div><h3>".$_SESSION["_iconSelect"]."</h3></div>
                     <table><tr>
-                    <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=0' onclick='document.getElementById(\"opt0\").click()'></td><td>&nbsp;</td>    
-                    <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=1' onclick='document.getElementById(\"opt1\").click()'></td><td>&nbsp;</td>    
-                    <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=2' onclick='document.getElementById(\"opt2\").click()'></td><td>&nbsp;</td>    
-                    <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=3' onclick='document.getElementById(\"opt3\").click()'></td><td>&nbsp;</td>    
-                    <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=4' onclick='document.getElementById(\"opt4\").click()'></td><td>&nbsp;</td>    
-                    <td><img class='iconbtn' src='https://flu.lu/_create_icon?icon=5' onclick='document.getElementById(\"opt5\").click()'></td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=0' onclick='document.getElementById(\"opt0\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=1' onclick='document.getElementById(\"opt1\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=2' onclick='document.getElementById(\"opt2\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=3' onclick='document.getElementById(\"opt3\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=4' onclick='document.getElementById(\"opt4\").click()'></td><td>&nbsp;</td>    
+                    <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=5' onclick='document.getElementById(\"opt5\").click()'></td>    
                     </tr><tr>
                     <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=0' class='styled-radio' type='radio' id='opt0'><label for='opt0'></label></td><td>&nbsp;</td>    
                     <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=1' class='styled-radio' type='radio' id='opt1'><label for='opt1'></label></td><td>&nbsp;</td>    
@@ -265,26 +264,47 @@ function _addPassFormChecks(){
                 </div>
                 <button type='submit' class='btn btn-primary'>" . lng("register") . "</button>
             </form>
-        </div>
+        </div>"._addPassFormScripts("registrationForm");
+}
+function _addPassFormScripts($formName){
+    return "
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('registrationForm').addEventListener('submit', function(e) {
-                var userid   = document.getElementById('descr').value.trim();
-                var email    = document.getElementById('email').value.trim();
+            document.getElementById('".$formName."').addEventListener('submit', function(e) {
+                var userid ='';
+                var nouserid=false;
+                var email ='';
+                var noemail=false;
+                var icon ='';
+                var noicon=false;
+                if (document.getElementById('descr'))
+                    userid = document.getElementById('descr').value.trim();
+                else
+                    nouserid=true;
+                if (document.getElementById('email'))
+                    email = document.getElementById('email').value.trim();
+                else
+                    noemail=true;
                 var password = document.getElementById('password').value.trim();
-                var icon     = document.getElementById('icon').value.trim();
+                var passwordConfirm = document.getElementById('password_confirm').value.trim();
+                if (document.getElementById('icon'))
+                    icon = document.getElementById('icon').value.trim();
+                else
+                    noicon=true;
                 var errorMessages = [];
-                if (userid === '') 
-                    errorMessages.push(\"".lng("0uid")."\");
-                if (email === '') 
+                if (userid === '' & !nouserid) 
+                    errorMessages.push(\"".lng("0nouid")."\");
+                if (email === '' & !noemail) 
                     errorMessages.push(\"".lng("0noemail")."\");
                 if (password === '')
                     errorMessages.push(\"".lng("0nopass")."\");
-                if (icon === '') 
+                if (icon === '' & !noicon) 
                     errorMessages.push(\"".lng("0nospam")."\");
-                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (email !== '' && !emailPattern.test(email)) 
-                    errorMessages.push(\"".lng("0invemail")."\");
+                if (!noemail){
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (email !== '' && !emailPattern.test(email)) 
+                        errorMessages.push(\"".lng("0invemail")."\");
+                }
                 if (password !== '' && password.length < 8) 
                     errorMessages.push(\"".lng("0smallpass")."\");
                 if (errorMessages.length > 0) {
@@ -365,18 +385,29 @@ function getUserContent(){
             });
         </script>
         <div id="modal" class="modal hidden appear">
-            <div class="modal-header">
-                TITLE
-                <span class="modal-closer" onclick="closemodal()">&times;</span>
-            </div>
-            <div class="modal-content">
-                BODY<br>
-                BUDY
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary">OK</button>
-            </div>
+            <form id="changePassForm" class="auth-form" action="_pls_fnc_register" method="post">
+                <div class="modal-header">
+                    '.strtoupper(lng("change_pass_form")).'
+                    <span class="modal-closer" onclick="closemodal()">&times;</span>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label for="password">' . lng("password") . '</label>
+                        <input id="password" type="password" class="input-text2" name="password" value=""><br>
+                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordStrength" ></div>   
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm">' . lng("repeat_password") . '</label>
+                        <input id="password_confirm" type="password" class="input-text2" name="password_confirm" value=""><br>
+                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordMatchMessage"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Change Password">
+                </div>
+            </form>
         </div>
+'._addPassFormScripts("changePassForm").'
         <div class="alert alert-info">
             <table width="100%"><tr><td width="50%">
                 <label for="userid">'.lng("user").'</label><br>
@@ -466,7 +497,7 @@ function checkIfSelfUri($uri) {
 }
 
 function getFavicon(){  
-    $ret=file_get_contents("html/logo_icon.png");
+    $ret=file_get_contents("assets/logo_icon.png");
     return $ret;
 }
 

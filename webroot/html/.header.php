@@ -30,14 +30,14 @@ else
 ?><html>
     <head>
         <title><?php echo $_SESSION["pageTitle"]; ?></title>
-        <link rel="stylesheet" type="text/css" href="/html/site.css">
-        <script src="/html/site.js"></script>
+        <link rel="stylesheet" type="text/css" href="/assets/site.css">
+        <script src="/assets/site.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     </head>
     <body>
         <div>
             <table class="header" border=0 width="100%"><tr>
-                <td width="38%" align="right" style="padding-right:10px"><img src="/html/logo_front.png"></td>
+                <td width="38%" align="right" style="padding-right:10px"><img alt='logo' src="/assets/logo_front.png"></td>
                 <td width="48%" align="left"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
                 <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td>
             </tr>

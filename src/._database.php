@@ -177,6 +177,13 @@ class Database {
         $stmt->execute(['code' => $linkcode, 'uri' => $uri, 'cust_id'=>$user_id , 'shuri' => hash("sha512", $user_id."!".$uri)]);
     }
 
+    function getCountLink($user_id){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("select count(distinct(short_id)) as cnt from link where cust_id=:cust_id");
+        $stmt->execute(['cust_id' => $user_id]);
+        $result = $stmt->fetch();
+        return $result["cnt"];
+    }
     function getShortlinkInfo($short_id, $cust_id){
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare("SELECT * FROM link WHERE short_id = :short_id and cust_id= :cust_id LIMIT 1");
@@ -234,6 +241,14 @@ class Database {
         return $this->getUserData($apiKey, $allData,1);
     }
 
+    public function getUserById($userId) {
+        $query = "SELECT cust_id, descr, email, pass, apikey, email_verified, email_verif_code, active, is_admin, max_links FROM customers WHERE cust_id = :id";
+        $params = [':id' => $userId];
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetch();
+    }
     public function createUser($descr,$email,$passHash,$apiKey,$verificationCode) {
         $query = "INSERT INTO customers (descr, email, pass, apikey, email_verif_code, email_verified, active, is_admin, max_links)
         VALUES (:descr, :email, :pass, :apikey, :verif_code, 0, 0, 0, 10)";
