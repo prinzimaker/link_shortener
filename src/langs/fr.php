@@ -176,7 +176,9 @@ function lng($key){
         case "0strong": return "Fort";
         case "0regok": return "<h2>Inscription termin&eacute;e avec succ&egrave;s</h2><p>Nous avons envoy&eacute; un e-mail de v&eacute;rification &agrave; l'adresse {{email}}. Veuillez v&eacute;rifier votre bo&icirc;te de r&eacute;ception et suivre les instructions pour finaliser votre inscription.</p>";
         case "0uexist": return "<h2>Utilisateur d&eacute;j&agrave; pr&eacute;sent</h2><p>Bonjour, un utilisateur avec cette adresse e-mail existe d&eacute;j&agrave;. Avez-vous peut-&ecirc;tre <a href='/_pls_fnc_fgtpass'>oubli&eacute; votre mot de passe</a> ?</p>";
-        
+        case "email_not_verified": return "<h2>Attention</h2><p>Votre adresse e-mail n'a pas &eacute;t&eacute; v&eacute;rifi&eacute;e.<br>Veuillez v&eacute;rifier votre bo&icirc;te de r&eacute;ception et suivre les instructions pour finaliser votre inscription, merci.</p>";
+        case "email_verified": return "<h2>Adresse e-mail v&eacute;rifi&eacute;e</h2><p>Votre adresse e-mail a &eacute;t&eacute; v&eacute;rifi&eacute";
+
         default: return "étiquette de langue $key inconnue...";
     }
 }

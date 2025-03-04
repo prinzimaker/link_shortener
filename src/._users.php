@@ -28,6 +28,7 @@ class SLUsers {
     }
     
     public function load($userId, $password = "") {
+        $_SESSION["loginerr"] = "";
         $data = $this->_mng->getUserData($userId, true);
         $this->_logged = true;
         if ($data && $data !== false) {
@@ -36,12 +37,19 @@ class SLUsers {
         } else {
             $this->_logged = false;
         }
-        if ($this->_logged)
-            $_SESSION["user"] = $data;
+        if ($this->_logged){
+            if ($data['email_verified']>0){
+                $_SESSION["user"] = $data;
+            } else {
+                $_SESSION["user"] = "NOTVF";
+                $_SESSION["loginerr"] = "email_not_verified";
+                $this->_logged = false;
+            }
+        }
         else 
             $_SESSION["user"] = "";
         
-        if (!$this->_logged)
+        if (!$this->_logged && empty($_SESSION["loginerr"]))
             $_SESSION["loginerr"] = "invalid_uid_or_pass";
     }
     

@@ -190,6 +190,8 @@ function lng($key){
         case "0strong": return "Stark";
         case "0regok": return "<h2>Registrierung erfolgreich abgeschlossen</h2><p>Wir haben eine Best&auml;tigungs-E-Mail an die Adresse {{email}} gesendet. Bitte &uuml;berpr&uuml;fen Sie Ihren Posteingang und folgen Sie den Anweisungen, um die Registrierung abzuschlie&szlig;en.</p>";
         case "0uexist": return "<h2>Benutzer bereits vorhanden</h2><p>Hallo, es existiert bereits ein Benutzer mit dieser E-Mail-Adresse. Haben Sie vielleicht <a href='/_pls_fnc_fgtpass'>Ihr Passwort vergessen</a>?</p>";
+        case "email_not_verified": return "<h2>Achtung</h2><p>Ihre E-Mail-Adresse wurde nicht verifiziert.<br>Bitte &uuml;berpr&uuml;fen Sie Ihren Posteingang und folgen Sie den Anweisungen, um die Registrierung abzuschlie&szlig;en, danke.</p>";
+        case "email_verified": return "<h2>Best&auml;tigung abgeschlossen</h2><p>Ihre E-Mail-Adresse wurde erfolgreich verifiziert. Sie k&ouml;nnen sich jetzt anmelden.</p>";
         default: return "unbekanntes Sprachlabel $key...";
     }
 }

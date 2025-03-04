@@ -175,7 +175,8 @@ function lng($key){
         case "0strong": return "Sicura";
         case "0regok": return "<h2>Registrazione completata con successo</h2><p>Abbiamo inviato un'email di verifica all'indirizzo {{email}}. Controlla la tua casella di posta elettronica e segui le istruzioni per completare la registrazione.</p>";
         case "0uexist": return "<h2>Utente gi&agrave; presente</h2><p>Salve, esiste gi&agrave; un utente con questo indirizzo e-mail. Ha per caso <a href='/_pls_fnc_fgtpass'>dimenticato la password</a>?.</p>";
-        
+        case "email_not_verified": return "<h2>Attenzione</h2><p>Il suo indirizzo email non &egrave; stato verificato.<br>Controlli la sua casella di posta elettronica e segua le istruzioni per completare la registrazione, grazie.</p>";
+        case "email_verified": return "<h2>Verifica completata</h2><p>Bene, il suo indirizzo email &egrave; stato verificato, acceda quindi con le sue credenziali.</p>";
         default: return "valore label $key sconosciuto...";
     }
 }

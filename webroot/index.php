@@ -111,20 +111,32 @@ switch ($uri){
         $usr=trim($_POST["userid"]);
         if ((is_string($pwd) && strlen($pwd)<20 && strlen($pwd)>7) 
         && (is_string($usr) && strlen($usr)<60 && strlen($usr)>5)){
+            $UM=new UserManager();
             $_SESSION["user"]=[];
-            $user=new SLUsers($usr,$pwd);
+            //$user=new SLUsers($usr,$pwd);
+            $user=$UM->authenticate($usr,$pwd);
             if ($user->isLogged()){
                 if (stripos($back,"/_pls_fnc_login")!==false)
                     $back="/";
-                if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="")
+                if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="" ||(isset($_SESSION["dvalu"]) && stripos($_SESSION["dvalu"],"_pls_fnc_login")!==false))
                     header("Location: ".$back, true);
                 else
                     header("Location: ".$_SESSION["dvalu"], true);
                 exit();
-            } else 
-                $content=getLoginForm($usr);
-        } else 
-            $content=getLoginForm("");
+            } else {
+                /*
+                if ($_SESSION["user"] == "NOTVF"){
+                    $content="<div>".lng($_SESSION["loginerr"])."</div><hr>";
+                }*/
+            }
+            $content=getLoginForm($usr);
+        } else { 
+            if (!empty($userData) && $userData["active"]>0){
+                $header = "Short Link - Link info";
+                $content=getShortenContent($newuri)."<br>&nbsp;<br>".getUserContent();
+            } else
+                $content=getLoginForm("");
+        }
         break;
     case "_pls_fnc_changecode":
         if (!empty($userData) && $userData["active"]>0){
@@ -189,11 +201,22 @@ switch ($uri){
     case "index.htm":
     case "index.php":
     case "_pls_fnc_user":
-        if (!empty($userData) && $userData["active"]>0){
+        $content=getIndexContent();
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - User";
             $content=getShortenContent($newuri)."<br>&nbsp;<br>".getUserContent();
         } else {
-            $content=getIndexContent();
+            if (isset($_GET["verify"])){
+                $UM=new UserManager();
+                $VFC= preg_replace('/[^A-Z0-9]/', '', $_GET["verify"]);
+                if ($UM->verifyEmail($VFC)){
+                    $header = "Short Link - Autenticate";
+                    $content="<div>".lng("email_verified")."</div><hr>".getLoginForm();
+                }
+            } else {
+                $header = "Short Link - Autenticate";
+                $content=getLoginForm();
+            }
         }
         break;
     case "favicon":

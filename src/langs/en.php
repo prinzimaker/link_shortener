@@ -180,6 +180,9 @@ function lng($key){
         case "0strong":return "Strong";
         case "0regok": return "<h2>Registration completed successfully</h2><p>We have sent a verification email to the address {{email}}. Please check your inbox and follow the instructions to complete your registration.</p>";
         case "0uexist": return "<h2>User already exists</h2><p>Hello, a user with this email address already exists. Have you perhaps <a href='/_pls_fnc_fgtpass'>forgotten your password</a>?</p>";
+        case "email_not_verified": return "<h2>Attention</h2><p>Your email address has not been verified.<br>Please check your inbox and follow the instructions to complete the registration, thank you.</p>";
+        case "email_verified": return "<h2>Email verified</h2><p>Your email address has been verified.<br>You can now log in to the service, thank you.</p>";
+
         default: return "unknown $key language label...";
     }
 }

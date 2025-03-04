@@ -295,7 +295,7 @@ class Database {
         $stmt->execute([':code' => $emailCode]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($user) {
-            $updateStmt = $stmt->prepare("UPDATE customers SET email_verified = 1, email_verif_code = NULL, active = 1 WHERE cust_id = :id");
+            $updateStmt = $this->pdo->prepare("UPDATE customers SET email_verified = 1, email_verif_code = NULL, active = 1 WHERE cust_id = :id");
             return $updateStmt->execute([':id' => $user['cust_id']]);
         }
         return false;

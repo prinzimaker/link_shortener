@@ -31,6 +31,13 @@ class UserManager {
         return $this->_db->getUserData($email,$allData); 
     }
 
+    public function authenticate($email,$password) {
+        $SLUsers=new SLUsers();
+        $email=$this->normalizeEmail($email);
+        $res=$SLUsers->load($email,$password);
+        return $SLUsers;
+    }
+
     public function checkUserApi($apiKey) {
         $data=$this->_db->getUserByApiKey($apiKey);
         return (!empty($data) && $data['active']>0);
@@ -88,7 +95,7 @@ class UserManager {
     public function sendVerificationEmail($email,$verificationCode="") {
         $mmng=new MailManager();
         if (empty($verificationCode))
-            $verificationCode=$this->generateVerificationCode();
+            $verificationCode=$this->generateVerificationCode(6)."-".$this->generateVerificationCode(8).".".$this->generateVerificationCode(4);
         return $mmng->sendUserVerificationEmail($email,$verificationCode);
     }
 

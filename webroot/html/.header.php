@@ -22,7 +22,7 @@ v1.3.0 - Aldo Prinzi - 24 Jan 2025
 $userData="";
 if (isset($_SESSION["user"]))
     $userData=$_SESSION["user"];
-if (empty($userData))
+if (empty($userData) || !is_array($userData))
     $userLink="href='/_pls_fnc_login' class='nav-item btn btn-warning btn-small'>Login";
 else
     $userLink="href='/_pls_fnc_user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong>";
@@ -37,8 +37,8 @@ else
     <body>
         <div>
             <table class="header" border=0 width="100%"><tr>
-                <td width="40%" align="right" style="padding-right:10px"><img src="/html/logo_front.png"></td>
-                <td width="50%" align="left"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
+                <td width="38%" align="right" style="padding-right:10px"><img src="/html/logo_front.png"></td>
+                <td width="48%" align="left"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
                 <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td>
             </tr>
             <tr>
