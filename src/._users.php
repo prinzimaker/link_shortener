@@ -26,7 +26,7 @@ class SLUsers {
         $this->_mng = new UserManager(); // Potresti passarvi il database se necessario
         if ($userId != "" ){
             if (is_numeric($userId))
-                $this->loadById($userId,"",false);
+                $this->loadById($userId);
             else
                 $this->load($userId,"",false);
         }

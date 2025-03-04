@@ -32,10 +32,10 @@ class UserManager {
     }
 
     public function authenticate($email,$password) {
-        $SLUsers=new SLUsers();
+        $user=new SLUsers();
         $email=$this->normalizeEmail($email);
-        $res=$SLUsers->load($email,$password);
-        return $SLUsers;
+        $user->load($email,$password);
+        return $user->getData();
     }
 
     public function checkUserApi($apiKey) {

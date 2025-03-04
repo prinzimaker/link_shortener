@@ -144,7 +144,7 @@ function handleUserData() {
             $oldPassword = isset($_POST['oldPassword']) ? trim($_POST['oldPassword']) : "";
             $newPassword = isset($_POST['newPassword']) ? trim($_POST['newPassword']) : "";
             
-            if ($userObj->changePassword($_SESSION["user"]["email"], $oldPassword, $newPassword)) {
+            if ($userObj->changePassword($_SESSION["user"]["email"],  $newPassword)) {
                 $msg .= "<div class='alert alert-success'>Password cambiata con successo.</div>";
             } else {
                 $msg .= "<div class='alert alert-danger'>Errore nel cambio password. Verifica la vecchia password.</div>";
