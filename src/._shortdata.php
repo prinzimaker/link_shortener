@@ -57,6 +57,7 @@ function getShortInfoDisplay($cust_id,$puri=""){
                     <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
                     <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js'></script>
                     <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest/dist/chartjs-plugin-zoom.min.js'></script>
+                    <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js'></script>
                     <div class='alert alert-info'><table width='100%'><tr><td width=85%>
                     <label>".lng("front_link-is").":</label><input type='text' class='input-text' id='originalLink' value='".$res["full_uri"]."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>".lng("copy")."</button>
                     <script>function copyShortLink(){var copyText=document.getElementById('originalLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>
@@ -67,12 +68,28 @@ function getShortInfoDisplay($cust_id,$puri=""){
                     <div class='tab__content'><p>".$hret."</p>
                     </div><div class='tab'><input type='radio' name='accordion-2' id='rd3'><label for='rd3' class='tab__close'>".lng('close')." &times;</label></div></div></section>
                     <div style='display:none' id='chartData'>".getStatisticData($db,$puri)."</div>
-                    <div style='max-width:97%; width:90%; margin-top: 20px; height:440px; max-height:450px'>
-                        <canvas id='myChart' width='1000' height='440'></canvas>
-                    </div>
+                    <div style='max-width:97%; width:90%; margin-top: 20px;'>
+                        <div style='height:440px; max-height:450px'>
+                            <canvas id='visitsTrendChart'></canvas>
+                        </div>
+                        <div style='display: flex; justify-content: space-between; margin-top: 20px;'>
+                            <div style='width: 48%; height: 500px;'>
+                                <canvas id='myChart' width='1000' height='390'></canvas>
+                            </div>
+                            <div style='width: 24%; height: 500px;'>
+                                <canvas id='deviceChart'></canvas>
+                            </div>
+                            <div style='width: 24%; height: 500px;'>
+                                <canvas id='sourceChart'></canvas>
+                            </div>
+                        </div>
+                    </div>";
+                    $content3="
                     <script>
+                        Chart.register(ChartDataLabels);
+                        //Chart.register(dateFnsAdapter);
                         const ctx = document.getElementById('myChart').getContext('2d');
-                        const chartData = JSON.parse(document.getElementById('chartData').textContent); 
+                        const chartData = JSON.parse(document.getElementById('chartData').textContent);
                         const data = {
                             datasets: [{
                                 label: '".lng("per_fasce_orarie")."',
@@ -81,7 +98,7 @@ function getShortInfoDisplay($cust_id,$puri=""){
                                 data: chartData.map(entry => ({
                                     x: entry.day,
                                     y: entry.time_part,
-                                    r: Math.sqrt(entry.call_count) * 1.1 
+                                    r: Math.sqrt(entry.call_count) * 1.1
                                 }))
                             }]
                         };
@@ -90,19 +107,29 @@ function getShortInfoDisplay($cust_id,$puri=""){
                             data: data,
                             options: {
                                 plugins: {
-                                    zoom: {zoom: {
+                                    zoom: {
+                                        zoom: {
                                             wheel: {enabled: true},
                                             pinch: {enabled: true},
                                             mode: 'xyz',
-                                        }}
+                                        }
                                     },
-                                    scales: {
-                                    x: {type: 'time',time: {unit: 'day'},title: {display: true,text: '".lng("giorno")."'}},
+                                    datalabels: {display: false},
+                                },
+                                scales: {
+                                    x: {type: 'time',
+                                        time: {unit: 'day'},
+                                        title: {display: true,text: '".lng("giorno")."'}
+                                    },
                                     y: {type: 'linear',
                                         title: {display: true,text: '".lng("daypart")."'},
                                         ticks: {
                                             beginAtZero: true,
-                                            callback: function(value) {if (value === 1) return '".lng("notte")."';if (value === 2) return '".lng("giorno")."';if (value === 3) return '".lng("sera")."';}
+                                            callback: function(value) {
+                                                if (value === 1) return '".lng("notte")."';
+                                                if (value === 2) return '".lng("giorno")."';
+                                                if (value === 3) return '".lng("sera")."';
+                                            }
                                         },
                                         suggestedMin: 1,
                                         suggestedMax: 3
@@ -111,9 +138,100 @@ function getShortInfoDisplay($cust_id,$puri=""){
                             }
                         };
                         new Chart(ctx, config);
-                        Chart.register(ChartDataLabels); 
-                        Chart.register(dateFnsAdapter);
+                        // 1. Andamento delle visite (Line Chart)
+                        const visitsTrendCtx = document.getElementById('visitsTrendChart').getContext('2d');
+                        const visitsData = chartData.reduce((acc, entry) => {
+                            acc[entry.day] = (acc[entry.day] || 0) + entry.call_count;
+                            return acc;
+                        }, {});
+                        const visitsTrendConfig = {
+                            type: 'line',
+                            data: {
+                                labels: Object.keys(visitsData),
+                                datasets: [{
+                                    label: 'Daily Visits',
+                                    data: Object.values(visitsData),
+                                    borderColor: '#237093',
+                                    backgroundColor: 'rgba(35, 112, 147, 0.2)',
+                                    fill: true,
+                                    tension: 0.4 
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    datalabels:{display:false}
+                                },
+                                scales: {
+                                    x: {
+                                        type: 'time',
+                                        time: { unit: 'day' },
+                                        title: { display: true, text: 'Date' }
+                                    },
+                                    y: {
+                                        title: { display: true, text: 'Number of Clicks' },
+                                        min: 0,              
+                                        suggestedMax: Math.max(...Object.values(visitsData)) + 10, // Massimo dinamico
+                                        ticks: {
+                                            stepSize: 10,    
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        new Chart(visitsTrendCtx, visitsTrendConfig);
+                        // 2. Accessi per dispositivo (Pie Chart)
+                        const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+                        const deviceData = Array.from(document.querySelectorAll('.tab__content tbody tr')).reduce((acc, row) => {
+                            const device = row.cells[3].textContent.trim();
+                            if (device.includes('pc')) acc.pc++;
+                            else if (device.includes('phone')) acc.phone++;
+                            else acc.unknown++;
+                            return acc;
+                        }, { pc: 0, phone: 0, unknown: 0 });
+                        const deviceConfig = {
+                            type: 'pie',
+                            data: {
+                                labels: ['PC', 'Phone', 'Unknown'],
+                                datasets: [{
+                                    data: [deviceData.pc, deviceData.phone, deviceData.unknown],
+                                    backgroundColor: ['#237093', '#93A0FF', '#CCCCCC']
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    title: { display: true, text: 'Clicks by Device' }
+                                }
+                            }
+                        };
+                        new Chart(deviceCtx, deviceConfig);
+                        // 3. Sorgenti delle visite (Bar Chart)
+                        const sourceCtx = document.getElementById('sourceChart').getContext('2d');
+                        const sourceData = Array.from(document.querySelectorAll('.tab__content tbody tr')).reduce((acc, row) => {
+                            const source = row.cells[3].textContent.trim();
+                            acc[source] = (acc[source] || 0) + 1;
+                            return acc;
+                        }, {});
+                        const sourceConfig = {
+                            type: 'bar',
+                            data: {
+                                labels: Object.keys(sourceData),
+                                datasets: [{
+                                    label: 'Clicks by Source',
+                                    data: Object.values(sourceData),
+                                    backgroundColor: '#237093'
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: { beginAtZero: true, title: { display: true, text: 'Number of Clicks' } }
+                                }
+                            }
+                        };
+                        new Chart(sourceCtx, sourceConfig);
                     </script>";
+                    $content.=$content3;
+
                 }
             }
         } else {
