@@ -13,6 +13,13 @@ function lng($key){
         case "password": return "Password";
         case "login": return "Accedi";
         case "send": return "Invia";
+        case "giorno": return "Giorno";
+        case "notte": return "Notte";
+        case "sera": return "Sera";
+        case "daypart": return "Parte del giorno";
+        case "per_fasce_orarie": return "Per fasce orarie";
+        case "device": return "Dispositivo"; 
+        case "source": return "Fonte";
         case "register": return "Registrati";
         case "repeat_password": return "Ripeti password";
         case "email": return "Indirizzo e-mail";

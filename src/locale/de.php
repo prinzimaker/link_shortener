@@ -17,6 +17,12 @@ function lng($key){
         case "repeat_password": return "Passwort wiederholen";
         case "email": return "E-Mail-Adresse";
         case "verify": return "&Uuml;berpr&uuml;fen";
+        case "giorno": return "Tag";
+        case "notte": return "Nacht";
+        case "sera": return "Abend";
+        case "per_fasce_orarie": return "Nach Zeitfenstern";
+        case "device": return "Ger&auml;t";
+        case "source": return "Quelle";
         case "user_registration": return "Benutzerregistrierung";
         case "autentication": return "Authentifizierung";
         case "forgot_pass": return "Ich habe mein Passwort vergessen";
@@ -32,7 +38,7 @@ function lng($key){
         case "link_limit-reached": return "Sie haben die maximale Anzahl von Links erreicht, die erstellt werden k&ouml;nnen. Um einen neuen Link zu erstellen, m&uuml;ssen Sie einen bestehenden l&ouml;schen.";
         case "error": return "Fehler";
         case "date": return "Datum";
-        case "copy": return "kopieren";
+        case "copy": return "Kopieren";
         case "times": return "Mal";
         case "close": return "Schlie&szlig;en";
         case "language": return "Sprache";

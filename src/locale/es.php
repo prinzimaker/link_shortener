@@ -14,6 +14,13 @@ function lng($key){
         case "login":return "Iniciar sesi&oacute;n";
         case "send":return "Enviar";
         case "register": return "Registrar";
+        case "giorno": return "D&iacute;a";
+        case "notte": return "Noche";
+        case "sera": return "Tarde";
+        case "daypart": return "Parte del d&iacute;a";
+        case "per_fasce_orarie": return "Por franjas horarias";
+        case "device": return "Dispositivo";
+        case "source": return "Fuente";
         case "repeat_password":return "Repite la contrase&ntilde;a";
         case "email":return "Direcci&oacute;n de correo electr&oacute;nico";
         case "user_registration":return "Registro de usuario";
@@ -46,10 +53,10 @@ function lng($key){
         case "not-found": return "no encontrado";
         case "front_instr-small": return "Introduce el enlace acortado y pulsa el bot&oacute;n &quot;<strong>Informaci&oacute;n</strong>&quot; para obtener datos del enlace.";
         case "front_incorrect-link": return "<strong>uri</strong> no es correcto o es un loop-<strong>uri</strong> (no es posible ni recomendable acortar un enlace de <strong>".getenv("URI")."</strong>)";
-        case "date": return "fecha";
-        case "copy":  return "copiar";
+        case "date": return "Fecha";
+        case "copy":  return "Copiar";
         case "close": return "Cerrar";
-        case "times": return "veces";
+        case "times": return "Veces";
         case "change_link_code": return "Cambiar el c&oacute;digo del enlace:";
         case "change": return "Cambiar";
         case "code_exists": return "Este c&oacute;digo ya existe.";
@@ -189,7 +196,7 @@ function lng($key){
 
 function getLangDate($theDate){
     $date = new DateTime($theDate);
-    $locale = 'sp_SP';
+    $locale = 'es_ES';
     $formatter = new \IntlDateFormatter(
         $locale,                         // Locale
         \IntlDateFormatter::FULL,         // Tipo di formattazione della data

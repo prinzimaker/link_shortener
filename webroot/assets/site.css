@@ -375,7 +375,7 @@ input[type="radio"].styled-radio:checked + label {
 .tab input:checked + .tab__label::after {transform: rotate(270deg);}
 .tab input:checked ~ .tab__content {max-height: 10rem;padding: 15px;}
 .tab__close {justify-content: flex-end; padding: 0.5rem 1rem; font-size: 0.75rem;}
-.tab__content {max-height: 0;overflow: hidden;transition: max-height 0.3s ease;background: #f9f9f9;padding: 0 15px;}
+.tab__content {max-height: 0;overflow-y: auto;transition: max-height 0.3s ease;background: #f9f9f9;padding: 0 15px;}
 .tab__content p {margin: 0;padding: 1rem;}
 .accordion--radio {--theme: var(--secondary);}
 .tab input:not(:checked) + .tab__label:hover::after {animation: bounce .5s infinite;}

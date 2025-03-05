@@ -37,14 +37,50 @@ function getCallsLog($db,$short_id,$cust_id=""){
             return explode(',', $entry)[0];
         }, $rows);
         
+        $socialNetworks = [
+            'facebook',
+            'x',
+            'twitter',
+            'github',
+            'quora',
+            'amazon',
+            'instagram',
+            'linkedin',
+            'tiktok',
+            'youtube',
+            'pinterest',
+            'google',
+            'reddit',
+            'snapchat'
+        ];
         // Rimuovi duplicati 
         $geoIp=geolocalizzaIP($db,array_values(array_unique($_StatIp)));
+        $vars=[];
         foreach ($rows as $key => $row) {
-            $ip = explode(',', $row)[0];
-            $rows[$key] .= ','. $geoIp[$ip];
+            $vars[$key]= array_pad(explode(',', $row),5,"");
+            $vars[$key][2]=processReferer($vars[$key][2],$socialNetworks);
+            $vars[$key]=array_merge(array_slice($vars[$key],0,1) , array($geoIp[$vars[$key][0]]),array_slice($vars[$key],1,4),array($vars[$key][5]??bin2hex(md5($vars[$key][0]))));
         }
     }
-    return $rows; 
+    return $vars; 
+}
+
+
+function processReferer($entry,$socialNetworks) {
+    // Supponiamo che l'array abbia chiavi 'ip' e 'referer'
+    $referer = $entry ?? '';
+    // Se non c'è referer, restituisci come è
+    if (empty($referer) || $referer==='[direct]') {
+        return '[direct]';
+    }
+    // Estrai il dominio dal referer usando parse_url
+    $parsedUrl = parse_url($referer);
+    $domain = strtolower($parsedUrl['host'] ?? '');
+    foreach ($socialNetworks as $SN) {
+        if (stripos($domain, $SN) !== false) 
+            return $SN;
+    }
+    return $domain;
 }
 
 function geolocalizzaIP($db,array $ips): array {

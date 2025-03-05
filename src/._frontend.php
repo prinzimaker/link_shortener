@@ -48,6 +48,7 @@ function getLoginForm($userid=""){
     $_SESSION["loginerr"]="";
     $ret='<div class="auth-div"><div class="login-header"><h3>'.lng("autentication").'</h3></div>
     <form class="auth-form" action="_pls_fnc_login" method="post">
+        <input id="hiddensecret" type="hidden" name="secret" value="">
         <div class="form-group"><label for="userid">'.lng("user").'</label>
             <input id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userid.'">
             <label for="password">'.lng("password").'</label>
@@ -91,22 +92,20 @@ function getForgotPasswordForm($userEmail,$verifyCode=""){
         <div class='data-div'>
             <div class='login-header'>".$_SESSION["langButtons"]."<hr>&nbsp;<br><h3>".lng("change_pass_form")."</h3></div>
             <form id='registrationForm' class='auth-form' action='_pls_fnc_forgotpass' method='post'>
+                <input id='hiddensecret' type='hidden' name='secret' value=''>
                 <div class='form-group'>
                     <label for='userid'>".lng("user")."</label>
-                    <div id='userid' type='text' class='input-text2'>".$userEmail."</div>
-                </div>
+                    <div id='userid' type='text' class='input-text2'>".$userEmail."</div></div>
                 <div class='form-group'>
                     <label for='password'>" . lng("password") . "</label>
                     <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
                         <input id='password' type='password' class='input-text2' name='password' placeholder='" . lng("password") . "' value=''>
-                    </td><td width='28%'><div class='input-text' 'background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
-                </div>
+                    </td><td width='28%'><div class='input-text' 'background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table></div>
                 <div class='form-group'>
                     <label for='password_confirm'>" . lng("repeat_password") . "</label>
                     <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
                         <input id='password_confirm' type='password' class='input-text2' name='password_confirm' placeholder='" . lng("repeat_password") . "' value=''>
-                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
-                </div>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table></div>
                 <input type='hidden' name='verifycode' value='".$verifyCode."'>
 "._addPassFormChecks();
 }
@@ -162,27 +161,18 @@ function handleUserData() {
     $html .= "
         <form method='post' action='_pls_fnc_handleuserdata'>
             <h3>Aggiorna Profilo</h3>
-            <div class='form-group'>
-                <label for='descr'>Nome Utente</label>
-                <input type='text' name='descr' id='descr' class='input-text2' value='" . htmlspecialchars($descr, ENT_QUOTES) . "'>
-            </div>
-            <div class='form-group'>
-                <label for='email'>Email</label>
-                <input type='email' name='email' id='email' class='input-text2' value='" . htmlspecialchars($email, ENT_QUOTES) . "'>
-            </div>
+            <div class='form-group'> <label for='descr'>Nome Utente</label>
+                <input type='text' name='descr' id='descr' class='input-text2' value='" . htmlspecialchars($descr, ENT_QUOTES) . "'></div>
+            <div class='form-group'> <label for='email'>Email</label>
+                <input type='email' name='email' id='email' class='input-text2' value='" . htmlspecialchars($email, ENT_QUOTES) . "'></div>
             <button type='submit' name='updateProfile' class='btn btn-primary'>Aggiorna Dati</button>
-        </form>
-        <hr>
+        </form><hr>
         <form method='post' action='_pls_fnc_handleuserdata'>
             <h3>Cambio Password</h3>
-            <div class='form-group'>
-                <label for='oldPassword'>Vecchia Password</label>
-                <input type='password' name='oldPassword' id='oldPassword' class='input-text2'>
-            </div>
-            <div class='form-group'>
-                <label for='newPassword'>Nuova Password</label>
-                <input type='password' name='newPassword' id='newPassword' class='input-text2'>
-            </div>
+            <div class='form-group'> <label for='oldPassword'>Vecchia Password</label>
+                <input type='password' name='oldPassword' id='oldPassword' class='input-text2'></div>
+            <div class='form-group'> <label for='newPassword'>Nuova Password</label>
+                <input type='password' name='newPassword' id='newPassword' class='input-text2'></div>
             <button type='submit' name='changePassword' class='btn btn-primary'>Cambia Password</button>
         </form>
     ";
@@ -218,26 +208,19 @@ function getRegistrationForm($descr = "", $email = "")
         <div class='data-div'>
             <div class='login-header'>".$_SESSION["langButtons"]."<hr>&nbsp;<br><h3>".lng("user_registration")."</h3></div>
             <form id='registrationForm' class='auth-form' action='_pls_fnc_register' method='post'>
-                <div class='form-group'>
-                    <label for='descr'>" . lng("user") . "</label>
-                    <input id='descr' type='text' class='input-text2' name='descr' placeholder='" . lng("username") . "' value='" . htmlspecialchars($userId, ENT_QUOTES) . "'>
-                </div>
-                <div class='form-group'>
-                    <label for='email'>" . lng("email") . "</label>
-                    <input id='email' type='email' class='input-text2' name='email' placeholder='" . lng("email") . "' value='" . htmlspecialchars($userEmail, ENT_QUOTES) . "'>
-                </div>
-                <div class='form-group'>
-                    <label for='password'>" . lng("password") . "</label>
+                <input id='hiddensecret' type='hidden' name='secret' value=''>
+                <div class='form-group'> <label for='descr'>" . lng("user") . "</label>
+                    <input id='descr' type='text' class='input-text2' name='descr' placeholder='" . lng("username") . "' value='" . htmlspecialchars($userId, ENT_QUOTES) . "'></div>
+                <div class='form-group'> <label for='email'>" . lng("email") . "</label>
+                    <input id='email' type='email' class='input-text2' name='email' placeholder='" . lng("email") . "' value='" . htmlspecialchars($userEmail, ENT_QUOTES) . "'></div>
+                <div class='form-group'>  <label for='password'>" . lng("password") . "</label>
                     <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
                         <input id='password' type='password' class='input-text2' name='password' placeholder='" . lng("password") . "' value=''>
-                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table>   
-                </div>
-                <div class='form-group'>
-                    <label for='password_confirm'>" . lng("repeat_password") . "</label>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordStrength' ></div></td></tr></table> </div>
+                <div class='form-group'> <label for='password_confirm'>" . lng("repeat_password") . "</label>
                     <table width='100%'><tr><td>&nbsp;</td><td width='70%'>
                         <input id='password_confirm' type='password' class='input-text2' name='password_confirm' placeholder='" . lng("repeat_password") . "' value=''>
-                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table>   
-                </div>
+                    </td><td width='28%'><div class='input-text' style='background:#fafafa;font-weight:800' id='passwordMatchMessage'></div></td></tr></table> </div>
 "._addPassFormChecks();
 }
 
@@ -245,8 +228,7 @@ function _addPassFormChecks(){
     return "
                     <input type='hidden' name='icon' id='icon' value=''>    
                 <div class='form-group' style='margin-top:10px;'><center>
-                    <div><h3>".$_SESSION["_iconSelect"]."</h3></div>
-                    <table><tr>
+                    <div><h3>".$_SESSION["_iconSelect"]."</h3></div> <table><tr>
                     <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=0' onclick='document.getElementById(\"opt0\").click()'></td><td>&nbsp;</td>    
                     <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=1' onclick='document.getElementById(\"opt1\").click()'></td><td>&nbsp;</td>    
                     <td><img alt='icon' class='iconbtn' src='https://flu.lu/_create_icon?icon=2' onclick='document.getElementById(\"opt2\").click()'></td><td>&nbsp;</td>    
@@ -260,8 +242,7 @@ function _addPassFormChecks(){
                     <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=3' class='styled-radio' type='radio' id='opt3'><label for='opt3'></label></td><td>&nbsp;</td>    
                     <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=4' class='styled-radio' type='radio' id='opt4'><label for='opt4'></label></td><td>&nbsp;</td>    
                     <td class='icontd'><input name='icoas' onclick='document.getElementById(\"icon\").value=5' class='styled-radio' type='radio' id='opt5'><label for='opt5'></label></td>       
-                    </tr></table></center>
-                </div>
+                    </tr></table></center></div>
                 <button type='submit' class='btn btn-primary'>" . lng("register") . "</button>
             </form>
         </div>"._addPassFormScripts("registrationForm");
@@ -271,42 +252,24 @@ function _addPassFormScripts($formName){
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('".$formName."').addEventListener('submit', function(e) {
-                var userid ='';
-                var nouserid=false;
-                var email ='';
-                var noemail=false;
-                var icon ='';
-                var noicon=false;
-                if (document.getElementById('descr'))
-                    userid = document.getElementById('descr').value.trim();
-                else
-                    nouserid=true;
-                if (document.getElementById('email'))
-                    email = document.getElementById('email').value.trim();
-                else
-                    noemail=true;
+                var errorMessages = [];
+                var userid =''; var nouserid=false;
+                var email ='';  var noemail=false;
+                var icon ='';   var noicon=false;
+                if (document.getElementById('descr')) userid = document.getElementById('descr').value.trim(); else nouserid=true;
+                if (document.getElementById('email')) email = document.getElementById('email').value.trim();  else noemail=true;
+                if (document.getElementById('icon')) icon = document.getElementById('icon').value.trim();     else noicon=true;
                 var password = document.getElementById('password').value.trim();
                 var passwordConfirm = document.getElementById('password_confirm').value.trim();
-                if (document.getElementById('icon'))
-                    icon = document.getElementById('icon').value.trim();
-                else
-                    noicon=true;
-                var errorMessages = [];
-                if (userid === '' & !nouserid) 
-                    errorMessages.push(\"".lng("0nouid")."\");
-                if (email === '' & !noemail) 
-                    errorMessages.push(\"".lng("0noemail")."\");
-                if (password === '')
-                    errorMessages.push(\"".lng("0nopass")."\");
-                if (icon === '' & !noicon) 
-                    errorMessages.push(\"".lng("0nospam")."\");
+                if (userid === '' & !nouserid)                      errorMessages.push(\"".lng("0nouid")."\");
+                if (email === '' & !noemail)                        errorMessages.push(\"".lng("0noemail")."\");
+                if (password === '')                                errorMessages.push(\"".lng("0nopass")."\");
+                if (icon === '' & !noicon)                          errorMessages.push(\"".lng("0nospam")."\");
+                if (password !== '' && password.length < 8)         errorMessages.push(\"".lng("0smallpass")."\");
                 if (!noemail){
                     var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (email !== '' && !emailPattern.test(email)) 
-                        errorMessages.push(\"".lng("0invemail")."\");
+                    if (email !== '' && !emailPattern.test(email))  errorMessages.push(\"".lng("0invemail")."\");
                 }
-                if (password !== '' && password.length < 8) 
-                    errorMessages.push(\"".lng("0smallpass")."\");
                 if (errorMessages.length > 0) {
                     alert(errorMessages.join(\"\\n\"));
                     e.preventDefault();
@@ -316,6 +279,12 @@ function _addPassFormScripts($formName){
                     alert(\"".lng("0diffpass")."\");
                     e.preventDefault();
                     return false;
+                }
+                if (document.getElementById('hiddensecret')){
+                    (document.getElementById('hiddensecret').value!=''){
+                        e.preventDefault();
+                        return false;
+                    }
                 }
             });
             document.getElementById('password').addEventListener('keyup', function() {
@@ -386,31 +355,22 @@ function getUserContent(){
         </script>
         <div id="modal" class="modal hidden appear">
             <form id="changePassForm" class="auth-form" action="_pls_fnc_register" method="post">
-                <div class="modal-header">
-                    '.strtoupper(lng("change_pass_form")).'
-                    <span class="modal-closer" onclick="closemodal()">&times;</span>
-                </div>
+                <input id="hiddensecret" type="hidden" name="secret" value="">
+                <div class="modal-header">'.strtoupper(lng("change_pass_form")).'
+                    <span class="modal-closer" onclick="closemodal()">&times;</span></div>
                 <div class="modal-content">
-                    <div class="form-group">
-                        <label for="password">' . lng("password") . '</label>
+                    <div class="form-group"> <label for="password">' . lng("password") . '</label>
                         <input id="password" type="password" class="input-text2" name="password" value=""><br>
-                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordStrength" ></div>   
-                    </div>
-                    <div class="form-group">
-                        <label for="password_confirm">' . lng("repeat_password") . '</label>
+                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordStrength" ></div></div>
+                    <div class="form-group"> <label for="password_confirm">' . lng("repeat_password") . '</label>
                         <input id="password_confirm" type="password" class="input-text2" name="password_confirm" value=""><br>
-                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordMatchMessage"></div>
-                    </div>
-                </div>
+                        <div class="label" style="font-size:0.9em;font-weight:800" id="passwordMatchMessage"></div> </div> </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Change Password">
-                </div>
-            </form>
-        </div>
+                    <input type="submit" class="btn btn-primary" value="Change Password"></div>
+            </form> </div>
 '._addPassFormScripts("changePassForm").'
         <div class="alert alert-info">
-            <table width="100%"><tr><td width="50%">
-                <label for="userid">'.lng("user").'</label><br>
+            <table width="100%"><tr><td width="50%"> <label for="userid">'.lng("user").'</label><br>
                 <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'"></td>
                 <td>&nbsp;</td><td><label for="userid">API key</label><br><input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="API key" value="'.$userData["apikey"].'"></td></tr>
                 <tr><td><label for="userid">'.lng("email").'</label><br>
@@ -420,8 +380,7 @@ function getUserContent(){
                     <form method="post" action="_pls_fnc_newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form></td><td>
                     &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/_pls_fnc_logout"\'>Logout</button></td></tr></table>
                 </td></tr></table></div>
-        <div class="form-group"><label>User\'s Links</label><div class="userTabLinks"><table id="userCodesTable" class="display"><thead>
-        <tr><th>short_id</th><th>&nbsp;</th><th>Uri</th><th>Calls</th><th>Created</th><th>Last call</th></tr></thead><tbody>
+        <div class="form-group"><label>User\'s Links</label><div class="userTabLinks"><table id="userCodesTable" class="display"><thead><tr><th>short_id</th><th>&nbsp;</th><th>Uri</th><th>Calls</th><th>Created</th><th>Last call</th></tr></thead><tbody>
     ';
     
     $db = new Database();
