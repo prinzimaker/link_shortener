@@ -88,7 +88,12 @@ class Database {
                 ");
                 $updateStmt1->execute(['code' => $code]);
                 // CALLS LOG UPDATE
-                $log=$_SERVER['REMOTE_ADDR'].",".date("Y-m-d H:i:s").";";
+                $ip=$_SERVER['REMOTE_ADDR'];
+                $ua=$_SERVER['HTTP_USER_AGENT'];
+                $ref="[direct]";
+                if (isset($_SERVER["HTTP_REFERER"]))
+                    $ref=$back=$_SERVER["HTTP_REFERER"];
+                $log=$ip.",".date("Y-m-d H:i:s").",".$ref.",".$this->_getUserAgentInfo($ua).",".md5($ip . '|' . $ua).";";
                 $updateStmt2 = $this->pdo->prepare("
                     INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
                     ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
@@ -107,6 +112,65 @@ class Database {
             exit();
         }
         return null;
+    }
+    
+
+    private function _getUserAgentInfo($userAgentSignature) {
+        // Risultato di default
+        $result = [
+            'device' => 'unknown', // PC, tablet, phone
+            'os' => 'unknown'      // Sistema operativo
+        ];
+    
+        // Converti tutto in minuscolo per facilitare il match
+        $userAgentSignature = strtolower($userAgentSignature);
+    
+        // --- Rilevamento del dispositivo ---
+        // Phone
+        if (preg_match('/(iphone|android|blackberry|windows phone|symbian|mobile)/i', $userAgentSignature)) {
+            $result['device'] = 'phone';
+        }
+        // Tablet
+        elseif (preg_match('/(ipad|tablet|kindle|silk|playbook)/i', $userAgentSignature)) {
+            $result['device'] = 'tablet';
+        }
+        // PC (default se non è mobile o tablet)
+        elseif (preg_match('/(windows nt|macintosh|linux|cros)/i', $userAgentSignature) && 
+                !preg_match('/mobile/i', $userAgentSignature)) {
+            $result['device'] = 'pc';
+        }
+    
+        // --- Rilevamento del sistema operativo ---
+        if (preg_match('/windows nt ([\d\.]+)/i', $userAgentSignature, $matches)) {
+            $version = $matches[1];
+            $windowsVersions = [
+                '10.0' => 'Windows 10/11',
+                '6.3' => 'Windows 8.1',
+                '6.2' => 'Windows 8',
+                '6.1' => 'Windows 7'
+            ];
+            $result['os'] = $windowsVersions[$version] ?? 'Windows';
+        }
+        elseif (preg_match('/android\s?([\d\.]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'Android ' . ($matches[1] ?? '');
+        }
+        elseif (preg_match('/iphone os ([\d_]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
+        }
+        elseif (preg_match('/ipad; cpu os ([\d_]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
+        }
+        elseif (preg_match('/mac os x ([\d_]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'macOS ' . str_replace('_', '.', $matches[1]);
+        }
+        elseif (preg_match('/linux/i', $userAgentSignature)) {
+            $result['os'] = 'Linux';
+        }
+        elseif (preg_match('/cros/i', $userAgentSignature)) {
+            $result['os'] = 'Chrome OS';
+        }
+    
+        return $result['device'] . ',' . $result['os'];
     }
     
     function createShortlink($uri,$user_id){

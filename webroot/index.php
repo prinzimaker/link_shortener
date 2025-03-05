@@ -115,7 +115,7 @@ switch ($uri){
             $_SESSION["user"]=[];
             //$user=new SLUsers($usr,$pwd);
             $user=$UM->authenticate($usr,$pwd);
-            if ($user->isLogged()){
+            if ($user["cust_id"]>0){
                 if (stripos($back,"/_pls_fnc_login")!==false)
                     $back="/";
                 if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="" ||(isset($_SESSION["dvalu"]) && stripos($_SESSION["dvalu"],"_pls_fnc_login")!==false))
