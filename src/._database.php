@@ -125,9 +125,27 @@ class Database {
         // Converti tutto in minuscolo per facilitare il match
         $userAgentSignature = strtolower($userAgentSignature);
     
+        if (preg_match('/(bot|crawl|spider|facebookexternalhit|googlebot|bingbot|yahoo|baiduspider|twitterbot)/i', $userAgentSignature)) {
+            $result['device'] = 'bot';
+            
+            // Identificazione specifica di alcuni bot conosciuti
+            if (preg_match('/facebookexternalhit/i', $userAgentSignature)) {
+                $result['device'] = 'bot';
+                $result['os'] = 'facebook';
+            } elseif (preg_match('/googlebot/i', $userAgentSignature)) {
+                $result['device'] = 'bot';
+                $result['os'] = 'google';
+            } elseif (preg_match('/LinkedInBot/i', $userAgentSignature)) {
+                $result['device'] = 'bot';
+                $result['os'] = 'linkedin';
+            } elseif (preg_match('/bingbot/i', $userAgentSignature)) {
+                $result['device'] = 'bot';
+                $result['os'] = 'bing';
+            }
+        }
         // --- Rilevamento del dispositivo ---
         // Phone
-        if (preg_match('/(iphone|android|blackberry|windows phone|symbian|mobile)/i', $userAgentSignature)) {
+        elseif (preg_match('/(iphone|android|blackberry|windows phone|symbian|mobile)/i', $userAgentSignature)) {
             $result['device'] = 'phone';
         }
         // Tablet
@@ -140,34 +158,36 @@ class Database {
             $result['device'] = 'pc';
         }
     
-        // --- Rilevamento del sistema operativo ---
-        if (preg_match('/windows nt ([\d\.]+)/i', $userAgentSignature, $matches)) {
-            $version = $matches[1];
-            $windowsVersions = [
-                '10.0' => 'Windows 10/11',
-                '6.3' => 'Windows 8.1',
-                '6.2' => 'Windows 8',
-                '6.1' => 'Windows 7'
-            ];
-            $result['os'] = $windowsVersions[$version] ?? 'Windows';
-        }
-        elseif (preg_match('/android\s?([\d\.]+)/i', $userAgentSignature, $matches)) {
-            $result['os'] = 'Android ' . ($matches[1] ?? '');
-        }
-        elseif (preg_match('/iphone os ([\d_]+)/i', $userAgentSignature, $matches)) {
-            $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
-        }
-        elseif (preg_match('/ipad; cpu os ([\d_]+)/i', $userAgentSignature, $matches)) {
-            $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
-        }
-        elseif (preg_match('/mac os x ([\d_]+)/i', $userAgentSignature, $matches)) {
-            $result['os'] = 'macOS ' . str_replace('_', '.', $matches[1]);
-        }
-        elseif (preg_match('/linux/i', $userAgentSignature)) {
-            $result['os'] = 'Linux';
-        }
-        elseif (preg_match('/cros/i', $userAgentSignature)) {
-            $result['os'] = 'Chrome OS';
+        if (!isset($result['os'])){
+            // --- Rilevamento del sistema operativo ---
+            if (preg_match('/windows nt ([\d\.]+)/i', $userAgentSignature, $matches)) {
+                $version = $matches[1];
+                $windowsVersions = [
+                    '10.0' => 'Windows 10/11',
+                    '6.3' => 'Windows 8.1',
+                    '6.2' => 'Windows 8',
+                    '6.1' => 'Windows 7'
+                ];
+                $result['os'] = $windowsVersions[$version] ?? 'Windows';
+            }
+            elseif (preg_match('/android\s?([\d\.]+)/i', $userAgentSignature, $matches)) {
+                $result['os'] = 'Android ' . ($matches[1] ?? '');
+            }
+            elseif (preg_match('/iphone os ([\d_]+)/i', $userAgentSignature, $matches)) {
+                $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
+            }
+            elseif (preg_match('/ipad; cpu os ([\d_]+)/i', $userAgentSignature, $matches)) {
+                $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
+            }
+            elseif (preg_match('/mac os x ([\d_]+)/i', $userAgentSignature, $matches)) {
+                $result['os'] = 'macOS ' . str_replace('_', '.', $matches[1]);
+            }
+            elseif (preg_match('/linux/i', $userAgentSignature)) {
+                $result['os'] = 'Linux';
+            }
+            elseif (preg_match('/cros/i', $userAgentSignature)) {
+                $result['os'] = 'Chrome OS';
+            }
         }
         return $result['device'] . ',' . $result['os'];
     }

@@ -330,8 +330,8 @@ function getStatisticData($db, $short_id){
                 
                         // Incrementa il conteggio per il giorno e la parte del giorno
                         $key = $day . '-' . $part;
-                    } catch (Exception $e){
-                        $day = $dateTime->format('Y-m-d');
+                    } catch (\Throwable $e){
+                        $day = date('Y-m-d');
                         $part = 1;
                     }
                     if (!isset($chartData[$key])) {
