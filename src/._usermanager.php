@@ -150,7 +150,10 @@ class UserManager {
     public function userLinkLimit($user_id){
         $nxl=intval($this->_db->getCountLink($user_id));
         $user=new SLUsers($user_id);
-        $mxl=intval($user->getData()["max_links"]);
+        if ($user->getData()["is_admin"]>0)
+            $mxl=99999;
+        else
+            $mxl=intval($user->getData()["max_links"]);
         return ($nxl+1)>=$mxl;
     }
 

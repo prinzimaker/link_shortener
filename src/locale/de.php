@@ -41,6 +41,7 @@ function lng($key){
         case "copy": return "Kopieren";
         case "times": return "Mal";
         case "close": return "Schlie&szlig;en";
+        case "download-data":return "Daten herunterladen";
         case "language": return "Sprache";
         case "new apikey": return "Neuer API-Schl&uuml;ssel";
         case "change password": return "Passwort &auml;ndern";
@@ -57,7 +58,8 @@ function lng($key){
         case "front_short-link-is": return "Der kurze Link ist";
         case "front_copy-error": return "Fehler beim Kopieren des Links";
         case "front_insert-correct": return "Geben Sie einen korrekten Link in das Eingabefeld ein, bevor Sie auf die Schaltfl&auml;che &laquo; <strong>".lng("front_shorten")."</strong> &raquo; klicken.";
-        case "front_downloads-info": return "Download-Informationen";
+        case "front_access-data": return "Zugriffsdaten";
+        case "front_title-detail-data": return "{{clicks}} Klicks von {{unique}} eindeutigen Nutzern";
         case "change_link_code": return "Link-Code &auml;ndern";
         case "change": return "&Auml;ndern";
         case "code_exists": return "Dieser Kurzcode existiert bereits!";

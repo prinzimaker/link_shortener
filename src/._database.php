@@ -118,8 +118,8 @@ class Database {
     private function _getUserAgentInfo($userAgentSignature) {
         // Risultato di default
         $result = [
-            'device' => 'unknown', // PC, tablet, phone
-            'os' => 'unknown'      // Sistema operativo
+            'device' => 'unknown', // PC, tablet, phone,
+            'os' => $userAgentSignature   // Operating System or unknown signature (robot, crawler, API, etc.)
         ];
     
         // Converti tutto in minuscolo per facilitare il match
@@ -169,7 +169,6 @@ class Database {
         elseif (preg_match('/cros/i', $userAgentSignature)) {
             $result['os'] = 'Chrome OS';
         }
-    
         return $result['device'] . ',' . $result['os'];
     }
     

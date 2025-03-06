@@ -43,6 +43,7 @@ function lng($key){
         case "close": return "Close";        
         case "language":return "Language";
         case "new apikey":return "New API key";
+        case "download-data":return "Download data";
         case "change password":return "Change password";
         case "update":return "Update";
         case "change_pass_form":return "Change password";
@@ -58,7 +59,8 @@ function lng($key){
         case "front_short-link-is": return "The short link is";
         case "front_copy-error":return "Link copy error";
         case "front_insert-correct":return "Insert a correct link in the input box before hit the &quot;<strong>".lng("front_shorten")."</strong>&quot; button.";
-        case "front_downloads-info": return "Download&apos;s info";
+        case "front_access-data": return "Access Data";
+        case "front_title-detail-data": return "{{clicks}} clicks from {{unique}} unique users";
         case "change_link_code": return "Change link code";
         case "change": return "Change";
         case "code_exists":"This short-code already exists!";

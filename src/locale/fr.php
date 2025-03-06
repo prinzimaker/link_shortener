@@ -15,6 +15,7 @@ function lng($key){
         case "send": return "Envoyer";
         case "register": return "S'inscrire";
         case "repeat_password": return "R&eacute;p&eacute;ter le mot de passe";
+        case "download-data":return "T&eacute;l&eacute;charger les donn&eacute;es";
         case "email": return "Adresse e-mail";
         case "verify": return "V&eacute;rifier";
         case "giorno": return "Jour";
@@ -58,7 +59,8 @@ function lng($key){
         case "front_short-link-is": return "Le lien court est";
         case "front_copy-error": return "Erreur de copie du lien";
         case "front_insert-correct": return "Insérez un lien correct dans la boîte de saisie avant de cliquer sur le bouton « <strong>".lng("front_shorten")."</strong> ».";
-        case "front_downloads-info": return "Informations sur le téléchargement";
+        case "front_access-data": return "Donn&eacute;es d'acc&egrave;s";
+        case "front_title-detail-data": return "{{clicks}} clics de {{unique}} utilisateurs uniques";
         case "change_link_code": return "Modifier le code du lien";
         case "change": return "Modifier";
         case "code_exists": return "Ce code court existe d&eacute;j&agrave; !";

@@ -18,6 +18,7 @@ function lng($key){
         case "notte": return "Noche";
         case "sera": return "Tarde";
         case "daypart": return "Parte del d&iacute;a";
+        case "download-data":return "Descargar datos";
         case "per_fasce_orarie": return "Por franjas horarias";
         case "device": return "Dispositivo";
         case "source": return "Fuente";
@@ -49,7 +50,8 @@ function lng($key){
         case "front_copy-error": return "Error al copiar";
         case "front_link-created-on": return "Ha sido creado el";
         case "front_short-link-is": return "El enlace corto es";
-        case "front_downloads-info": return "Informaci&oacute;n de descarga";
+        case "front_access-data": return "Datos de acceso";
+        case "front_title-detail-data": return "{{clicks}} clics de {{unique}} usuarios &uacute;nicos";
         case "not-found": return "no encontrado";
         case "front_instr-small": return "Introduce el enlace acortado y pulsa el bot&oacute;n &quot;<strong>Informaci&oacute;n</strong>&quot; para obtener datos del enlace.";
         case "front_incorrect-link": return "<strong>uri</strong> no es correcto o es un loop-<strong>uri</strong> (no es posible ni recomendable acortar un enlace de <strong>".getenv("URI")."</strong>)";

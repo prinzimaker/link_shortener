@@ -34,24 +34,25 @@ function getShortInfoDisplay($cust_id,$puri=""){
                 } else {
                     $formattedDate = getLangDate($res["created"]);
 
-                    $rows=getCallsLog($db,$puri);
-
-                    // Estrai la colonna 1
-                    $ucol= array_column($rows, 6);
-                    $usersCount = count(array_unique($ucol));
-                    $sourcecol= array_unique(array_column($rows, 3));
-                    $devicecol= array_unique(array_column($rows, 4));
-                    $osyscol= array_unique(array_column($rows, 5));
-
                     $hret="<table cellpadding=0 cellspacing=0 class='table table-striped table-bordered table-hover'>";
-                    $hret.="<tr><th colspan=2>".lng("date")."</th><th colspan=3>".lng("source")."</th><th colspan=3>".lng("geoloc")."</th><th colspan=3>".lng("device")."</th></tr><tbody>";
+                    $hret.="<tr><th colspan=2>".lng("date")."</th><th colspan=3>".lng("source")."</th><th colspan=3>".lng("geoloc")."</th><th colspan=2>".lng("device")."</th></tr><tbody>";
+                    $rows=getCallsLog($db,$puri);
+                    $totalCount=0;
+                    $sourcecol=[];
+                    $devicecol=[];
+                    $osyscol=[];
                     if (is_array($rows)){
+                        $ucol= array_column($rows, 6);
+                        $usersCount = count(array_unique($ucol));
+                        $sourcecol= array_unique(array_column($rows, 3));
+                        $devicecol= array_unique(array_column($rows, 4));
+                        $osyscol= array_unique(array_column($rows, 5));
                         foreach ($rows as $cols){
                             $hret.="<tr><td class='tdcont'>".$cols[2]."</td><td class='tdsep'>&nbsp;</td><td>&nbsp;</td><td class='tdcont'>".$cols[3]."</td><td class='tdsep'>&nbsp;</td><td>&nbsp;</td><td class='tdcont'>".implode(" , ",explode("|",$cols[1]))."</td><td class='tdsep'>&nbsp;</td><td>&nbsp;</td><td class='tdcont'>".$cols[4]." (".$cols[5].")</td></tr>";
                         }
-                    } 
+                        $totalCount=count($rows)-1;
+                    }
                     $hret.="</tbody></table>";
-
                     $content.="
                     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
                     <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
@@ -64,24 +65,21 @@ function getShortInfoDisplay($cust_id,$puri=""){
                     <table style='padding-top:15px' width=100%><tr><td width=65%><label>".lng("front_link-created-on").":</label><input type='text' class='input-text' id='createdLink' value='".$formattedDate."' readonly></td><td>&nbsp;</td>
                     <td width=35%><label>".lng("front_was-req").":</label><input type='text' class='input-text' id='createdLink' value='".$res["calls"]." ".lng("times")."' readonly></div></td></tr></table>
                     <td width='15%' align='left' style='padding-left:30px'><img alt='short link qr-code' id='qrcode' style='border:solid 10px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$uri_code). "&amp;size=100x100&amp;color=0800A0' alt='qr-code' title='qr-code' width='160px' height='160px' /></td></tr></table></div>
-                    <section class='accordion'><div class='tab'><input type='radio' name='accordion-2' id='rd1'><label for='rd1' class='tab__label'>".lng('front_downloads-info')." - (".count($rows)." clicks from ".$usersCount." users)</label>
+                    <section class='accordion'><div class='tab'><input type='radio' name='accordion-2' id='rd1'><label for='rd1' class='tab__label'>".lng('front_access-data')." - ".str_replace(["{{clicks}}","{{unique}}"],[$totalCount,$usersCount],lng('front_title-detail-data'))."<button class='btn btn-secondary btn-small' onclick='downloadCSV()'>".lng("download-data")."</button></label>
                     <div class='tab__content'><p>".$hret."</p>
-                    </div><div class='tab'><input type='radio' name='accordion-2' id='rd3'><label for='rd3' class='tab__close'>".lng('close')." &times;</label></div></div></section>
+                    </div><div class='tab'><input type='radio' name='accordion-2' id='rd3'><label for='rd3' class='tab__close'>".lng('close')." &times;</label></div>
+                    </div></section>
                     <div style='display:none' id='chartData'>".getStatisticData($db,$puri)."</div>
                     <div style='max-width:97%; width:90%; margin-top: 20px;'>
-                        <div style='height:440px; max-height:450px'>
-                            <canvas id='visitsTrendChart'></canvas>
+                        <div style='display: flex; justify-content: space-between; margin-top: 20px;'>
+                            <div style='width: 100%; height: 500px;'><canvas id='visitsTrendChart'></canvas></div>
                         </div>
                         <div style='display: flex; justify-content: space-between; margin-top: 20px;'>
-                            <div style='width: 48%; height: 500px;'>
-                                <canvas id='myChart' width='1000' height='390'></canvas>
-                            </div>
-                            <div style='width: 24%; height: 500px;'>
-                                <canvas id='deviceChart'></canvas>
-                            </div>
-                            <div style='width: 24%; height: 500px;'>
-                                <canvas id='sourceChart'></canvas>
-                            </div>
+                            <div style='width: 100%; height: 500px;'><canvas id='myChart' width='1000' height='390'></canvas></div>
+                        </div>
+                        <div style='display: flex; justify-content: space-between; margin-top: 20px;'>
+                            <div style='width: 30%; height: 500px;'><canvas id='deviceChart'></canvas></div>
+                            <div style='width: 68%; height: 500px;'><canvas id='sourceChart'></canvas></div>
                         </div>
                     </div>";
                     $content3="
@@ -117,39 +115,33 @@ function getShortInfoDisplay($cust_id,$puri=""){
                                     datalabels: {display: false},
                                 },
                                 scales: {
-                                    x: {type: 'time',
-                                        time: {unit: 'day'},
-                                        title: {display: true,text: '".lng("giorno")."'}
-                                    },
+                                    x: {type: 'time', time: {unit: 'day'}, title: {display: false,text: '".lng("giorno")."'}},
                                     y: {type: 'linear',
-                                        title: {display: true,text: '".lng("daypart")."'},
-                                        ticks: {
-                                            beginAtZero: true,
+                                        title: {display: false,text: '".lng("daypart")."'},
+                                        ticks: {beginAtZero: true,
                                             callback: function(value) {
                                                 if (value === 1) return '".lng("notte")."';
                                                 if (value === 2) return '".lng("giorno")."';
                                                 if (value === 3) return '".lng("sera")."';
                                             }
-                                        },
-                                        suggestedMin: 1,
-                                        suggestedMax: 3
+                                        },suggestedMin: 1, suggestedMax: 3
                                     }
                                 }
                             }
                         };
                         new Chart(ctx, config);
-                        // 1. Andamento delle visite (Line Chart)
-                        const visitsTrendCtx = document.getElementById('visitsTrendChart').getContext('2d');
-                        const visitsData = chartData.reduce((acc, entry) => {
-                            acc[entry.day] = (acc[entry.day] || 0) + entry.call_count;
-                            return acc;
-                        }, {});
-                        const visitsTrendConfig = {
+                    // 1. Andamento delle visite (Line Chart)
+    const visitsTrendCtx = document.getElementById('visitsTrendChart').getContext('2d');
+    const visitsData = chartData.reduce((acc, entry) => {
+        acc[entry.day] = (acc[entry.day] || 0) + entry.call_count;
+        return acc;
+    }, {});
+                            const visitsTrendConfig = {
                             type: 'line',
                             data: {
                                 labels: Object.keys(visitsData),
                                 datasets: [{
-                                    label: 'Daily Visits',
+                                    label: '', //'Daily Visits',
                                     data: Object.values(visitsData),
                                     borderColor: '#237093',
                                     backgroundColor: 'rgba(35, 112, 147, 0.2)',
@@ -165,12 +157,12 @@ function getShortInfoDisplay($cust_id,$puri=""){
                                     x: {
                                         type: 'time',
                                         time: { unit: 'day' },
-                                        title: { display: true, text: 'Date' }
+                                        title: { display: false, text: 'Date' }
                                     },
                                     y: {
                                         title: { display: true, text: 'Number of Clicks' },
                                         min: 0,              
-                                        suggestedMax: Math.max(...Object.values(visitsData)) + 10, // Massimo dinamico
+                                        suggestedMax: Math.max(...Object.values(visitsData)) + 10, 
                                         ticks: {
                                             stepSize: 10,    
                                             beginAtZero: true
@@ -180,58 +172,121 @@ function getShortInfoDisplay($cust_id,$puri=""){
                             }
                         };
                         new Chart(visitsTrendCtx, visitsTrendConfig);
-                        // 2. Accessi per dispositivo (Pie Chart)
-                        const deviceCtx = document.getElementById('deviceChart').getContext('2d');
-                        const deviceData = Array.from(document.querySelectorAll('.tab__content tbody tr')).reduce((acc, row) => {
-                            const device = row.cells[3].textContent.trim();
-                            if (device.includes('pc')) acc.pc++;
-                            else if (device.includes('phone')) acc.phone++;
-                            else acc.unknown++;
-                            return acc;
-                        }, { pc: 0, phone: 0, unknown: 0 });
-                        const deviceConfig = {
-                            type: 'pie',
-                            data: {
-                                labels: ['PC', 'Phone', 'Unknown'],
-                                datasets: [{
-                                    data: [deviceData.pc, deviceData.phone, deviceData.unknown],
-                                    backgroundColor: ['#237093', '#93A0FF', '#CCCCCC']
-                                }]
-                            },
-                            options: {
-                                plugins: {
-                                    title: { display: true, text: 'Clicks by Device' }
+// 2. Accessi per dispositivo (Pie Chart) - Salta la prima riga
+    // 2. Accessi per dispositivo (Pie Chart) - Solo PC e Phone, con percentuali
+    const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+    const deviceDataRaw = Array.from(document.querySelectorAll('.tab__content tbody tr')).slice(1).reduce((acc, row) => {
+        const device = row.cells[9].textContent.trim(); // Usa indice 9 per Device
+        if (device.includes('pc')) acc.pc++;
+        else if (device.includes('phone')) acc.phone++;
+        else acc.unknown++;
+        return acc;
+    }, { pc: 0, phone: 0, unknown: 0 });
+
+    // Filtra solo PC e Phone
+    const deviceDataFiltered = {
+        labels: ['PC', 'Phone'],
+        data: [deviceDataRaw.pc, deviceDataRaw.phone]
+    };
+    const total = deviceDataFiltered.data.reduce((sum, value) => sum + value, 0); // Somma di PC e Phone
+
+    const deviceConfig = {
+        type: 'pie',
+        data: {
+            labels: deviceDataFiltered.labels,
+            datasets: [{
+                data: deviceDataFiltered.data,
+                backgroundColor: ['#237093', '#93A0FF']
+            }]
+        },
+        options: {
+            plugins: {
+                title: { display: true, text: '(NO \"Unknown\")' },
+                datalabels: {
+                    display: true,
+                    color: '#fff',
+                    font: { weight: 'bold' },
+                    formatter: (value, context) => {
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `"."$"."{percentage}%`;
+                    }
+                }
+            }
+        }
+    };
+    new Chart(deviceCtx, deviceConfig);
+
+    // 3. Sorgenti delle visite (Bar Chart) - Salta la prima riga, esclude [direct]
+    const sourceCtx = document.getElementById('sourceChart').getContext('2d');
+    const sourceData = Array.from(document.querySelectorAll('.tab__content tbody tr')).slice(1).reduce((acc, row) => {
+        const source = row.cells[3].textContent.trim(); // Usa indice 3 per Source
+        if (source !== '[direct]') {
+            acc[source] = (acc[source] || 0) + 1;
+        }
+        return acc;
+    }, {});
+    const sourceConfig = {
+        type: 'bar',
+        data: {
+            labels: Object.keys(sourceData),
+            datasets: [{
+                label: '',
+                data: Object.values(sourceData),
+                backgroundColor: '#237093'
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { 
+                    beginAtZero: true, 
+                    title: { display: true, text: 'Number of Clicks',display: false } 
+                },
+                x: {
+                    title: { display: true, text: 'Source' ,display: false}
+                }
+            }
+        }
+    };
+    new Chart(sourceCtx, sourceConfig);
+                    // Download csv file
+                        function downloadCSV() {
+                            const headers = ['Date', 'Source', 'City', 'Province', 'Country', 'Device', 'Op.Sys'];
+                            const rows = Array.from(document.querySelectorAll('.tab__content tbody tr'))
+                                .slice(1) // Elimina la prima riga
+                                .map(row => {
+                                    const cells = row.querySelectorAll('td.tdcont');
+                                    const deviceCell = cells[3] ? cells[3].textContent.trim() : ''; // Device row
+                                    let device = '';
+                                    let opSystem = '';
+                                    if (deviceCell) {
+                                        const match = deviceCell.match(/^(.*?)\s*\((.*?)\)$/); // find 'device (op.system)'
+                                        if (match) {
+                                            device = match[1].trim(); // device
+                                            opSystem = match[2].trim(); // op.system
+                                        } else 
+                                            device = deviceCell; 
+                                    }
+                                    const geoParts = cells[2] && cells[2].textContent ? cells[2].textContent.split(',') : ['', '', ''];
+                                    return [cells[0] && cells[0].textContent ? cells[0].textContent.trim() : '', cells[1] && cells[1].textContent ? cells[1].textContent.trim() : '',  geoParts[0] ? geoParts[0].trim() : '', geoParts[1] ? geoParts[1].trim() : '', geoParts[2] ? geoParts[2].trim() : '', device, opSystem];
                                 }
-                            }
-                        };
-                        new Chart(deviceCtx, deviceConfig);
-                        // 3. Sorgenti delle visite (Bar Chart)
-                        const sourceCtx = document.getElementById('sourceChart').getContext('2d');
-                        const sourceData = Array.from(document.querySelectorAll('.tab__content tbody tr')).reduce((acc, row) => {
-                            const source = row.cells[3].textContent.trim();
-                            acc[source] = (acc[source] || 0) + 1;
-                            return acc;
-                        }, {});
-                        const sourceConfig = {
-                            type: 'bar',
-                            data: {
-                                labels: Object.keys(sourceData),
-                                datasets: [{
-                                    label: 'Clicks by Source',
-                                    data: Object.values(sourceData),
-                                    backgroundColor: '#237093'
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    y: { beginAtZero: true, title: { display: true, text: 'Number of Clicks' } }
-                                }
-                            }
-                        };
-                        new Chart(sourceCtx, sourceConfig);
+                            );
+                            let csvContent = headers.map(header => `\""."$"."{header}\"`).join(',') + '\\n'; 
+                            rows.forEach(row => {csvContent += row.join(',') + '\\n';});
+                            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                            const link = document.createElement('a');
+                            const url = URL.createObjectURL(blob);
+                            link.setAttribute('href', url);
+                            link.setAttribute('download', 'PLS_AccessData.csv');
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(url); 
+                        }
                     </script>";
                     $content.=$content3;
-
                 }
             }
         } else {

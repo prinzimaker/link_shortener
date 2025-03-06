@@ -38,20 +38,36 @@ function getCallsLog($db,$short_id,$cust_id=""){
         }, $rows);
         
         $socialNetworks = [
-            'facebook',
-            'x',
-            'twitter',
-            'github',
-            'quora',
-            'amazon',
-            'instagram',
-            'linkedin',
-            'tiktok',
-            'youtube',
-            'pinterest',
-            'google',
-            'reddit',
-            'snapchat'
+            ['facebook',"FCBK"]   ,
+            ['twitter',"TWIT"]    ,
+            ['github',"GHHB"]     ,
+            ['quora',"QRA"]      ,
+            ['amazon',"AMZN"]     ,
+            ['instagram',"INSG"]  ,
+            ['linkedin',"L-IN"]   ,
+            ['tiktok',"TKTK"]     ,
+            ['youtube',"YTBE"]    ,
+            ['pinterest',"PNTS"]  ,
+            ['google',"GGLE"]     ,
+            ['reddit',"RDDT"]     ,
+            ['snapchat',"SNPC"]   ,
+            ['whatsapp',"WHAP"]   ,
+            ['telegram',"TGRM"]   ,
+            ['t.me',"TGRM"]       ,
+            ['bit.ly',"BTLY"]      ,
+            ['tinyurl',"TURL"]    ,
+            ['ow.ly',"OWLY"]      ,
+            ['is.gd',"INSM"]      ,
+            ['buff.ly',"BFLY"]    ,
+            ['rebrand.ly',"RBLY"] ,
+            ['cutt.ly',"CTLY"]    ,
+            ['t.co',"TWIT"]       ,
+            ['m.me',"MMLY"]       ,
+            ['l.facebook',"FCBK"] ,
+            ['fb.me',"FCBK"]      ,
+            ['fb.com',"FCBK"]     ,
+            ['fb.watch',"FCBK"]   ,
+            ["web.telegram.org","TGRM"]
         ];
         // Rimuovi duplicati 
         $geoIp=geolocalizzaIP($db,array_values(array_unique($_StatIp)));
@@ -65,7 +81,6 @@ function getCallsLog($db,$short_id,$cust_id=""){
     return $vars; 
 }
 
-
 function processReferer($entry,$socialNetworks) {
     // Supponiamo che l'array abbia chiavi 'ip' e 'referer'
     $referer = $entry ?? '';
@@ -77,8 +92,8 @@ function processReferer($entry,$socialNetworks) {
     $parsedUrl = parse_url($referer);
     $domain = strtolower($parsedUrl['host'] ?? '');
     foreach ($socialNetworks as $SN) {
-        if (stripos($domain, $SN) !== false) 
-            return $SN;
+        if (stripos($domain, $SN[0]) !== false) 
+            return $SN[1];
     }
     return $domain;
 }
@@ -105,58 +120,3 @@ function geolocalizzaIP($db,array $ips): array {
     return $geoData;
 }
 
-
-// OLD ROUTINE GEOLOCALIZE API DRIVEN
-/*
-function geolocalizzaIP(array $ips): array {
-    $batchSize = 100; // Numero massimo di IP per batch
-    $geoData = []; // Array per memorizzare i risultati
-
-    // Suddividi l'array in batch di massimo 100 IP
-    $ipBatches = array_chunk($ips, $batchSize);
-
-    foreach ($ipBatches as $batch) {
-        // Prepara il payload per l'API
-        $post_data = json_encode(array_map(function($ip) {
-            return ['query' => $ip];
-        }, $batch));
-
-        // Effettua la richiesta POST
-        $ch = curl_init('http://ip-api.com/batch');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json'
-        ]);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-
-        $response = curl_exec($ch);
-
-        // Gestisci eventuali errori di cURL
-        if (curl_errno($ch)) {
-            //echo 'Errore cURL: ' . curl_error($ch);
-            curl_close($ch);
-            continue;
-        }
-
-        curl_close($ch);
-
-        // Decodifica la risposta JSON
-        $data = json_decode($response, true);
-
-        // Analizza i risultati dell'API
-        if (is_array($data)) {
-            foreach ($data as $entry) {
-                $ip = $entry['query'];
-                if ($entry['status'] === 'success') {
-                    $geoData[$ip] = $entry['city'] . '|' . $entry['regionName'] . '|' . $entry['country'];
-                } else {
-                    $geoData[$ip] = lng("unavailable_data");
-                }
-            }
-        }
-    }
-
-    return $geoData;
-}
-*/
