@@ -93,7 +93,7 @@ class Database {
                 $ref="[direct]";
                 if (isset($_SERVER["HTTP_REFERER"]))
                     $ref=$back=$_SERVER["HTTP_REFERER"];
-                $log=$ip.",".date("Y-m-d H:i:s").",".$ref.",".$this->_getUserAgentInfo($ua).",".md5($ip . '|' . $ua).";";
+                $log=str_replace(";",":",$ip.",".date("Y-m-d H:i:s").",".$ref.",".$this->_getUserAgentInfo($ua).",".md5($ip . '|' . $ua)).";";
                 $updateStmt2 = $this->pdo->prepare("
                     INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
                     ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
@@ -297,7 +297,16 @@ class Database {
             $stmt->execute(['short_id' => $short_id]);
             $result = $stmt->fetch();
             if (isset($result["call_log"])){
-                $ret=explode(";",$result["call_log"]);
+                $pattern = '/;(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/';
+                $ret = preg_split($pattern, $result["call_log"], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+                $result = [];
+                $temp = $ret[0]; 
+                for ($i = 1; $i < count($ret); $i += 2) {
+                    $result[] = $temp;
+                    $temp = $ret[$i] . $ret[$i + 1];
+                }
+                $result[] = $temp;
+                $ret=$result;
             }
         }
         return $ret;

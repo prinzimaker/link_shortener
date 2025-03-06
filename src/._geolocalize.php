@@ -76,6 +76,10 @@ function getCallsLog($db,$short_id,$cust_id=""){
             $vars[$key]= array_pad(explode(',', $row),5,"");
             $vars[$key][2]=processReferer($vars[$key][2],$socialNetworks);
             $vars[$key]=array_merge(array_slice($vars[$key],0,1) , array($geoIp[$vars[$key][0]]),array_slice($vars[$key],1,4),array($vars[$key][5]??bin2hex(md5($vars[$key][0]))));
+            if ($vars[$key][4]=="bot"){
+                $vars[$key][3]="[bot]";
+                $vars[$key][4]=="crawler";
+            }
         }
     }
     return $vars; 
