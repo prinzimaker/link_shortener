@@ -33,7 +33,12 @@ create table link (
 create table calls(
     short_id varchar(10) not null,
     call_log longtext,
-    PRIMARY KEY (short_id),
+    PRIMARY KEY (short_id)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+create table calls_log(
+    call_date   date not null,
+    call_log    longtext,
+    PRIMARY KEY (call_date)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 create table customers (
 	cust_id int(10) unsigned NOT NULL AUTO_INCREMENT,

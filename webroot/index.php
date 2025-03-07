@@ -28,18 +28,22 @@ include '../src/._usermanager.php';
 include '../src/._mailmanager.php';
 include '../src/._language.php';
 //=====================================================================
+
+// Remove slashes from the URI
 $uri=str_replace("/","",$_SERVER["REQUEST_URI"]);
 
+// Initialize user agent
 $userAgent="";
 if (isset($_SERVER["HTTP_USER_AGENT"])){
     $userAgent=$_SERVER["HTTP_USER_AGENT"];
+    // Handle IFTTT protocol calls
     if (stripos($userAgent,"IFTTT-Protocol")===0){
-        //call from IFTTT
         handleIFTTTCall();
         exit;
     }
 }
 
+// Initialize variables
 $header = "";
 $content="";
 $showPage=true;
@@ -48,29 +52,38 @@ $userData=[];
 if (isset($_SESSION["user"]))
     $userData=$_SESSION["user"];
 $req=[];
+
+// Check if the request is for the API
 if ((stripos($uri, "api.php") !== false) || ($_SERVER["REDIRECT_URL"]=="/api") || ($_SERVER["SCRIPT_NAME"]=="/api") || ($_SERVER["SCRIPT_NAME"]=="/api.php"))
     $uri = "api";
 $uri=explode("?",$uri)[0];
 
+// Get the referrer URL
 $back="/";
 if (isset($_SERVER["HTTP_REFERER"]))
     $back=$_SERVER["HTTP_REFERER"];
 
+// Initialize variables for URI changes
 $changeduri="";
 $newuri="";
+
+// Handle different URIs
 switch ($uri){
     case "setlang":
+        // Set the language
         if (isset($_POST["lang"]))
             $_SESSION["lang"]=strtolower($_POST["lang"]);
         setNewLanguage($_SESSION["lang"]);
         header("Location: ".$back);
         die();
     case "_pls_fnc_newapikey":
+        // Assign a new API key
         $usr=new SLUsers();
         $usr->assignNewApiKey();
         header("Location: ".$back);
         die();
     case "api":
+        // Handle API calls
         $db = new Database();
         $res=$db->connect();
         $showPage=false;
@@ -78,6 +91,7 @@ switch ($uri){
         replyToApiCall($db);
         break;
     case "_create_icon":
+        // Create an icon
         $numicon=0;
         if (isset($_GET["icon"]))
             $numicon=intval($_GET["icon"]);
@@ -91,6 +105,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_login":   
+        // Handle login
         $header = "Short Link - Login";
         $pwd=trim($_POST["password"]);
         $usr=trim($_POST["userid"]);
@@ -98,7 +113,6 @@ switch ($uri){
         && (is_string($usr) && strlen($usr)<60 && strlen($usr)>5)){
             $UM=new UserManager();
             $_SESSION["user"]=[];
-            //$user=new SLUsers($usr,$pwd);
             $user=$UM->authenticate($usr,$pwd);
             if ($user["cust_id"]>0){
                 if (stripos($back,"/_pls_fnc_login")!==false)
@@ -108,11 +122,6 @@ switch ($uri){
                 else
                     header("Location: ".$_SESSION["dvalu"], true);
                 exit();
-            } else {
-                /*
-                if ($_SESSION["user"] == "NOTVF"){
-                    $content="<div>".lng($_SESSION["loginerr"])."</div><hr>";
-                }*/
             }
             $content=getLoginForm($usr);
         } else { 
@@ -124,6 +133,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_changecode":
+        // Change short code
         if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Change short code";
             $ret=changeShortCode();
@@ -131,6 +141,7 @@ switch ($uri){
             $changeduri=$ret[0];
         } 
     case "_pls_fnc_shortinfo":
+        // Display short info
         if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Link info";
             $content.=getShortInfoDisplay($userData["cust_id"],$changeduri);
@@ -139,6 +150,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_shorten":
+        // Shorten a link
         if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Link shortened";
             $ret=getShortLinkDisplay("");
@@ -150,6 +162,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_fgtpass":
+        // Handle forgot password
         $header = "Short Link - User login";
         $content=getLoginForm($usr);
         if (!empty($userData) && is_array($userData) && $userData["active"]>0){
@@ -171,9 +184,9 @@ switch ($uri){
                 }
             }
         }
-        //
         break;
     case "_pls_fnc_register":
+        // Handle user registration
         $au=getenv("accept_users");
         $au=filter_var($au==""?"true":$au, FILTER_VALIDATE_BOOLEAN); 
         if ($au){
@@ -190,6 +203,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_forgotpass":
+        // Handle password change
         $UM=new UserManager();
         if ($UM->handleChangePass()){
             $header = "Short Link - Password changed";
@@ -201,6 +215,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_handleuserdata":
+        // Handle user data
         if (!empty($userData) && is_array($userData) && $userData["active"] > 0) {
             $header = "Short Link User - Handle";
             $content = handleUserData();
@@ -211,6 +226,7 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_removeshortinfo":
+        // Remove short info
         if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - Delete";
             $content=delShortData();
@@ -219,12 +235,14 @@ switch ($uri){
         }
         break;
     case "_pls_fnc_logout":   
+        // Handle logout
         $_SESSION["user"]=[];
         header("Location: /", true);
     case "":
     case "index.htm":
     case "index.php":
     case "_pls_fnc_user":
+        // Display index content
         $content=getIndexContent();
         if (!empty($userData) && is_array($userData) && $userData["active"]>0){
             $header = "Short Link - User";
@@ -246,40 +264,35 @@ switch ($uri){
         break;
     case "favicon":
     case "favicon.ico":
+        // Handle favicon request
         $ret=getFavicon();
         die ($ret);
-    /*
-    case "info":
-        if (!empty($userData) && $userData["active"]>0){
-            $header = "Short Link - Info";
-            $content=getShortInfoContent();
-        } else {
-            $_SESSION["dvalu"]=$_SERVER["REQUEST_URI"];
-            $header = "Short Link - Autenticate";
-            $content=getLoginForm();
-        }
-        break;
-    */
     default:
+        // If no matching case, do not show the page
         $showPage=false;
         break;
 }
 //=====================================================================
 
-// se la request on è un link ridotto, allora sarà una pagina del sito
-// quindi se $showPage è true visualizzo l'html della pagina.
+// If the request is not a shortened link, display the HTML page
 if ($showPage){
+    // extract the calls data
+    if (!empty($userData) && is_array($userData))
+        recInnerCall($userData["cust_id"]);
+    else
+        recInnerCall(0);
+    // -------------------------------------
     include 'html/.header.php';
     echo "<div class='title_header'>$header</div>";
     echo "<div style='margin-top:20px' class='container'>".$content."</div>";
     include 'html/.footer.php';
 } else if (!$showApi) {
-    // se non è una pagina del sito, allora è un link ridotto
+    // If not a page, it is a shortened link
     execRedirect($uri);
 }
 
 //=====================================================================
-// Funzioni per la gestione dei contenuti delle pagine
+// Functions for handling page content
 //=====================================================================
 
 function handleAuth(){
@@ -292,80 +305,23 @@ function execRedirect($uri){
         $db = new Database();
         $res=$db->getFullLink($uri);
         if (!is_null($res) && !empty($res["uri"])){
-            /*
-            300 Multiple Choices
-            301 Moved Permanently
-            302 Found (Previously "Moved temporarily")
-            303 See Other (since HTTP/1.1)
-            304 Not Modified
-            305 Use Proxy (since HTTP/1.1)
-            306 Switch Proxy
-            307 Temporary Redirect (since HTTP/1.1)
-                In this case, the request should be repeated with another URI; however, future requests should still use the original URI. 
-                In contrast to how 302 was historically implemented, the request method is not allowed to be changed when reissuing the original request. 
-                For example, a POST request should be repeated using another POST request.
-            308 Permanent Redirect
-            */
             ignore_user_abort(true);
             http_response_code(307);
             header("Location: ".$res["uri"]);
             flush();
             $uri = $res["uri"];
             $log = $res["log"];
-            // Registra la funzione di shutdown senza parametri
+            // Register shutdown function without parameters
             register_shutdown_function(function () use ($uri, $log) {
                 sleep(1);
                 callIfThisEvent($uri, $log);
             });            
             exit;
         }
-        /*
-            400 Bad Request
-            401 Unauthorized
-            402 Payment Required
-            403 Forbidden
-            404 Not Found
-            405 Method Not Allowed
-            406 Not Acceptable
-            407 Proxy Authentication Required
-            408 Request Timeout
-            409 Conflict
-            410 Gone
-                Indicates that the resource requested was previously in use but is no longer available and will not be available again. 
-                This should be used when a resource has been intentionally removed and the resource should be purged. 
-                Upon receiving a 410 status code, the client should not request the resource in the future. 
-                Clients such as search engines should remove the resource from their indices. 
-                Most use cases do not require clients and search engines to purge the resource, and a "404 Not Found" may be used instead.
-        */
+        // Handle 410 Gone error
         $res='<div class="container404"><div class="copy-container404 center-xy404"><p class="p404"><span style="font-size:2em;font-weight:900">'.$uri.' ???</span><br>410: Gone -or- page not found.</p><span class="handle404"></span></div></div>';
         http_response_code(410);
         die( '<html class="html404"><head><title>Page not found (hex 32768)</title><link rel="stylesheet" type="text/css" href="/assets/site.css"></head><body class="body404">'.$res.'</body></html>');
-        /*
-            411 Length Required
-            412 Precondition Failed
-            413 Payload Too Large
-            414 URI Too Long
-            415 Unsupported Media Type
-            416 Range Not Satisfiable
-            417 Expectation Failed
-            418 I'm a teapot (RFC 2324, RFC 7168) !!! :)
-            419 [unofficial] Page Expired (Laravel Framework)
-            420 [unofficial] Method Failure (Spring Framework) - Enhance Your Calm (Twitter)
-            421 Misdirected Request
-            422 Unprocessable Content
-            423 Locked (WebDAV; RFC 4918)
-            424 Failed Dependency (WebDAV; RFC 4918)
-            425 Too Early (RFC 8470)
-            426 Upgrade Required
-            428 Precondition Required (RFC 6585)
-            429 Too Many Requests (RFC 6585)
-            430 [unofficial] Request Header Fields Too Large (Shopify) - Shopify Security Rejection (Shopify)
-            431 Request Header Fields Too Large (RFC 6585)
-            450 [unofficial] Blocked by Windows Parental Controls (Microsoft)
-            451 navailable For Legal Reasons (RFC 7725)
-            498 [unofficial] Invalid Token (Esri)
-            499 [unofficial] Token Required (Esri)
-        */
     }
 }
 

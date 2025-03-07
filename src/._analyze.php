@@ -212,3 +212,11 @@ function getUserAgentInfo($userAgentSignature) {
     }
     return [$result['device'],str_replace([",",";","\""],["-","|","'"],$result['os'])];
 }
+
+function recInnerCall($userId){
+    $db=NEW Database();
+    $logRec=explode(",",getCallLogData());
+    $geo=str_replace("|",",",geolocalizzaIP($db,[$logRec[0]]));
+    $log=[explode(" ",$logRec[1])[1],$logRec[0],$geo[$logRec[0]],$userId,str_replace(getenv("URI"),"",$logRec[2]),$logRec[3],$logRec[4],$logRec[5]];
+    $db->registerPLScall(implode(",",$log));
+}

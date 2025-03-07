@@ -62,9 +62,8 @@ class Database {
     }
 
     public function getPreparedStatement($sql){
-        if (isset($this->pdo))
-            return $this->pdo->prepare($sql);
-        return null; 
+        if (!isset($this->pdo)) $this->connect();
+        return $this->pdo->prepare($sql);
     }
     
     function getFullLink($code){
@@ -108,7 +107,22 @@ class Database {
         }
         return null;
     }
-    
+
+    function registerPLScall($logdata){
+        if (!isset($this->pdo)) $this->connect();
+        try {
+            $key=date("Y-m-d");
+            $stmt = $this->pdo->prepare("
+                INSERT INTO calls_log (call_date, call_log) VALUES(:kdate, :log) 
+                ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
+            ");
+            return $stmt->execute(['kdate' => $key, 'log' => $logdata, 'log2' => $logdata]);
+        } catch (\Throwable $e) {
+            // nothing to do...
+        }
+        return false;
+    }
+
     function createShortlink($uri,$user_id){
         $existing_short_code=$this->getShortLink($uri, $user_id);
         if (!empty($existing_short_code)) 
