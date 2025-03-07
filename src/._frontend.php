@@ -35,9 +35,9 @@ function getShortInfoContent($code="",$uri=""){
         $uri=substr($uri,strlen(getenv("URI")));
     $ret='<div class="alert alert-warning"><form action="_pls_fnc_changecode"  method="post"><input type="hidden" name="shortcode" value="'.$code.'">
     <table><tr><td><label>'.lng("front_reduced-link").':&nbsp;<strong>
-    <a class="input-text" style="background-color:#fff" target="_blank" href="'.getenv("URI").$uri.'">'.getenv("URI").$uri.'</a>
-    </strong></label><td>&nbsp;-&nbsp;</td><td><label>'.lng("change_link_code").'</label></td>
-    <td><input type="text" class="input-text" name="newcode" placeholder="" value="'.$code.'"></td>
+    <a class="input-text" id="link1" style="background-color:#fff" target="_blank" href="'.getenv("URI").$uri.'">'.getenv("URI").$uri.'</a></strong></label>&nbsp;
+    <button class="btn btn-small btn-warning" onclick=\'event.preventDefault();copyData("link1","itext","'.lng("front_copied-link").'","'.lng("front_copy-error").'")\'>'.lng("copy").'</button>
+    <td>&nbsp;-&nbsp;</td><td><label>'.lng("change_link_code").'</label></td><td><input type="text" class="input-text" name="newcode" placeholder="" value="'.$code.'"></td>
     <td>&nbsp;</td><td><button type="submit" class="btn btn-primary">'.lng("change").'</button></td></tr></table>
 </form></div>';
     return $ret;
@@ -370,9 +370,13 @@ function getUserContent(){
             </form> </div>
 '._addPassFormScripts("changePassForm").'
         <div class="alert alert-info">
-            <table width="100%"><tr><td width="50%"> <label for="userid">'.lng("user").'</label><br>
+            <table width="100%"><tr><td width="45%"> <label for="userid">'.lng("user").'</label><br>
                 <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'"></td>
-                <td>&nbsp;</td><td><label for="userid">API key</label><br><input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="API key" value="'.$userData["apikey"].'"></td></tr>
+                <td>&nbsp;</td><td width="55%"><label for="userid">API key</label><br><input style="margin-top:3px" id="apikey" type="text" class="input-text2" name="apikey" placeholder="API key" value="'.$userData["apikey"].'">
+                <button class="btn btn-small btn-warning" onclick="event.preventDefault();copyData(\'apikey\',\'\',\''.lng("front_copied-link").'\',\''.lng("front_copy-error").'\')">'.lng("copy").'</button>
+                
+                
+                </td></tr>
                 <tr><td><label for="userid">'.lng("email").'</label><br>
                     <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["email"].'">
                 </td><td>&nbsp;</td><td><table><tr><td>

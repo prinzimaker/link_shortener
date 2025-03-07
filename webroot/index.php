@@ -14,22 +14,7 @@ v1.4.1 - Aldo Prinzi - 07 Mar 2025
 ---------
 UPDATES
 ---------
-2025.02.24 - Added Ip2Location database support
-             Added user management and control
-             Added logout function
-2024.12.23 - Added qr-code generation for the short link, using an
-             api server from Fundata GmbH - Karlsruhe (DE):
-             https://goqr.me/api/doc/
-2024.12.26 - Added calls logger 
-2024.12.29 - Added calls logger ip geolocalisation
-2024.12.30 - exported all the complexity to specific /src files
-2024.01.25 - initial user management and control
-2024.02.13 - v1.3.1
-             Added 404 reply for not found short links
-             Added control over statistics on short link not found
-             Added graphic display for statistics using CHART.JS
-             Added base database records
-             Added cotrol over "about us" link as a short link
+
 =====================================================================
 */
 include '../src/._loadenv.php';

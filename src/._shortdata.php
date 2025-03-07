@@ -60,8 +60,7 @@ function getShortInfoDisplay($cust_id,$puri=""){
                     <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest/dist/chartjs-plugin-zoom.min.js'></script>
                     <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js'></script>
                     <div class='alert alert-info'><table width='100%'><tr><td width=85%>
-                    <label>".lng("front_link-is").":</label><input type='text' class='input-text' id='originalLink' value='".$res["full_uri"]."' readonly><button class='btn btn-warning' onclick='copyShortLink()'>".lng("copy")."</button>
-                    <script>function copyShortLink(){var copyText=document.getElementById('originalLink').value;navigator.clipboard.writeText(copyText).then(function(){alert('".lng("front_copied-link").": '+ copyText);},function(err){console.error('".lng("front_copy-error").":', err);});}</script>
+                    <label>".lng("front_link-is").":</label><input type='text' class='input-text' id='originalLink' value='".$res["full_uri"]."' readonly><button class='btn btn-small btn-warning' onclick='event.preventDefault();copyData(\"originalLink\",\"\",\"".lng("front_copied-link")."\",\"".lng("front_copy-error")."\")'>".lng("copy")."</button>
                     <table style='padding-top:15px' width=100%><tr><td width=65%><label>".lng("front_link-created-on").":</label><input type='text' class='input-text' id='createdLink' value='".$formattedDate."' readonly></td><td>&nbsp;</td>
                     <td width=35%><label>".lng("front_was-req").":</label><input type='text' class='input-text' id='createdLink' value='".$res["calls"]." ".lng("times")."' readonly></div></td></tr></table>
                     <td width='15%' align='left' style='padding-left:30px'><img alt='short link qr-code' id='qrcode' style='border:solid 10px #fff' src='https://api.qrserver.com/v1/create-qr-code/?data=" .urlencode(getenv("URI").$uri_code). "&amp;size=100x100&amp;color=0800A0' alt='qr-code' title='qr-code' width='160px' height='160px' /></td></tr></table></div>
@@ -386,16 +385,11 @@ function getShortLinkDisplay($uri){
                     return;
                 else {
                     $db = new Database();
-                    $res=$db->connect();
                     $user_id=$userData["cust_id"];
-                    if ($res["conn"]){
-                        $UM=new UserManager();
-                        if (!$UM->userLinkLimit($user_id))
-                            $shortCode=$db->createShortlink($uri,$user_id);
-                        else
-                            $content="<div class='alert alert-danger'>".lng("error").": ".lng("link_limit-reached")."</div>";
-                    } else {
-                        $content="<div class='alert alert-danger'>".lng("error").": ".$res["err"]."</div>";
+                    $shortCode=$db->createShortlink($uri,$user_id);
+                    if (stripos($shortCode,"error")===0){ 
+                        $content="<div class='alert alert-danger'>".lng("error").": ".$shortCode."</div>";
+                        $shortCode="";
                     }
                 }
             }

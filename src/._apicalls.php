@@ -17,7 +17,7 @@ function replyToApiCall ($db){
     header('Content-Type: application/json');
 
     if (count($_GET)+count($_POST)<1){
-        die('{"name":"Prinzimaker\'s Link Shortener API Server","status":"ready","version":"1.4.0 - Open source","note":"You need to register and get an API KEY to use these functions. If you are a malicius hacker go away, thanks."}');
+        die('{"name":"Prinzimaker\'s Link Shortener API Server","status":"ready","version":"1.4.1 - Open source","note":"You need to register and get an API KEY to use these functions. If you are a malicius hacker go away, thanks."}');
     }
 
     $user = isset($_GET['key']) ? $_GET['key'] : null;
@@ -51,10 +51,16 @@ function replyToApiCall ($db){
                         $uri.="&".$key."=".$data;
                 }
                 $code=$db->createShortlink($uri,$cust_id);
-                $shortUrl = getenv("URI").$code;
-                $response['status'] = 'success';
-                $response['original_url'] = $uri;
-                $response['short_url'] = $shortUrl;
+                if (stripos($code,"error")===0){ 
+                    $response['status'] = 'error';
+                    $response['message'] = $code;
+                    $code="";
+                } else {
+                    $shortUrl = getenv("URI").$code;
+                    $response['status'] = 'success';
+                    $response['original_url'] = $uri;
+                    $response['short_url'] = $shortUrl;
+                }
             } else {
                 $response['status'] = 'error';
                 $response['message'] = lng("api_loop").getenv("URI").' URL.';

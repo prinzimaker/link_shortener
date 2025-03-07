@@ -26,7 +26,7 @@ v1.4.1 - Aldo Prinzi - 07 Mar 2025
                     <td align="right"> 
                         <ul class="list">
                             <li><a class="nav-item" href="/pls_redoc" target='_blank'>Redoc&nbsp;API&nbsp;doc</a></li>
-                            <li><a class="nav-item" href="/pls_swagu" target='_blank'>OpenAPI&nbsp;doc</a></li>
+                            <li><a class="nav-item" href="/pls_swag" target='_blank'>OpenAPI&nbsp;doc</a></li>
                         </ul>
                     </td>
                     <td width="3%">&nbsp;</td>

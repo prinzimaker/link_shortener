@@ -29,22 +29,16 @@ function closemodal(){
     document.getElementById("modal").classList.add("hidden");
 }
 
-// Valuta la sicurezza della password e restituisce un punteggio da 0 a 5
 function evaluatePasswordStrength(password) {
     let strength = 0;
-    // Controllo lunghezza
-    if (password.length >= 8) strength++;
-    if (password.length >= 12) strength++;
-    // Se contiene numeri
-    if (/\d/.test(password)) strength++;
-    // Se contiene sia minuscole che maiuscole
+    if (password.length >= 8)   strength++;
+    if (password.length >= 12)  strength++;
+    if (/\d/.test(password))    strength++;
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-    // Se contiene caratteri speciali
     if (/[\W_]/.test(password)) strength++;
     return strength;
 }
 
-// Aggiorna il display del livello di sicurezza della password
 function updatePasswordStrength() {
     const password = document.getElementById('password').value;
     const strength = evaluatePasswordStrength(password);
@@ -72,3 +66,23 @@ function updatePasswordStrength() {
     document.getElementById('passwordStrength').innerText = "Sicurezza: " + strengthText;
 }
 
+function copyData(elem,field,cpLnk,cpErr){
+    var copyText="";
+    switch(field){
+        case 'itext':
+            copyText=document.getElementById(elem).innerText;
+            break;
+        case 'src':
+            copyText=document.getElementById(elem).src;
+            break;
+        default:
+            copyText=document.getElementById(elem).value;
+            break;
+    }
+    if (copyText){
+        navigator.clipboard.writeText(copyText).then(
+            function(){alert(cpLnk+": "+ copyText);},
+            function(err){console.error(err+"\n"+cpErr);}
+        );
+    }
+}

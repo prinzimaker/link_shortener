@@ -114,13 +114,18 @@ class Database {
         if (!empty($existing_short_code)) 
             $code=$existing_short_code;
         else {
-            $lenght=getenv('LinkLenght');
-            if ($lenght<1) $lenght=8;
-            $code = $this->_genRndString($lenght);
-            if ($code!="")
-                $this->putlink($code, $uri, $user_id);
-            else
-                $code="Error!";
+            if (!isset($this->pdo)) $this->connect();
+                $UM=new UserManager();
+                if (!$UM->userLinkLimit($user_id)){
+                    $lenght=getenv('LinkLenght');
+                    if ($lenght<1) $lenght=8;
+                    $code = $this->_genRndString($lenght);
+                    if ($code!="")
+                        $this->putlink($code, $uri, $user_id);
+                    else
+                        $code="Error:Link generation error";
+                } else
+                    $code="Error:Too much links";
         }
         return $code;
     }
