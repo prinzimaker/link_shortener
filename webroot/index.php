@@ -10,7 +10,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.4.0 - Aldo Prinzi - 03 Mar 2025
+v1.4.1 - Aldo Prinzi - 07 Mar 2025
 ---------
 UPDATES
 ---------
@@ -36,7 +36,7 @@ include '../src/._loadenv.php';
 include '../src/._apicalls.php';
 include '../src/._database.php';
 include '../src/._frontend.php';
-include '../src/._geolocalize.php';
+include '../src/._analyze.php';
 include '../src/._shortdata.php';
 include '../src/._users.php';
 include '../src/._usermanager.php';

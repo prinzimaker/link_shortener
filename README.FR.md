@@ -1,6 +1,6 @@
 # Raccourcisseur de liens de Prinzimaker
 
-### **Raccourcisseur de liens rapide et simple** - **v1.4.0**
+### **Raccourcisseur de liens rapide et simple** - **v1.4.1**
 
 **Ce projet est développé en PHP et ne nécessite qu'Apache et MariaDB/MySQL.  
 Une fois mis en œuvre, il devient un site web complet (en italien par défaut) permettant de gérer le raccourcissement de liens complexes et de surveiller leur utilisation.**

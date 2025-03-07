@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the DB logic for the link shortener
 -
-v1.4.0 - Aldo Prinzi - 03 Mar 2025
+v1.4.1 - Aldo Prinzi - 07 Mar 2025
 ---------
 UPDATES
 ---------
@@ -88,12 +88,7 @@ class Database {
                 ");
                 $updateStmt1->execute(['code' => $code]);
                 // CALLS LOG UPDATE
-                $ip=$_SERVER['REMOTE_ADDR'];
-                $ua=$_SERVER['HTTP_USER_AGENT'];
-                $ref="[direct]";
-                if (isset($_SERVER["HTTP_REFERER"]))
-                    $ref=$back=$_SERVER["HTTP_REFERER"];
-                $log=str_replace(";",":",$ip.",".date("Y-m-d H:i:s").",".$ref.",".$this->_getUserAgentInfo($ua).",".md5($ip . '|' . $ua)).";";
+                $log=getCallLogData();
                 $updateStmt2 = $this->pdo->prepare("
                     INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
                     ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
@@ -112,84 +107,6 @@ class Database {
             exit();
         }
         return null;
-    }
-    
-
-    private function _getUserAgentInfo($userAgentSignature) {
-        // Risultato di default
-        $result = [
-            'device' => 'unknown', // PC, tablet, phone,
-            'os' => $userAgentSignature   // Operating System or unknown signature (robot, crawler, API, etc.)
-        ];
-    
-        // Converti tutto in minuscolo per facilitare il match
-        $userAgentSignature = strtolower($userAgentSignature);
-    
-        if (preg_match('/(bot|crawl|spider|facebookexternalhit|googlebot|bingbot|yahoo|baiduspider|twitterbot)/i', $userAgentSignature)) {
-            $result['device'] = 'bot';
-            
-            // Identificazione specifica di alcuni bot conosciuti
-            if (preg_match('/facebookexternalhit/i', $userAgentSignature)) {
-                $result['device'] = 'bot';
-                $result['os'] = 'facebook';
-            } elseif (preg_match('/googlebot/i', $userAgentSignature)) {
-                $result['device'] = 'bot';
-                $result['os'] = 'google';
-            } elseif (preg_match('/LinkedInBot/i', $userAgentSignature)) {
-                $result['device'] = 'bot';
-                $result['os'] = 'linkedin';
-            } elseif (preg_match('/bingbot/i', $userAgentSignature)) {
-                $result['device'] = 'bot';
-                $result['os'] = 'bing';
-            }
-        }
-        // --- Rilevamento del dispositivo ---
-        // Phone
-        elseif (preg_match('/(iphone|android|blackberry|windows phone|symbian|mobile)/i', $userAgentSignature)) {
-            $result['device'] = 'phone';
-        }
-        // Tablet
-        elseif (preg_match('/(ipad|tablet|kindle|silk|playbook)/i', $userAgentSignature)) {
-            $result['device'] = 'tablet';
-        }
-        // PC (default se non è mobile o tablet)
-        elseif (preg_match('/(windows nt|macintosh|linux|cros)/i', $userAgentSignature) && 
-                !preg_match('/mobile/i', $userAgentSignature)) {
-            $result['device'] = 'pc';
-        }
-    
-        if (!isset($result['os'])){
-            // --- Rilevamento del sistema operativo ---
-            if (preg_match('/windows nt ([\d\.]+)/i', $userAgentSignature, $matches)) {
-                $version = $matches[1];
-                $windowsVersions = [
-                    '10.0' => 'Windows 10/11',
-                    '6.3' => 'Windows 8.1',
-                    '6.2' => 'Windows 8',
-                    '6.1' => 'Windows 7'
-                ];
-                $result['os'] = $windowsVersions[$version] ?? 'Windows';
-            }
-            elseif (preg_match('/android\s?([\d\.]+)/i', $userAgentSignature, $matches)) {
-                $result['os'] = 'Android ' . ($matches[1] ?? '');
-            }
-            elseif (preg_match('/iphone os ([\d_]+)/i', $userAgentSignature, $matches)) {
-                $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
-            }
-            elseif (preg_match('/ipad; cpu os ([\d_]+)/i', $userAgentSignature, $matches)) {
-                $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
-            }
-            elseif (preg_match('/mac os x ([\d_]+)/i', $userAgentSignature, $matches)) {
-                $result['os'] = 'macOS ' . str_replace('_', '.', $matches[1]);
-            }
-            elseif (preg_match('/linux/i', $userAgentSignature)) {
-                $result['os'] = 'Linux';
-            }
-            elseif (preg_match('/cros/i', $userAgentSignature)) {
-                $result['os'] = 'Chrome OS';
-            }
-        }
-        return $result['device'] . ',' . $result['os'];
     }
     
     function createShortlink($uri,$user_id){
@@ -291,6 +208,7 @@ class Database {
     function getDownloadInfo($short_id,$cust_id){
         $ret="";
         $shortInfo=$this->getShortlinkInfo($short_id, $cust_id);
+        //$db=new Database();
         if ($shortInfo!==false){
             if (!isset($this->pdo)) $this->connect();
             $stmt = $this->pdo->prepare("SELECT * FROM calls WHERE short_id = :short_id LIMIT 1");
@@ -299,14 +217,24 @@ class Database {
             if (isset($result["call_log"])){
                 $pattern = '/;(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/';
                 $ret = preg_split($pattern, $result["call_log"], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            // ----------------------------------------------------
+            // v1.4.0 -> v1.4.1 TEMPORARY - NEED TO BE REMOVED!
                 $result = [];
                 $temp = $ret[0]; 
                 for ($i = 1; $i < count($ret); $i += 2) {
                     $result[] = $temp;
-                    $temp = $ret[$i] . $ret[$i + 1];
+                    $temp = str_replace(";","|",$ret[$i] . $ret[$i + 1]);
+                    if (strlen($ret[$i + 1])>120){
+                        $ttemp=explode(",",$temp);
+                        $uaret=getUserAgentInfo($ret[$i + 1]);
+                        $ttemp[3]=$uaret[0];
+                        $ttemp[4]=$uaret[1];
+                        $temp=implode(",",$ttemp);
+                    }
                 }
                 $result[] = $temp;
                 $ret=$result;
+            // ----------------------------------------------------
             }
         }
         return $ret;

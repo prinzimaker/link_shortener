@@ -1,5 +1,5 @@
 # Acortador de Enlaces de Prinzimaker
-**Acortador de enlaces rápido y sencillo - v1.4.0**
+**Acortador de enlaces rápido y sencillo - v1.4.1**
 
 Este proyecto está realizado en PHP y solo requiere Apache y MariaDB/MySQL. Una vez implementado, se convierte en un sitio web completo (en italiano) que permite gestionar la reducción de enlaces complejos y la administración de información sobre el uso de estos enlaces.
 

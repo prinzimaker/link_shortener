@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Geolocalisation functions
 -
-v1.4.0 - Aldo Prinzi - 03 Mar 2025
+v1.4.1 - Aldo Prinzi - 07 Mar 2025
 ---------
 UPDATES
 ---------
@@ -123,4 +123,92 @@ function geolocalizzaIP($db,array $ips): array {
     }
     return $geoData;
 }
+function getCallLogData(){
+    $ip=$_SERVER['REMOTE_ADDR'];
+    $ua=$_SERVER['HTTP_USER_AGENT'];
+    $res=getUserAgentInfo($ua);
+    $ua=str_replace([",",";","\""],["-","|","'"],$ua);
+    if (isset($_SERVER["HTTP_REFERER"]))
+        $ref=$_SERVER["HTTP_REFERER"];
+    else
+        $ref=($res[0]=="bot")?"[bot]":"[direct]";
+    $log=$ip.",".date("Y-m-d H:i:s").",".$ref.",".$res[0].",".$res[1].",".md5($ip . '|' . $ua).";";
+    return $log;
+}
 
+function getUserAgentInfo($userAgentSignature) {
+    // Risultato di default
+    $result = [
+        'device' => 'unknown', // PC, tablet, phone,
+        'os' => ""   // Operating System or unknown signature (robot, crawler, API, etc.)
+    ];
+
+    // Converti tutto in minuscolo per facilitare il match
+    $userAgentSignature = strtolower($userAgentSignature);
+
+    if (preg_match('/(bot|crawl|spider|facebookexternalhit|googlebot|bingbot|yahoo|baiduspider|twitterbot)/i', $userAgentSignature)) {
+        $result['device'] = 'bot';
+        
+        // Identificazione specifica di alcuni bot conosciuti
+        if (preg_match('/facebookexternalhit/i', $userAgentSignature)) {
+            $result['device'] = 'bot';
+            $result['os'] = 'facebook';
+        } elseif (preg_match('/googlebot/i', $userAgentSignature)) {
+            $result['device'] = 'bot';
+            $result['os'] = 'google';
+        } elseif (preg_match('/LinkedInBot/i', $userAgentSignature)) {
+            $result['device'] = 'bot';
+            $result['os'] = 'linkedin';
+        } elseif (preg_match('/bingbot/i', $userAgentSignature)) {
+            $result['device'] = 'bot';
+            $result['os'] = 'bing';
+        }
+    }
+    // --- Rilevamento del dispositivo ---
+    // Phone
+    elseif (preg_match('/(iphone|android|blackberry|windows phone|symbian|mobile)/i', $userAgentSignature)) {
+        $result['device'] = 'phone';
+    }
+    // Tablet
+    elseif (preg_match('/(ipad|tablet|kindle|silk|playbook)/i', $userAgentSignature)) {
+        $result['device'] = 'tablet';
+    }
+    // PC (default se non è mobile o tablet)
+    elseif (preg_match('/(windows nt|macintosh|linux|cros)/i', $userAgentSignature) && 
+            !preg_match('/mobile/i', $userAgentSignature)) {
+        $result['device'] = 'pc';
+    }
+
+    if (empty($result['os'])){
+        // --- Rilevamento del sistema operativo ---
+        if (preg_match('/windows nt ([\d\.]+)/i', $userAgentSignature, $matches)) {
+            $version = $matches[1];
+            $windowsVersions = [
+                '10.0' => 'Windows 10/11',
+                '6.3' => 'Windows 8.1',
+                '6.2' => 'Windows 8',
+                '6.1' => 'Windows 7'
+            ];
+            $result['os'] = $windowsVersions[$version] ?? 'Windows';
+        }
+        elseif (preg_match('/android\s?([\d\.]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'Android ' . ($matches[1] ?? '');
+        }
+        elseif (preg_match('/iphone os ([\d_]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
+        }
+        elseif (preg_match('/ipad; cpu os ([\d_]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'iOS ' . str_replace('_', '.', $matches[1]);
+        }
+        elseif (preg_match('/mac os x ([\d_]+)/i', $userAgentSignature, $matches)) {
+            $result['os'] = 'macOS ' . str_replace('_', '.', $matches[1]);
+        }
+        elseif (preg_match('/linux/i', $userAgentSignature)) {
+            $result['os'] = 'Linux';
+        }
+        elseif (preg_match('/cros/i', $userAgentSignature)) {
+            $result['os'] = 'Chrome OS';
+        }
+    }
+    return [$result['device'],str_replace([",",";","\""],["-","|","'"],$result['os'])];
+}

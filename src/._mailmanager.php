@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Users-Management class/functions
 -
-v1.4.0 - Aldo Prinzi - 03 Mar 2025
+v1.4.1 - Aldo Prinzi - 07 Mar 2025
 
 =====================================================================
 */

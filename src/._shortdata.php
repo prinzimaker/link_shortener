@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the data handling logic 
 -
-v1.4.0 - Aldo Prinzi - 03 Mar 2025
+v1.4.1 - Aldo Prinzi - 07 Mar 2025
 
 2025-02-24 - Added shortcode personalization
            - Added shortcode deletion
@@ -220,7 +220,7 @@ function getShortInfoDisplay($cust_id,$puri=""){
     const sourceCtx = document.getElementById('sourceChart').getContext('2d');
     const sourceData = Array.from(document.querySelectorAll('.tab__content tbody tr')).slice(1).reduce((acc, row) => {
         const source = row.cells[3].textContent.trim(); // Usa indice 3 per Source
-        if (source !== '[direct]') {
+        if (source !== '[direct]' && source !== '[bot]') {
             acc[source] = (acc[source] || 0) + 1;
         }
         return acc;
