@@ -19,6 +19,13 @@ the filename will be IP2LOCATION-LITE-DB[xxx].CSV
 2) Placez le fichier CSV dans le dossier **/ip2location**  
 3) Exécutez le script **"populate-database.php"** depuis la ligne de commande  
 ---
+## 🇪🇸 Español
+### Poblar la tabla de la base de datos Geo-Ip:
+1) Ve a [https://ip2location.com](https://ip2location.com), regístrate y descarga la versión gratuita del archivo CSV IPv4.  
+   El nombre del archivo será **IP2LOCATION-LITE-DB[xxx].CSV**  
+2) Coloca el archivo CSV en la carpeta **/ip2location**  
+3) Ejecuta el script **"populate-database.php"** desde la línea de comandos  
+---
 ## 🇩🇪 Deutsche  
 ### Die Geo-Ip-Datenbanktabelle befüllen:
 1) Gehen Sie zu [https://ip2location.com](https://ip2location.com), registrieren Sie sich und laden Sie die kostenlose Version der IPv4-CSV-Datei herunter.  
