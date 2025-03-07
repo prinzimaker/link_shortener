@@ -20,8 +20,11 @@ if (isset($_SESSION["user"]))
 // Determine the user link based on session data
 if (empty($userData) || !is_array($userData))
     $userLink="<a href='/_pls_fnc_login' class='nav-item btn btn-warning btn-small'>Login</a>";
-else
+else {
     $userLink="<a href='/_pls_fnc_user' class='nav-item btn btn-secondary btn-small'><strong>".trim($userData["descr"])."</strong></a>";
+    if ($userData["is_admin"]>0)
+        $userLink.="<a href='/_pls_fnc_dash' class='nav-item btn btn-warning btn-small'>".lng("dashboard")."</a>";
+}
 
 ?><html>
     <head>

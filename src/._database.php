@@ -66,6 +66,36 @@ class Database {
         return $this->pdo->prepare($sql);
     }
     
+    public function getCustomersData(){
+        if (!isset($this->pdo)) $this->connect();
+
+        $SQL="
+        SELECT 
+            c.cust_id AS id,
+            c.email_verified AS verified,
+            c.active,
+            c.descr,
+            c.email,
+            c.max_links,
+            c.is_admin as adm,
+            COUNT(l.cust_id) AS used_links 
+        FROM 
+            customers c 
+        LEFT JOIN 
+            link l ON c.cust_id = l.cust_id 
+        GROUP BY 
+            c.cust_id, 
+            c.email_verified, 
+            c.active, 
+            c.descr, 
+            c.email, 
+            c.max_links;
+        ";
+        $stmt = $this->pdo->prepare($SQL);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     function getFullLink($code){
         if (!isset($this->pdo)) $this->connect();
         try {

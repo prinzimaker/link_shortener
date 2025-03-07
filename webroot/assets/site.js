@@ -20,7 +20,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function openmodal(){
+function openmodal(Title,Data1,Data2){
+    if (Title){
+        mt=document.getElementById("modalTitle");
+        if (mt)
+            mt.innerText=Title;
+    } 
+    if (Data1){
+        dt=document.getElementById("modalData1");
+        if (dt)
+            dt.value=Data1;
+    } 
+    if (Data2){
+        dt=document.getElementById("modalData2");
+        if (dt)
+            dt.value=Data2;
+    } 
     document.getElementById("modalBk").classList.remove("hidden");
     document.getElementById("modal").classList.remove("hidden");
 }

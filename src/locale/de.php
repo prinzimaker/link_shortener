@@ -9,6 +9,7 @@ This file contains the string labels for German language
 function lng($key){
     switch ($key){
         case "": return "";
+        case "dashboard": return "Dashboard";
         case "user": return "Benutzer-ID";
         case "send": return "Senden";
         case "password": return "Passwort";

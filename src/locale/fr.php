@@ -9,6 +9,7 @@ This file contains the string labels for French language
 function lng($key){
     switch ($key){
         case "": return "";
+        case "dashboard": return "T.de bord";
         case "user": return "Identifiant utilisateur";
         case "password": return "Mot de passe";
         case "login": return "Connexion";

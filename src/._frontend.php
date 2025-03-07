@@ -8,15 +8,6 @@
 This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the front-end html page/form generators 
--
-Updated to
-v1.4.1 - Aldo Prinzi - 07 Mar 2025
-
-v1.3.2 - Aldo Prinzi - 24 Feb 2025 
-       - Solved a bug that will shrink a local link already shrinked.
-       - Added user link datatable view
-       - Added user link delete
-v1.3.0 - Aldo Prinzi - 25 Jan 2025
 =====================================================================
 */
 // form per lo shorten del link

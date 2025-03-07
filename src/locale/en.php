@@ -9,6 +9,7 @@ This file contains the string labels for english language
 function lng($key){
     switch ($key){
         case "":return "";
+        case "dashboard": return "Dashboard";
         case "user": return "User-id";
         case "password": return "Password";
         case "login": return "Login";

@@ -104,6 +104,13 @@ switch ($uri){
             }
         }
         break;
+    case "_pls_fnc_dash":
+        if (!empty($userData) && is_array($userData) && $userData["active"]>0 && $userData["is_admin"]>0){
+            include_once '../src/._dashboard.php';
+            $header = "<h3>DASHBOARD</h3>";
+            $content=getDashboard();    
+            break;
+        } 
     case "_pls_fnc_login":   
         // Handle login
         $header = "Short Link - Login";

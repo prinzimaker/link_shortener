@@ -9,6 +9,7 @@ This file contains the string labels for italian language
 function lng($key){
     switch ($key){
         case "":return "";
+        case "dashboard": return "P.Controllo";
         case "user": return "Utente";
         case "password": return "Password";
         case "login": return "Accedi";
