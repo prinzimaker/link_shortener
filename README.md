@@ -19,10 +19,10 @@ don’t forget to give it a &#11088; using the top right button in the GitHub in
 ### 📚 Choose info and instruction in one of the following languages:
 
 - 🇬🇧 [English version](README.EN.md)
-- 🇮🇹 [Versione italiana](README.IT.md) 
-- 🇫🇷 [Version française](README.FR.md) 
-- 🇫🇷 [Version espanol](README.SP.md) 
-- 🇩🇪 [Deutsche version](README.DE.md) 
+- 🇮🇹 [Versione italiana](README.IT.md)
+- 🇫🇷 [Version française](README.FR.md)
+- 🇪🇸 [Versión española](README.ES.md)
+- 🇩🇪 [Deutsche Version](README.DE.md)
 
 ### Test site:
 You can test it on the following full funcitional website **https://flu.lu**
