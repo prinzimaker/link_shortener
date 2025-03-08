@@ -215,7 +215,8 @@ switch ($uri){
         if ($UM->handleChangePass()){
             $header = "Short Link - Password changed";
             $content="<h2>Password changed</h2><p>Your password has been changed.</p>";
-            $content.=getLoginForm();
+            //$content.=getLoginForm();
+            $content=getShortenContent($newuri)."<br>&nbsp;<br>".getUserContent();
         } else {
             $header = "Short Link - error";
             $content="<h2>Unknown error!</h2><p>Can't change password.</p>";

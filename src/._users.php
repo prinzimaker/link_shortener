@@ -55,6 +55,7 @@ class SLUsers {
             }
         }
         else {
+            $this->_data =[];
             if ($dosess) $_SESSION["user"] = "";
         }
         
@@ -96,7 +97,18 @@ class SLUsers {
         }
         return false;
     }
-    
+
+    public function updatePassword($userId, $newPassword) {
+        $db = new Database();
+        $res=$db->getUserById($userId);
+        if ($res["cust_id"]==$userId){
+            $newHash=$this->_createUserHash($res["email"], $newPassword);
+            return $db->updateUserPassword($userId,$newHash);
+        }
+        return false;
+    }
+
+
     public function verifyEmailCode($emailCode) {
         $db = new Database();
         return $db->verifyUserCode($emailCode);

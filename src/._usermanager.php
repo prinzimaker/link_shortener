@@ -104,13 +104,23 @@ class UserManager {
     }
 
     function handleChangePass(){
+        if (isset($_SESSION["user"]))
+            $userData=$_SESSION["user"];
         $userNewPass=trim(isset($_POST["password"])?$_POST["password"]:"");
-        $vrfy=$vrfyCode2= preg_replace('/[^A-Z0-9]/', '', isset($_POST["verifycode"])?$_POST["verifycode"]:"");
+        if ($userData["cust_id"]>0 && isset($_POST["password_confirm"]))
+            $vrfy=(""==str_replace($userNewPass,"",$_POST["password_confirm"]))?"OK":"";
+        else
+            $vrfy=preg_replace('/[^A-Z0-9]/', '', isset($_POST["verifycode"])?$_POST["verifycode"]:"");
+        //$vrfy=preg_replace('/[^A-Z0-9]/', '', isset($_POST["password_confirm"])?$_POST["password_confirm"]:"");
         if ($userNewPass=="" || $vrfy==""){
             return false;
         }
         $US=new SLUsers();
-        return $US->changePassword($vrfy,$userNewPass);
+        if ($vrfy=="OK"){
+            return $US->updatePassword($userData["cust_id"],$userNewPass);
+        } else {
+            return $US->changePassword($vrfy,$userNewPass);
+        }
     }
     public function registerUser($email, $password, $descr = '') {
         $user=new SLUsers();

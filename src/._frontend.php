@@ -345,9 +345,9 @@ function getUserContent(){
             });
         </script>
         <div id="modal" class="modal hidden appear">
-            <form id="changePassForm" class="auth-form" action="_pls_fnc_register" method="post">
+            <form id="changePassForm" class="auth-form" action="_pls_fnc_forgotpass" method="post">
                 <input id="hiddensecret" type="hidden" name="secret" value="">
-                <div class="modal-header">'.strtoupper(lng("change_pass_form")).'
+                <div class="modal-header">'.strtoupper(lng("_pls_fnc_fgtpass")).'
                     <span class="modal-closer" onclick="closemodal()">&times;</span></div>
                 <div class="modal-content">
                     <div class="form-group"> <label for="password">' . lng("password") . '</label>
