@@ -61,11 +61,11 @@ function getDashboard(){
             $actbtn="<button class='btn btn-small ";
             if ($row['verified']!=0){
                 if ($row['active']!=0)
-                    $actbtn.="btn-secondary' onclick='openmodal(\"Deactivate\",".$row["id"].",\"".$row['descr']."\")'>DEAC";
+                    $actbtn.="btn-secondary' onclick='openmodal(\"modal\",\"Deactivate\",".$row["id"].",\"".$row['descr']."\")'>DEAC";
                 else
-                    $actbtn.="btn-warning' onclick='openmodal(\"Activate\",".$row["id"].",\"".$row['descr']."\")'>ACTV";
+                    $actbtn.="btn-warning' onclick='openmodal(\"modal\",\"Activate\",".$row["id"].",\"".$row['descr']."\")'>ACTV";
             } else {
-                $actbtn.="btn-primary' onclick='openmodal(\"Delete\",".$row["id"].",\"".$row['descr']."\")'>DEL";
+                $actbtn.="btn-primary' onclick='openmodal(\"modal\",\"Delete\",".$row["id"].",\"".$row['descr']."\")'>DEL";
             }
             $actbtn.="</button>";
         }

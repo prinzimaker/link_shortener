@@ -22,7 +22,7 @@ v1.4.1 - Aldo Prinzi - 07 Mar 2025
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    /*box-sizing: border-box;*/
 }
 body {
     margin: 0;
@@ -131,7 +131,7 @@ p.pad {
     font-size:0.8em;
 }
 .btn {
-    display: inline-block;
+    /*display: inline-block;*/
     padding: 10px 20px;
     font-size: 16px;
     text-align: center;
@@ -360,7 +360,7 @@ input[type="radio"].styled-radio:checked + label {
 @keyframes blowUp {0% {transform: scale(0); opacity: 0;}100% {transform: scale(1); opacity: 1;}}
 .modal-content {width:96%;height: 80%;position: absolute;top: 10%;overflow: auto;padding: 30px 15px 15px 15px;}
 .modal-footer { border-radius:0 0 10px 10px;text-align: center;line-height: 60px;height: 60px;width:100%;position: absolute;left: 0;bottom: 0; background-color: #f0f0f0;padding-top: 10px;}
-.modal-header {border-radius:10px 10px 0 0;text-align: center;line-height: 50px;background-color:rgb(17, 46, 94);color: white;position: absolute;height: 50px;left:0;top:0;width: 100%;}
+.modal-header {border-radius:10px 10px 0 0;font-size:larger;text-transform:uppercase;text-align: center;line-height: 50px;background-color:rgb(17, 46, 94);color: white;position: absolute;height: 50px;left:0;top:0;width: 100%;}
 .hidden{display:none;}
 .modal-closer {float:right;margin-right: 7px;margin-top: -5px;cursor: pointer;font-size: 2em;animation: blowUpModalTwo .5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards;}
 .modalBackdrop{z-index: 398;position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0,0,0,0.4);}

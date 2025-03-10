@@ -67,6 +67,7 @@ function lng($key){
         case "front_was-req": return "Y ha sido solicitado";
         case "geoloc": return "geolocalizaci&oacute;n";
         case "front_link-is": return "El enlace original es";
+        case "delete-element": return "Elimino el enlace acortado:<br><strong>{{code}}</strong><br>que tiene el siguiente URI:<br><strong>{{uri}}</strong>";
         case "front_instructions": return '<p><strong>Este es un sitio para la creaci&oacute;n de enlaces cortos.</strong></p>
                 <p>Significa que me pasas un enlace largo y yo te devuelvo un enlace corto que puede reemplazar al enlace original.</p>
                 <h3>&iquest;C&oacute;mo funciona?</h3>

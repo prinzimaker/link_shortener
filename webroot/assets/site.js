@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function openmodal(Title,Data1,Data2){
+function openmodal(which,Title,Data1,Data2){
     if (Title){
         mt=document.getElementById("modalTitle");
         if (mt)
@@ -37,11 +37,11 @@ function openmodal(Title,Data1,Data2){
             dt.value=Data2;
     } 
     document.getElementById("modalBk").classList.remove("hidden");
-    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById(which).classList.remove("hidden");
 }
-function closemodal(){
+function closemodal(which){
     document.getElementById("modalBk").classList.add("hidden");
-    document.getElementById("modal").classList.add("hidden");
+    document.getElementById(which).classList.add("hidden");
 }
 
 function evaluatePasswordStrength(password) {

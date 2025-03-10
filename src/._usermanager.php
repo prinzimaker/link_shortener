@@ -93,9 +93,12 @@ class UserManager {
         } else {
             if ($changeRequest) {
                 $vrfyCode=$this->generateVerificationCode($length = 30);
+                //$_SESSION["state"]="MFP";
                 $US=new SLUsers($extEmail);
                 $vrfyCode2= preg_replace('/[^A-Z0-9]/', '', $vrfyCode);
+                $_SESSION["verifycode"]=$vrfyCode2;
                 $US->updateUserVerifyCode($vrfyCode2);
+                $userData=$US->getData();
                 return getForgotPasswordForm($userData["descr"],$vrfyCode);
             } else {
                 return "<h2>User not logged in!</h2>";
@@ -104,14 +107,13 @@ class UserManager {
     }
 
     function handleChangePass(){
+        $userNewPass=trim(isset($_POST["password"])?$_POST["password"]:"");
         if (isset($_SESSION["user"]))
             $userData=$_SESSION["user"];
-        $userNewPass=trim(isset($_POST["password"])?$_POST["password"]:"");
-        if ($userData["cust_id"]>0 && isset($_POST["password_confirm"]))
+        if (isset($userData["cust_id"]) && $userData["cust_id"]>0 && isset($_POST["password_confirm"]))
             $vrfy=(""==str_replace($userNewPass,"",$_POST["password_confirm"]))?"OK":"";
         else
             $vrfy=preg_replace('/[^A-Z0-9]/', '', isset($_POST["verifycode"])?$_POST["verifycode"]:"");
-        //$vrfy=preg_replace('/[^A-Z0-9]/', '', isset($_POST["password_confirm"])?$_POST["password_confirm"]:"");
         if ($userNewPass=="" || $vrfy==""){
             return false;
         }

@@ -67,6 +67,7 @@ function lng($key){
         case "database_generic_error": return "Fehler bei der Registrierung in der Datenbank";
         case "front_incorrect-link": return "Ung&uuml;ltige <strong>URI</strong> oder Schleifen-<strong>URI</strong> (es ist nicht m&ouml;glich, einen <strong>".getenv("URI")."</strong>-Link zu k&uuml;rzen)";
         case "front_instr-small": return "Geben Sie den gek&uuml;rzten Link ein und dr&uuml;cken Sie die &laquo; <strong>Informationen</strong> &raquo;-Schaltfl&auml;che, um Details &uuml;ber den gek&uuml;rzten Link zu erhalten.";
+        case "delete-element": return "Ich lösche den gekürzten Link:<br><strong>{{code}}</strong><br>der folgende URI hat:<br><strong>{{uri}}</strong>";
         case "front_instructions": return '<p><strong>Dies ist eine Website zum Erstellen kurzer Links.</strong></p>
             <p>Das bedeutet, dass Sie mir einen langen Link geben, und ich gebe Ihnen einen kurzen Link zur&uuml;ck, der den urspr&uuml;nglichen ersetzen kann.</p>
             <h3>Wie funktioniert es?</h3>

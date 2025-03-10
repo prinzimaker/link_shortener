@@ -122,11 +122,11 @@ switch ($uri){
             $_SESSION["user"]=[];
             $user=$UM->authenticate($usr,$pwd);
             if ($user["cust_id"]>0){
-                if (stripos($back,"/_pls_fnc_login")!==false)
+                if (stripos($back,"/_pls_fnc_login")!==false || stripos($back,"/_pls_fnc_forgotpass")!==false)
                     $back="/";
-                if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="" ||(isset($_SESSION["dvalu"]) && stripos($_SESSION["dvalu"],"_pls_fnc_login")!==false))
+                if (!isset($_SESSION["dvalu"]) || trim($_SESSION["dvalu"])=="" ||(isset($_SESSION["dvalu"]) && stripos($_SESSION["dvalu"],"_pls_fnc_login")!==false)){
                     header("Location: ".$back, true);
-                else
+                } else
                     header("Location: ".$_SESSION["dvalu"], true);
                 exit();
             }
@@ -177,13 +177,16 @@ switch ($uri){
             $content=getForgotPasswordForm ($userData);
         } else {
             $usr=trim($_POST["userid"]);
+            $UM=new UserManager();
             if ((is_string($usr) && strlen($usr)<60 && strlen($usr)>5)){
                 $header = "Short Link - Forgot password";
-                $UM=new UserManager();
                 $content=$UM->manageForgotPassword($usr);
             } else {
-                $UM=new UserManager();
-                $VFC= preg_replace('/[^A-Z0-9]/', '', $_GET["verify"]);
+                $oldvfc="";
+                if (isset($_SESSION["verifycode"]))
+                    $VFC=$_SESSION["verifycode"];
+                else
+                    $VFC= preg_replace('/[^A-Z0-9]/', '', $_GET["verify"]);
                 $ret=$UM->verifyPassLost($VFC);
                 if ($ret[0]>0){
                     $header = "Short Link - Change Password";
@@ -213,14 +216,13 @@ switch ($uri){
         // Handle password change
         $UM=new UserManager();
         if ($UM->handleChangePass()){
-            $header = "Short Link - Password changed";
+            $header = "Short Link - Login";
             $content="<h2>Password changed</h2><p>Your password has been changed.</p>";
             //$content.=getLoginForm();
-            $content=getShortenContent($newuri)."<br>&nbsp;<br>".getUserContent();
         } else {
-            $header = "Short Link - error";
-            $content="<h2>Unknown error!</h2><p>Can't change password.</p>";
+            $header = "Short Link - Login";
         }
+        $content=getLoginForm("");;
         break;
     case "_pls_fnc_handleuserdata":
         // Handle user data
@@ -269,6 +271,10 @@ switch ($uri){
                 $content=getIndexContent();          
             }
         }
+        break;
+    case "privacy":
+        $content=file_get_contents($_SERVER["DOCUMENT_ROOT"]."/../src/locale/privacy/".$_SESSION["lang"].".html"); 
+        $header = "Privacy policy";
         break;
     case "favicon":
     case "favicon.ico":

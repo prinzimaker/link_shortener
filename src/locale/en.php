@@ -68,6 +68,7 @@ function lng($key){
         case "database_generic_error": return "Error during database registration";
         case "front_incorrect-link":return "Incorrect <strong>uri</strong> or loop-<strong>uri</strong> (isn't possible to shrink a <strong>".getenv("URI")."</strong> link)";
         case "front_instr-small": return "Enter the shortened link and press the <strong>Information</strong> button to get details about the shortened link.";
+        case "delete-element":return "Delete the following short link:<br><strong>{{code}}</strong><br>with the following URI:<br><strong>{{uri}}</strong>";
         case "front_instructions": return '<p><strong>This is a website for creating short links.</strong></p>
             <p>It means that you provide me with a long link, and I return a short link that can replace the original one.</p>
             <h3>How does it work?</h3>

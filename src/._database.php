@@ -371,9 +371,12 @@ class Database {
         $stmt->execute([':code' => $emailCode]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($user) {
+            //$_SESSION["state"]="MPC";
             $updateStmt = $this->pdo->prepare("UPDATE customers SET email_verified = 1, email_verif_code = NULL, active = 1 WHERE cust_id = :id");
-            if ($updateStmt->execute([':id' => $user['cust_id']]))
+            if ($updateStmt->execute([':id' => $user['cust_id']])){
+                unset($_SESSION["verifycode"]);
                 return [$user['cust_id'],$user['email']];
+            }
         }
         return [0,""];
     }
@@ -381,6 +384,7 @@ class Database {
     public function updateUserVerifyCode($userId, $verifyCode){
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare("UPDATE customers SET email_verif_code = :code WHERE cust_id = :id");
+        $_SESSION["verifycode"]=$verifyCode;
         return $stmt->execute([':code' => $verifyCode, ':id' => $userId]);
     }
  

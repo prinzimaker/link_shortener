@@ -3,3 +3,8 @@
 /vendor
 /ip2location/*.CSV
 /ip2location/LICENSE_LITE.TXT
+/src/locale/privacy/it.html
+/src/locale/privacy/de.html
+/src/locale/privacy/es.html
+/src/locale/privacy/fr.html
+/src/locale/privacy/en.html

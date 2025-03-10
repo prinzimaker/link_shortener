@@ -272,7 +272,7 @@ function _addPassFormScripts($formName){
                     return false;
                 }
                 if (document.getElementById('hiddensecret')){
-                    (document.getElementById('hiddensecret').value!=''){
+                    if (document.getElementById('hiddensecret').value!=''){
                         e.preventDefault();
                         return false;
                     }
@@ -347,8 +347,8 @@ function getUserContent(){
         <div id="modal" class="modal hidden appear">
             <form id="changePassForm" class="auth-form" action="_pls_fnc_forgotpass" method="post">
                 <input id="hiddensecret" type="hidden" name="secret" value="">
-                <div class="modal-header">'.strtoupper(lng("_pls_fnc_fgtpass")).'
-                    <span class="modal-closer" onclick="closemodal()">&times;</span></div>
+                <div class="modal-header">'.strtoupper(lng("change_pass_form")).'
+                    <span class="modal-closer" onclick="closemodal(\'modal\')">&times;</span></div>
                 <div class="modal-content">
                     <div class="form-group"> <label for="password">' . lng("password") . '</label>
                         <input id="password" type="password" class="input-text2" name="password" value=""><br>
@@ -359,23 +359,39 @@ function getUserContent(){
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Change Password"></div>
             </form> </div>
+        <div id="modaldelete" class="modal hidden appear" style="height:270px;width:700px">
+            <form id="deleteForm" class="auth-form" action="/_pls_fnc_removeshortinfo" method="post">
+                <input id="code" type="hidden" name="code" value="">
+                <div class="modal-header">Delete element<span class="modal-closer" onclick="closemodal(\'modaldelete\')">&times;</span></div>
+                <div class="modal-content" style="padding:8px;"><div class="label" style="font-size:1.1em;padding-top:30px;text-align:center" id="deleteMessage"></div></div>
+                <div class="modal-footer"><input type="submit" class="btn btn-primary" value="Yes">&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" onclick="closemodal(\'modaldelete\')">No</a></div>
+            </form> </div>
 '._addPassFormScripts("changePassForm").'
         <div class="alert alert-info">
             <table width="100%"><tr><td width="45%"> <label for="userid">'.lng("user").'</label><br>
                 <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["descr"].'"></td>
                 <td>&nbsp;</td><td width="55%"><label for="userid">API key</label><br><input style="margin-top:3px" id="apikey" type="text" class="input-text2" name="apikey" placeholder="API key" value="'.$userData["apikey"].'">
                 <button class="btn btn-small btn-warning" onclick="event.preventDefault();copyData(\'apikey\',\'\',\''.lng("front_copied-link").'\',\''.lng("front_copy-error").'\')">'.lng("copy").'</button>
-                
-                
                 </td></tr>
                 <tr><td><label for="userid">'.lng("email").'</label><br>
                     <input style="margin-top:3px" id="userid" type="text" class="input-text2" name="userid" placeholder="'.lng("user").'" value="'.$userData["email"].'">
                 </td><td>&nbsp;</td><td><table><tr><td>
-                    <button type="button" class="btn btn-warning" onclick="openmodal()" o-n-click=\'window.location.href="/_pls_fnc_fgtpass"\'>'.lng("change password").'</button>&nbsp;</td><td>
+                    <button type="button" class="btn btn-warning" onclick="openmodal(\'modal\')">'.lng("change password").'</button>&nbsp;</td><td>
                     <form method="post" action="_pls_fnc_newapikey"><input type="submit" class="btn btn-primary" value="'.lng("new apikey").'"></form></td><td>
                     &nbsp;<button type="button" class="btn btn-secondary" onclick=\'window.location.href="/_pls_fnc_logout"\'>Logout</button></td></tr></table>
                 </td></tr></table></div>
         <div class="form-group"><label>User\'s Links</label><div class="userTabLinks"><table id="userCodesTable" class="display"><thead><tr><th>short_id</th><th>&nbsp;</th><th>Uri</th><th>Calls</th><th>Created</th><th>Last call</th></tr></thead><tbody>
+        <script>
+            function setDelete(text,code){
+                document.getElementById("code").value=code;
+                document.getElementById("deleteMessage").innerHTML=text;
+                openmodal("modaldelete","delete element");
+            }
+            function getDelString(code,uri){
+                var deletestring="'.lng("delete-element").'";
+                return deletestring.replace("{{uri}}",uri).replace("{{code}}",code);
+            }
+        </script>
     ';
     
     $db = new Database();
@@ -414,7 +430,7 @@ function getUserContent(){
 
         $content.='<tr>';
         $content.= '<td><a href="/_pls_fnc_shortinfo?code='. $row['short_id'] .'">' . $row['short_id'] . '</a></td>';
-        $content.= '<td><a href="/_pls_fnc_removeshortinfo?code='. $row['short_id'] .'"><button class="btn btn-small btn-warning">DEL</button></a></td>';
+        $content.= '<td><button onclick="setDelete(getDelString(\''.$row['short_id'].'\',\''.$fu.'\'),\''.$row['short_id'].'\')" class="btn btn-small btn-warning">DEL</button></td>';
         $content.= '<td><a href="' . getenv("URI"). $row['short_id'] . '" target="_blank">'.htmlspecialchars($fu, ENT_QUOTES).'</a></td>';
         $content.= '<td align="right">' . $row['calls'] . '</td>';
         $content.= '<td>' . $created->format("d/m/y") . '</td>';

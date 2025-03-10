@@ -51,7 +51,7 @@ else {
             <tr>
                 <!-- Navigation links -->
                 <td colspan="2" align="left" width="80%" style="padding-top:5px">
-                    <nav class="nav-row"><a class="nav-item" href="/">Home</a>&nbsp;|&nbsp;<a class="nav-item" href="/pls_about" target='_blank'>About</a></nav>
+                    <nav class="nav-row"><a class="nav-item" href="/">Home</a>&nbsp;|&nbsp;<a class="nav-item" href="/privacy" target='_blank'>Privacy</a>&nbsp;|&nbsp;<a class="nav-item" href="/pls_about" target='_blank'>About</a></nav>
                 </td>
                 <!-- User link section -->
                 <td style="padding-right:20px"><?php echo $userLink; ?></td>

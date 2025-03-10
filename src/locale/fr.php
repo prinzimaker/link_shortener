@@ -68,6 +68,7 @@ function lng($key){
         case "database_generic_error": return "Erreur lors de l'enregistrement dans la base de données";
         case "front_incorrect-link": return "URI incorrect ou boucle URI (il n'est pas possible de raccourcir un lien <strong>".getenv("URI")."</strong>)";
         case "front_instr-small": return "Entrez le lien raccourci et appuyez sur le bouton [<strong>Informations</strong>] pour obtenir des d&eacute;tails sur le lien raccourci.";
+        case "delete-element": return "Je supprime le lien raccourci :<br><strong>{{code}}</strong><br>qui a l'URI suivante :<br><strong>{{uri}}</strong>";
         case "front_instructions": return '<p><strong>Ceci est un site pour créer des liens courts.</strong></p>
             <p>Cela signifie que vous me fournissez un lien long, et je vous renvoie un lien court qui peut remplacer l&apos;original.</p>
             <h3>Comment ça marche ?</h3>
