@@ -78,15 +78,15 @@ Pour configurer Apache pour ce projet, vous devez créer un fichier de configura
 
 * ### Créer le fichier de configuration
 
-Créez un nouveau fichier de configuration pour votre site, par exemple `monsite.fr.conf`, dans le répertoire sites-available d'Apache.
+Créez un nouveau fichier de configuration pour votre site, par exemple `shortlink.conf`, dans le répertoire sites-available d'Apache.
 
 **Chemin sous Ubuntu/Debian :**
 
 ```bash
-sudo nano /etc/apache2/sites-available/monsite.fr.conf
+sudo nano /etc/apache2/sites-available/shortlink.conf
 ```
 
-Vous pouvez trouver un fichier de configuration exemple dans **docs/monsite.fr.conf**.
+Vous pouvez trouver un fichier de configuration exemple dans **docs/shortlink.conf**.
 
 * ### Activer le site et les modules requis
 
@@ -99,7 +99,7 @@ Vous pouvez trouver un fichier de configuration exemple dans **docs/monsite.fr.c
 2. **Activer le site nouvellement créé :**
 
    ```bash
-   sudo a2ensite monsite.fr.conf
+   sudo a2ensite shortlink.conf
    ```
 
 3. **Redémarrer Apache pour appliquer les modifications :**

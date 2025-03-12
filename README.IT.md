@@ -78,10 +78,10 @@ Crea un nuovo file di configurazione per il sito, ad esempio `miosito.it.conf`, 
 **Percorso su Ubuntu/Debian:**
 
 ```bash
-sudo nano /etc/apache2/sites-available/miosito.it.conf
+sudo nano /etc/apache2/sites-available/shortlink.conf
 ```
 
-Il file di configurazione si trova in **docs/miosito.it.conf**
+Il file di configurazione si trova in **docs/shortlink.conf**
 
 * ### Abilitazione del sito e moduli necessari
 
@@ -94,7 +94,7 @@ Il file di configurazione si trova in **docs/miosito.it.conf**
 2. **Abilita il sito appena creato:**
 
    ```bash
-   sudo a2ensite miosito.it.conf
+   sudo a2ensite shortlink.conf
    ```
 
 3. **Riavvia Apache per applicare le modifiche:**

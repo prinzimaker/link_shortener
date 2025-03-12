@@ -60,15 +60,15 @@ Para configurar Apache para este proyecto, es necesario crear un archivo de conf
 
 * ### Creación del archivo de configuración
 
-Crea un nuevo archivo de configuración para el sitio, por ejemplo `misitio.es.conf`, en el directorio de sitios disponibles de Apache.
+Crea un nuevo archivo de configuración para el sitio, por ejemplo `shortlink.conf`, en el directorio de sitios disponibles de Apache.
 
 **Ruta en Ubuntu/Debian:**
 
 ```bash
-sudo nano /etc/apache2/sites-available/misitio.es.conf
+sudo nano /etc/apache2/sites-available/shortlink.conf
 ```
 
-El archivo de configuración se encuentra en **docs/misitio.es.conf**
+El archivo de configuración se encuentra en **docs/shortlink.conf**
 
 * ### Habilitación del sitio y módulos necesarios
 
@@ -81,7 +81,7 @@ El archivo de configuración se encuentra en **docs/misitio.es.conf**
 2. **Habilita el sitio recién creado:**
 
    ```bash
-   sudo a2ensite miosito.it.conf
+   sudo a2ensite shortlink.conf
    ```
 
 3. **Reinicia Apache para aplicar los cambios:**

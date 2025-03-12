@@ -77,15 +77,15 @@ Um Apache für dieses Projekt zu konfigurieren, müssen Sie eine Konfigurationsd
 
 * ### Erstellen der Konfigurationsdatei
 
-Erstellen Sie eine neue Konfigurationsdatei für Ihre Website, z. B. `meineseite.de.conf`, im Apache-Verzeichnis `sites-available`.
+Erstellen Sie eine neue Konfigurationsdatei für Ihre Website, z. B. `shortlink.conf`, im Apache-Verzeichnis `sites-available`.
 
 **Pfad unter Ubuntu/Debian:**
 
 ```bash
-sudo nano /etc/apache2/sites-available/meineseite.de.conf
+sudo nano /etc/apache2/sites-available/shortlink.conf
 ```
 
-Eine Beispielkonfigurationsdatei finden Sie unter **docs/meineseite.de.conf**.
+Eine Beispielkonfigurationsdatei finden Sie unter **docs/shortlink.conf**.
 
 * ### Aktivieren der Website und der erforderlichen Module
 
@@ -98,7 +98,7 @@ Eine Beispielkonfigurationsdatei finden Sie unter **docs/meineseite.de.conf**.
 2. **Die neu erstellte Website aktivieren:**
 
    ```bash
-   sudo a2ensite meineseite.de.conf
+   sudo a2ensite shortlink.conf
    ```
 
 3. **Apache neu starten, um die Änderungen zu übernehmen:**

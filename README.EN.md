@@ -76,15 +76,15 @@ To configure Apache for this project, you need to create a configuration file an
 
 * ### Create the configuration file
 
-Create a new configuration file for your site, for example `miosito.it.conf`, in the Apache sites-available directory.
+Create a new configuration file for your site, for example `shortlink.conf`, in the Apache sites-available directory.
 
 **Path on Ubuntu/Debian:**
 
 ```bash
-sudo nano /etc/apache2/sites-available/miosito.it.conf
+sudo nano /etc/apache2/sites-available/shortlink.conf
 ```
 
-You can find the sample configuration file in **docs/miosito.it.conf**.
+You can find the sample configuration file in **docs/shortlink.conf**.
 
 * ### Enable the site and required modules
 
@@ -97,7 +97,7 @@ You can find the sample configuration file in **docs/miosito.it.conf**.
 2. **Enable the newly created site:**
 
    ```bash
-   sudo a2ensite miosito.it.conf
+   sudo a2ensite shortlink.conf
    ```
 
 3. **Restart Apache to apply the changes:**

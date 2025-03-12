@@ -1,6 +1,7 @@
 .env
 /.vscode
 /vendor
+/webroot/html/pages
 /ip2location/*.CSV
 /ip2location/LICENSE_LITE.TXT
 /src/locale/privacy/it.html
