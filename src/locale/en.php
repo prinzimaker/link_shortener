@@ -18,8 +18,10 @@ function lng($key){
         case "user_registration": return "User registration";
         case "repeat_password": return "Repeat password";
         case "email": return "E-mail address";
+        case "username": return "Username";
         case "verify": return "Verify";
         case "giorno": return "Day";
+        case "preview":return "Preview";
         case "notte": return "Night";  
         case "sera": return "Evening";
         case "daypart": return "Day parts";

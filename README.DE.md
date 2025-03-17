@@ -1,6 +1,6 @@
 # Prinzimaker's Linkverkürzer
 
-### **Schneller und einfacher Linkverkürzer** - **v1.4.1**
+### **Schneller und einfacher Linkverkürzer** - **v1.4.2**
 
 **Dieses Projekt ist in PHP geschrieben und benötigt nur Apache und MariaDB/MySQL.  
 Nach der Implementierung wird es zu einer vollständigen Website (standardmäßig auf Italienisch), die es ermöglicht, komplexe Links zu verkürzen und deren Nutzung zu überwachen.**

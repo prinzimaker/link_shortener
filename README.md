@@ -2,7 +2,7 @@
 
 <img src="https://flu.lu/pls_logo" alt="Logotipo del sito" style="width: 200px; height: auto;">
 
-## &#11088; **Quick and dirty link shortener** - **v1.4.1**
+## &#11088; **Quick and dirty link shortener** - **v1.4.2**
 ### _March 2025 release_
 
 This is a good and functional release, and security seems good too.\

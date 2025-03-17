@@ -8,9 +8,9 @@
 This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the dashboard html page/form generators 
+This was intrroduced in v1,4,2
 =====================================================================
 */
-// form per lo shorten del link
 
 function getDashboard(){
     $userData="";
@@ -24,6 +24,11 @@ function getDashboard(){
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest/dist/chartjs-plugin-zoom.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>
+
         <script>
             $(document).ready(function () {
                 $("#userCodesTable").DataTable({"paging": true, "ordering": true, "info": true});
@@ -49,7 +54,6 @@ function getDashboard(){
         <div class="form-group"><label>Customer\'s List</label><div class="userTabLinks">
             <table id="userCodesTable" class="display"><thead><tr><th rowspan=2>Name</th><th rowspan=2>E-mail</th><th rowspan=2>Status</th><th colspan=2>Links</th></tr><tr><th>Used</th><th>Max</th></tr></thead><tbody>
     ';
-    
     $db = new Database();
     $result = $db->getCustomersData();
 
@@ -80,7 +84,246 @@ function getDashboard(){
             $content.= $row['max_links'];
         $content.="</td></tr>";
     }
-    return $content.'</tbody></table></div></div>';
+    $content.='</tbody></table></div></div>';
+
+    // Dati per Grafico 1: Numero di click e utenti unici per giorno (escludendo crawler)
+    $clicks_per_day = [];
+    $users_per_day = [];
+    $devices = ['android' => 0, 'iphone' => 0, 'pc' => 0, 'mac' => 0];
+    
+    $logs=$db->getSitecallsLog();
+
+    // Inizio della sezione HTML
+    $content.="
+    <section class='accordion'><div class='tab'><input type='radio' name='accordion-1' id='rd1'>
+        <label for='rd1' class='tab__label'>Call Logs</label><div class='tab__content'>
+            <p><table cellpadding='0' cellspacing='0' class='table table-striped table-bordered table-hover'>
+            <tr><th>Date & Time</th><th>IP</th><th>City</th><th style='display:none'>Region</th><th>Country</th><th>Referer</th><th>Device</th><th>OS</th></tr>
+            <tbody>";
+
+    // Processa ogni riga della tabella calls_log
+    foreach ($logs as $log) {
+        $call_date = $log['call_date'];
+        $call_log = $log['call_log'];
+
+        // Split delle chiamate (separate da ;)
+        $calls = explode(';', $call_log);
+
+        usort($calls, function($a, $b) {
+            // Estrai la data e l'ora dai dettagli (primo campo separato da virgola)
+            $dateA = explode(',', trim($a))[0];
+            $dateB = explode(',', trim($b))[0];
+            
+            // Converti le date in timestamp per il confronto
+            $timestampA = strtotime($dateA);
+            $timestampB = strtotime($dateB);
+            
+            // Ordine discendente: $b rispetto a $a
+            return $timestampB - $timestampA;
+        });
+
+        $daily_users = []; // Utenti unici per giorno
+        $clicks_per_country = [];
+
+        foreach ($calls as $call) {
+            if (empty(trim($call))) continue; // Salta righe vuote
+
+            // Split dei dettagli della chiamata (separate da ,)
+            $details = explode(',', $call);
+            if (count($details) < 10) continue; // Assicura che ci siano abbastanza campi
+
+            // Estrai i campi
+            $time = $details[0];
+            $ip = $details[1];
+            $city = $details[2];
+            $region = $details[3];
+            $country = $details[4];
+            $referer =strpos($details[6],"_pls_fnc")===false?$details[6]:"[int]";
+            $referer =stripos($referer,"flu.lu")!==false?"[int]":$referer;
+            $device = $details[7];
+            if(stripos($referer,"google.")!==false){
+                $device = "GOOGLE";
+            }
+            if(stripos($referer,"github.")!==false){
+                $device = "GITHUB";
+            }
+            if(stripos($referer,"t.co")!==false || stripos($referer,"twclid")!==false){
+                $device = "TWITTER";
+            }
+            if(stripos($referer,"lnkd.in")!==false || stripos($referer,"linkedin.")!==false){
+                $device = "LINKED_IN";
+            }
+            $os = $details[8];
+            $unique_id = $details[9];
+
+            // Costruisci la data completa
+            $datetime = new DateTime("$call_date $time");
+
+            // Aggiungi riga alla tabella
+            $content.="<tr><td class='tdcont'>".$datetime->format("d-m H:i")."</td><td class='tdcont'>$ip</td><td class='tdcont'>$city</td><td style='display:none'>$region</td><td class='tdcont'>$country</td><td class='tdcont'>$referer</td><td class='tdcont'>$device</td><td class='tdcont'>$os</td></tr>";
+            // Salta i bot/crawler
+            if ($details[6] === '[bot]' || $details[7] === 'bot') 
+                continue;
+
+            // SE BOT NON VIENE CALCOLATO QUI:
+            // Incrementa il conteggio dei click per giorno
+            if (!isset($clicks_per_day[$call_date])) {
+                $clicks_per_day[$call_date] = 0;
+            }
+            $clicks_per_day[$call_date]++;
+
+            // Aggiungi l'utente unico (basato su unique_id)
+            $unique_id = $details[9];
+            if (!isset($daily_users[$call_date])) {
+                $daily_users[$call_date] = [];
+            }
+            if (!in_array($unique_id, $daily_users[$call_date])) {
+                $daily_users[$call_date][] = $unique_id;
+            }
+
+            // Conteggio per device
+            $device = strtolower($details[7]);
+            $os = strtolower($details[8]);
+            if ($device === 'phone') {
+                if (strpos($os, 'android') !== false) {
+                    $devices['android']++;
+                } elseif (strpos($os, 'ios') !== false) {
+                    $devices['iphone']++;
+                }
+            } elseif ($device === 'pc') {
+                if (strpos($os, 'macos') !== false) {
+                    $devices['mac']++;
+                } else {
+                    $devices['pc']++;
+                }
+            }
+            // conteggio per paese  
+            if (!isset($clicks_per_country[$country])) {
+                $clicks_per_country[$country] = 0;
+            }
+            $clicks_per_country[$country]++;
+        }
+        // Conta utenti unici per giorno
+        $users_per_day[$call_date] = count($daily_users[$call_date]);
+    }
+
+    $content.="
+            </tbody></table></p></div>
+            <div class='tab'><input type='radio' name='accordion-1' id='rd2'><label for='rd2' class='tab__close'>Close ×</label></div>
+        </div>
+    </section>
+    ";
+
+    // Prepara i dati per Chart.js
+    $clicks_labels = array_keys($clicks_per_day);
+    $clicks_data = array_values($clicks_per_day);
+    $users_data = array_values($users_per_day);
+
+    // Dati per Grafico 2: Totale chiamate per device
+    $devices_labels = ['Android', 'iPhone', 'PC', 'Mac'];
+    $devices_data = array_values($devices);
+
+    $content.="
+    <style>
+        .chart-container {max-width: 97%;width: 90%;margin-top: 20px;}
+        .full-width-chart {width: 100%;height: 450px;}
+        .side-by-side {display: flex;justify-content: space-between;width: 100%; margin-top: 20px;}
+        .half-width-chart {width: 28%; height: 300px;}
+    </style>
+    <div class='chart-container'>
+        <div class='full-width-chart'><canvas id='clicksUsersChart'></canvas></div>
+        <div class='side-by-side'>
+            <div class='half-width-chart'><canvas id='deviceChart'></canvas></div>
+            <div class='half-width-chart'><canvas id='countryChart'></canvas></div>
+        </div>
+    </div>
+    <script>
+        Chart.register(ChartDataLabels);        
+        const clicksUsersCtx = document.getElementById('clicksUsersChart').getContext('2d');
+        new Chart(clicksUsersCtx, {
+            type: 'line', 
+            data: {
+                labels: ".json_encode($clicks_labels).",
+                datasets: [
+                    {
+                        label: 'Clicks',
+                        data:".json_encode($clicks_data).",
+                        borderColor: '#237093',
+                        backgroundColor: 'rgba(35, 112, 147, 0.2)',
+                        fill: true, tension: 0.4 
+                    },
+                    {
+                        label: 'Users',
+                        data:".json_encode($users_data).",
+                        borderColor: '#93A0FF',
+                        backgroundColor: 'rgba(147, 160, 255, 0.2)',
+                        fill: true, tension: 0.4 
+                    }
+                ]
+            },
+            options: {
+                plugins: { datalabels: {display: false }},
+                scales: {
+                    x: {type: 'time',time: {unit: 'day',displayFormats: {day: 'eee dd-MM'},tooltipFormat: 'eee dd-MM-yy'},title: {display: false}},
+                    y: {beginAtZero: true, title: {display: false}}
+                }
+            }
+        });
+        const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+        new Chart(deviceCtx, {
+            type: 'pie',
+            data: {
+                labels: ".json_encode($devices_labels).",
+                datasets: [{data: ".json_encode($devices_data).",backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']}]
+            },
+            options: {
+                plugins: {
+                    legend: {display: false},
+                    datalabels: {display: true,color: '#fff',font: {weight: 'bold',size: 16},
+                        formatter: (value, context) => {return context.chart.data.labels[context.dataIndex];},
+                        textAlign: 'center'
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw; 
+                                return `Click: $"."{value}`; 
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const countryCtx = document.getElementById('countryChart').getContext('2d');
+        new Chart(countryCtx, {
+            type: 'pie',
+            data: {
+                labels: ".json_encode(array_keys($clicks_per_country)).",
+                datasets: [{data: ".json_encode(array_values($clicks_per_country)).",backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF','#FF9F40', '#C9CBCF', '#7BC043', '#F4A261', '#E76F51'
+                    ] 
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {display: false},
+                    datalabels: {display: true, color: '#fff',font: {weight: 'bold',size: 16},
+                        formatter: (value, context) => {return context.chart.data.labels[context.dataIndex];},
+                        anchor: 'center', align: 'center' 
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {const value = context.raw; return `Click: $"."{value}`;}
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    ";
+    return $content;
 }
 
 

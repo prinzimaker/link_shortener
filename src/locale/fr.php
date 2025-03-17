@@ -18,7 +18,9 @@ function lng($key){
         case "repeat_password": return "R&eacute;p&eacute;ter le mot de passe";
         case "download-data":return "T&eacute;l&eacute;charger les donn&eacute;es";
         case "email": return "Adresse e-mail";
+        case "preview":return "Aper&ccedil;u";
         case "verify": return "V&eacute;rifier";
+        case "username": return "Nom d'utilisateur";
         case "giorno": return "Jour";
         case "notte": return "Nuit";
         case "sera": return "Soir";

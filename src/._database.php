@@ -9,18 +9,12 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the DB logic for the link shortener
 -
-v1.4.1 - Aldo Prinzi - 07 Mar 2025
+v1.4.2 - Aldo Prinzi - 17 Mar 2025
 ---------
 UPDATES
 ---------
-2025.02.25 - file renamed from ._connction.php to ._database.php
-2025.02.24 - Added statement prepare extraction (needed by localisation
-             database based funtions) 
-           - Added shortcode change
-           - Added shortcode delete
-2024.10.04 - Added variable lenght for short link
-2025.02.13 - Modified the way the statistics are stored: if short link 
-             is not found, the statistics are not stored
+2025.03.15 - added alt_title, alt_desc and alt_img columns to the
+             link table, needed for "Organic Ads" feature
 =====================================================================
 */
 
@@ -96,7 +90,7 @@ class Database {
         return $stmt->fetchAll();
     }
 
-    function getFullLink($code){
+    function getFullLink($code,$justLink=false ){
         if (!isset($this->pdo)) $this->connect();
         try {
             // Start a transaction to ensure data integrity
@@ -109,23 +103,26 @@ class Database {
             ");
             $selectStmt->execute(['code' => $code]);
             $result = $selectStmt->fetch();
-            if ($result["full_uri"]){ 
-                $updateStmt1 = $this->pdo->prepare("
-                    UPDATE link
-                    SET calls = calls + 1, last_call = NOW()
-                    WHERE short_id = :code
-                ");
-                $updateStmt1->execute(['code' => $code]);
-                // CALLS LOG UPDATE
-                $log=getCallLogData();
-                $updateStmt2 = $this->pdo->prepare("
-                    INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
-                    ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
-                ");
-                $updateStmt2->execute(['code' => $code, 'log' => $log, 'log2' => $log]);
-                $this->pdo->commit();
-                return ["uri"=>$result["full_uri"],"log"=>$log];
+            if (!$justLink){
+                if ($result["full_uri"]){ 
+                    $updateStmt1 = $this->pdo->prepare("
+                        UPDATE link
+                        SET calls = calls + 1, last_call = NOW()
+                        WHERE short_id = :code
+                    ");
+                    $updateStmt1->execute(['code' => $code]);
+                    // CALLS LOG UPDATE
+                    $log=getCallLogData();
+                    $updateStmt2 = $this->pdo->prepare("
+                        INSERT INTO calls (short_id, call_log) VALUES(:code, :log) 
+                        ON DUPLICATE KEY UPDATE call_log = CONCAT(call_log, :log2)
+                    ");
+                    $updateStmt2->execute(['code' => $code, 'log' => $log, 'log2' => $log]);
+                    $this->pdo->commit();
+                    return ["uri"=>$result["full_uri"],"log"=>$log];
+                }
             }
+            return ["uri"=>$result["full_uri"],"log"=>""];
         } catch (PDOException $e) {
             // Roll back the transaction if an error occurs
             $this->pdo->rollBack();
@@ -135,7 +132,7 @@ class Database {
             header("HTTP/1.1 404 Not Found");
             exit();
         }
-        return null;
+        //return null;
     }
 
     function registerPLScall($logdata){
@@ -233,6 +230,13 @@ class Database {
         $result = $stmt->fetch();
         return $result["cnt"];
     }
+    function getShortlinkAltInfo($short_id){
+        if (!isset($this->pdo)) $this->connect();
+        $stmt = $this->pdo->prepare("SELECT ifnull(alt_title,'') as tit,ifnull(alt_desc,'') as dsc,ifnull(alt_img,'') as img, alt_img_isvideo as imgvid FROM link WHERE short_id = :short_id LIMIT 1");
+        $stmt->execute(['short_id' => $short_id]);
+        $result = $stmt->fetch();
+        return $result;
+    }
     function getShortlinkInfo($short_id, $cust_id){
         if (!isset($this->pdo)) $this->connect();
         $stmt = $this->pdo->prepare("SELECT * FROM link WHERE short_id = :short_id and cust_id= :cust_id LIMIT 1");
@@ -267,7 +271,7 @@ class Database {
                 $pattern = '/;(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/';
                 $ret = preg_split($pattern, $result["call_log"], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
             // ----------------------------------------------------
-            // v1.4.0 -> v1.4.1 TEMPORARY - NEED TO BE REMOVED!
+            // v1.4.0 -> v1.4.2 TEMPORARY - NEED TO BE REMOVED!
                 $result = [];
                 $temp = $ret[0]; 
                 for ($i = 1; $i < count($ret); $i += 2) {
@@ -454,6 +458,13 @@ class Database {
         return $newApiKey;
     }
 
+    // Query per ottenere i dati
+    function getSitecallsLog(){
+        if (!isset($this->pdo)) $this->connect();
+        $query = "SELECT call_date, call_log FROM calls_log ORDER BY call_date DESC";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 // ----------------------------------------------------
 // Other private functions
 // ----------------------------------------------------

@@ -17,6 +17,8 @@ function lng($key){
         case "giorno": return "Giorno";
         case "notte": return "Notte";
         case "sera": return "Sera";
+        case "preview":return "Anteprima";
+        case "username": return "Nome utente";
         case "download-data":return "Scarica i dati";
         case "daypart": return "Parte del giorno";
         case "per_fasce_orarie": return "Per fasce orarie";

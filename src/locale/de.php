@@ -19,6 +19,8 @@ function lng($key){
         case "email": return "E-Mail-Adresse";
         case "verify": return "&Uuml;berpr&uuml;fen";
         case "giorno": return "Tag";
+        case "username": return "Benutzername";
+        case "preview":return "Vorschau";
         case "notte": return "Nacht";
         case "sera": return "Abend";
         case "per_fasce_orarie": return "Nach Zeitfenstern";

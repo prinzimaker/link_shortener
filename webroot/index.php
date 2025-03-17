@@ -10,7 +10,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.4.1 - Aldo Prinzi - 07 Mar 2025
+v1.4.2 - Aldo Prinzi - 17 Mar 2025
 ---------
 UPDATES
 ---------
@@ -21,7 +21,7 @@ include '../src/._loadenv.php';
 include '../src/._apicalls.php';
 include '../src/._database.php';
 include '../src/._frontend.php';
-include '../src/._analyze.php';
+include '../src/._analyse.php';
 include '../src/._shortdata.php';
 include '../src/._users.php';
 include '../src/._usermanager.php';
@@ -288,7 +288,7 @@ switch ($uri){
 }
 //=====================================================================
 
-// If the request is not a shortened link, display the HTML page
+// If the request is not a shortened link, RETURN THE LINK
 if ($showPage){
     // extract the calls data
     if (!empty($userData) && is_array($userData))
@@ -300,9 +300,16 @@ if ($showPage){
     echo "<div class='title_header'>$header</div>";
     echo "<div style='margin-top:20px' class='container'>".$content."</div>";
     include 'html/.footer.php';
+
 } else if (!$showApi) {
     // If not a page, it is a shortened link
-    execRedirect($uri);
+    if (isset($_GET["_pls_preview"]) || isUserAgent()){
+        // return an HTML page to showing the content on socials or search engines
+        echo getUserAgentContent($uri);
+    } else {
+        //redirect to the original link
+        execRedirect($uri);
+    }
 }
 
 //=====================================================================
@@ -312,30 +319,5 @@ if ($showPage){
 function handleAuth(){
     $_SESSION["dvalu"] = $_SERVER["REQUEST_URI"];
     return "Short Link - Autenticate";
-}
-
-function execRedirect($uri){
-    if (!empty($uri)){
-        $db = new Database();
-        $res=$db->getFullLink($uri);
-        if (!is_null($res) && !empty($res["uri"])){
-            ignore_user_abort(true);
-            http_response_code(307);
-            header("Location: ".$res["uri"]);
-            flush();
-            $uri = $res["uri"];
-            $log = $res["log"];
-            // Register shutdown function without parameters
-            register_shutdown_function(function () use ($uri, $log) {
-                sleep(1);
-                callIfThisEvent($uri, $log);
-            });            
-            exit;
-        }
-        // Handle 410 Gone error
-        $res='<div class="container404"><div class="copy-container404 center-xy404"><p class="p404"><span style="font-size:2em;font-weight:900">'.$uri.' ???</span><br>410: Gone -or- page not found.</p><span class="handle404"></span></div></div>';
-        http_response_code(410);
-        die( '<html class="html404"><head><title>Page not found (hex 32768)</title><link rel="stylesheet" type="text/css" href="/assets/site.css"></head><body class="body404">'.$res.'</body></html>');
-    }
 }
 

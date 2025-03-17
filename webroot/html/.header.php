@@ -58,5 +58,3 @@ else {
             </tr>
         </table>
         </div>
-    </body>
-</html>

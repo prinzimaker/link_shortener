@@ -8,9 +8,10 @@
 This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the front-end html page/form generators 
+-
+v1.4.2 - Aldo Prinzi - 17 Mar 2025
 =====================================================================
 */
-// form per lo shorten del link
 function getShortenContent($uri){
     return '<form action="_pls_fnc_shorten" method="post">
     <div class="form-group">
@@ -27,10 +28,12 @@ function getShortInfoContent($code="",$uri=""){
     $ret='<div class="alert alert-warning"><form action="_pls_fnc_changecode"  method="post"><input type="hidden" name="shortcode" value="'.$code.'">
     <table><tr><td><label>'.lng("front_reduced-link").':&nbsp;<strong>
     <a class="input-text" id="link1" style="background-color:#fff" target="_blank" href="'.getenv("URI").$uri.'">'.getenv("URI").$uri.'</a></strong></label>&nbsp;
-    <button class="btn btn-small btn-warning" onclick=\'event.preventDefault();copyData("link1","itext","'.lng("front_copied-link").'","'.lng("front_copy-error").'")\'>'.lng("copy").'</button>
+    <button class="btn btn-small btn-warning" onclick=\'event.preventDefault();copyData("link1","itext","'.lng("front_copied-link").'","'.lng("front_copy-error").'")\'>'.lng("copy").'</button></td>
+    <td style="padding-left:10px"><a class="btn btn-small btn-secondary" href="'.getenv("URI").$uri.'?_pls_preview" target="_blank">'.lng("preview").'</a></td>
     <td>&nbsp;-&nbsp;</td><td><label>'.lng("change_link_code").'</label></td><td><input type="text" class="input-text" name="newcode" placeholder="" value="'.$code.'"></td>
-    <td>&nbsp;</td><td><button type="submit" class="btn btn-primary">'.lng("change").'</button></td></tr></table>
-</form></div>';
+    <td>&nbsp;</td><td><button type="submit" class="btn btn-primary">'.lng("change").'</button></form></td>
+    </tr></table>
+</div>';
     return $ret;
 }
 
@@ -461,6 +464,8 @@ function checkIfSelfUri($uri) {
     if (substr($host, 0, 4) === 'www.') 
         $host = substr($host, 4);
     $thisHost=parse_url(getenv("URI"))['host'];
+    if ($host == $thisHost && strpos($uri,"/html/") !== false)
+        $host = "www." . $host;    
     if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
         $uri = "";
     return $uri; 

@@ -1,6 +1,6 @@
 # Prinzimaker's Link Shortener
 
-### **Quick and dirty link shortener** - **v1.4.1**
+### **Quick and dirty link shortener** - **v1.4.2**
 
 **This project is built in PHP and only requires Apache and MariaDB/MySQL.  
 Once implemented, it becomes a complete website (in Italian by default) that allows you to manage the shortening of complex links and the monitoring of their usage.**

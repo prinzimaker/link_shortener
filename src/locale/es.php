@@ -18,6 +18,8 @@ function lng($key){
         case "giorno": return "D&iacute;a";
         case "notte": return "Noche";
         case "sera": return "Tarde";
+        case "preview":return "Vista previa";
+        case "username": return "Nombre de usuario";
         case "daypart": return "Parte del d&iacute;a";
         case "download-data":return "Descargar datos";
         case "per_fasce_orarie": return "Por franjas horarias";
