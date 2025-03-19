@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the data handling logic 
 -
-v1.4.2 - Aldo Prinzi - 17 Mar 2025
+v1.4.2 - Aldo Prinzi - 2025-Mar-19
 
 2025-02-24 - Added shortcode personalization
            - Added shortcode deletion

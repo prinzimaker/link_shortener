@@ -10,7 +10,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 This file contains all the logic, the front-end logic and display 
 logic in just one file.
 -
-v1.4.2 - Aldo Prinzi - 17 Mar 2025
+v1.4.2 - Aldo Prinzi - 2025-Mar-19
 ---------
 UPDATES
 ---------
@@ -36,11 +36,6 @@ $uri=str_replace("/","",$_SERVER["REQUEST_URI"]);
 $userAgent="";
 if (isset($_SERVER["HTTP_USER_AGENT"])){
     $userAgent=$_SERVER["HTTP_USER_AGENT"];
-    // Handle IFTTT protocol calls
-    if (stripos($userAgent,"IFTTT-Protocol")===0){
-        handleIFTTTCall();
-        exit;
-    }
 }
 
 // Initialize variables

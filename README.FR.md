@@ -181,9 +181,6 @@ http://monsite.fr/api?key=987697869&uri=https://www.example.com/page.php?myvalue
 
 ## Personnalisation
 
-### Intégration avec IFTTT
-Voir /docs/IFTTT pour les instructions sur l'intégration des événements CLICK avec IFTTT.
-
 ### Pages d'Erreur Personnalisées
 
 Les pages d'erreur `403.html` et `404.html` sont situées dans le répertoire `/errors/`. Vous pouvez les personnaliser.

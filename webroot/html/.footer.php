@@ -15,7 +15,7 @@ This file contains the footer part of the web app
                 <table width="100%" style="color:#fff"><tr>
                     <td width="3%">&nbsp;</td>
                     <td align="left">
-                        <div>Prinzimaker's Link Shrinker</div>
+                        <div>Prinzimaker's Link Shrinker <span style="color:aqua;font-size:0.8em">v<?php echo getenv("VER_V").".".getenv("VER_R").".".getenv("VER_L")." <i>(".getenv("VER_T").")</i>"; ?></span></div>
                         <div>&copy; 2024-<?php echo date("Y"); ?>&nbsp;<a class="link" href="https://www.milleisole.com" target="_blank">Mille Isole SRL</a></div>    
                     </td>
                     <td align="center" valign="middle" width="60%">

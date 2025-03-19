@@ -9,7 +9,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This class contains all the Geolocalisation functions
 -
-v1.4.2 - Aldo Prinzi - 17 Mar 2025
+v1.4.2 - Aldo Prinzi - 2025-Mar-19
 ---------
 UPDATES
 ---------
@@ -396,13 +396,6 @@ function execRedirect($uri){
             http_response_code(307);
             header("Location: ".$res["uri"]);
             flush();
-            $uri = $res["uri"];
-            $log = $res["log"];
-            // Register shutdown function without parameters
-            register_shutdown_function(function () use ($uri, $log) {
-                sleep(1);
-                callIfThisEvent($uri, $log);
-            });            
             exit;
         }
         // Handle 410 Gone error

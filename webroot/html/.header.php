@@ -44,7 +44,7 @@ else {
                 <!-- Logo section -->
                 <td width="38%" align="right" style="padding-right:10px"><img alt='logo' src="/assets/logo_front.png"></td>
                 <!-- Page title section -->
-                <td width="48%" align="left"><h2><?php echo $_SESSION["pageTitle"]; ?></h2></td>
+                <td width="48%" align="left"><h2><?php echo $_SESSION["pageTitle"]; ?> - v<?php echo getenv("VER_V").".".getenv("VER_R"); ?></h2></td>
                 <!-- Language selection section -->
                 <td><?php echo lng("language");?>:<?php echo $_SESSION["langButtons"]; ?></td>
             </tr>

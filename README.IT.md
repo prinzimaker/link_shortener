@@ -218,9 +218,6 @@ http://miosito.it/api?key=987697869&calls=DUNNO?
 
 ## Personalizzazione
 
-### Integrazione con IFTTT
-Vedi /docs/IFTTT per le istruzioni su come integrare gli eventi CLICK con IFTTT.
-
 ### Pagine di Errore Personalizzate
 
 Le pagine di errore `403.html` e `404.html` si trovano nella directory `/errors/`. Puoi personalizzarle secondo le tue esigenze.

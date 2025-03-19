@@ -179,9 +179,6 @@ http://miosito.it/api?key=987697869&uri=https://www.example.com/page.php?myvalue
 
 ## Customization
 
-### Integration with IFTTT
-See /docs/IFTTT for instructions on how to integrate CLICK events with IFTTT.
-
 ### Custom Error Pages
 
 The `403.html` and `404.html` error pages are located in the `/errors/` directory. You can customize them.

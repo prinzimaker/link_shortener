@@ -7,7 +7,7 @@ This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains some javascript generally needed
 -
-v1.4.2 - Aldo Prinzi - 17 Mar 2025
+v1.4.2 - Aldo Prinzi - 2025-Mar-19
 =====================================================================
 */
 document.addEventListener('DOMContentLoaded', function() {
