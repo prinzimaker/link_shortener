@@ -45,7 +45,7 @@ function replyToApiCall ($db){
         $calls = filter_var($calls, FILTER_SANITIZE_URL);
         if (filter_var($uri, FILTER_VALIDATE_URL)) {
             // Controlla che l'URI non punti allo stesso url per evitare loop
-            if (checkIfSelfUri($uri)!="") {
+            if (checkUriRightness($uri)!="") {
                 foreach($_GET as $key=>$data){
                     if ($key!="key" && $key!="uri")
                         $uri.="&".$key."=".$data;

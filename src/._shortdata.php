@@ -20,7 +20,7 @@ function getShortInfoDisplay($cust_id,$puri=""){
     if ($puri=="")
         $puri=$_POST["smalluri"]??$_GET["code"];
     if ($puri!=""){
-        $uri=checkIfSelfUri($puri);
+        $uri=checkUriRightness($puri);
         if (empty($uri)){
             $db = new Database();
             $res=$db->connect();
@@ -374,7 +374,7 @@ function getShortLinkDisplay($uri){
     try{
         $puri=$_POST["uri"];
         if ($puri!=""){
-            $uri=checkIfSelfUri($puri);
+            $uri=checkUriRightness($puri);
             if (empty($uri)){
                 $content="<div class='alert alert-danger'>".lng("error").": ".lng("front_incorrect-link")."</div>";
             } else {
@@ -400,6 +400,33 @@ function getShortLinkDisplay($uri){
         $content="<div class='alert alert-danger'>".lng("error").": ".$e->getMessage()."</div>";
     }
     return [$shortCode,$content];
+}
+function checkUriRightness($uri){ 
+    $decodedUri = strtolower(urldecode(html_entity_decode($uri)));
+    $parsedUrl = parse_url($decodedUri);
+    if ($parsedUrl === false || !isset($parsedUrl['host'])) {
+        $decodedUriWithScheme = 'http://' . ltrim($decodedUri, '/');
+        $parsedUrl = parse_url($decodedUriWithScheme);
+    }
+    if ($parsedUrl === false || !isset($parsedUrl['host'])) 
+        $uri=""; // Or handle the error as per your requirements
+    $host = strtolower($parsedUrl['host']);
+    if (substr($host, 0, 4) === 'www.') 
+        $host = substr($host, 4);
+    $thisHost=parse_url(getenv("URI"))['host'];
+    if(!empty($thisHost) && filter_var($thisHost, FILTER_VALIDATE_IP) !== false) 
+        $uri = "";
+    else {
+        list($status) = get_headers($uri);
+        if (strpos($status, '200') !== FALSE) {
+            if ($host == $thisHost && strpos($uri,"/html/") !== false)
+                $host = "www." . $host;    
+            if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
+                $uri = "";
+        } else
+            $uri = "";
+    }
+    return $uri; 
 }
 
 function changeShortCode(){

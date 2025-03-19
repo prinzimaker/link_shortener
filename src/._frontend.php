@@ -451,33 +451,6 @@ function getIndexContent(){
     return lng("site_index");
 }
 
-function checkIfSelfUri($uri) {
-    $decodedUri = strtolower(urldecode(html_entity_decode($uri)));
-    $parsedUrl = parse_url($decodedUri);
-    if ($parsedUrl === false || !isset($parsedUrl['host'])) {
-        $decodedUriWithScheme = 'http://' . ltrim($decodedUri, '/');
-        $parsedUrl = parse_url($decodedUriWithScheme);
-    }
-    if ($parsedUrl === false || !isset($parsedUrl['host'])) 
-        $uri=""; // Or handle the error as per your requirements
-    $host = strtolower($parsedUrl['host']);
-    if (substr($host, 0, 4) === 'www.') 
-        $host = substr($host, 4);
-    $thisHost=parse_url(getenv("URI"))['host'];
-    if(!empty($thisHost) && filter_var($thisHost, FILTER_VALIDATE_IP) !== false) 
-        $uri = "";
-    else {
-        list($status) = get_headers($uri);
-        if (strpos($status, '200') !== FALSE) {
-            if ($host == $thisHost && strpos($uri,"/html/") !== false)
-                $host = "www." . $host;    
-            if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
-                $uri = "";
-        } else
-            $uri = "";
-    }
-    return $uri; 
-}
 
 function getFavicon(){  
     $ret=file_get_contents("assets/logo_icon.png");
