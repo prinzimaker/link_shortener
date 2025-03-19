@@ -418,13 +418,14 @@ function checkUriRightness($uri){
         $uri = "";
     else {
         list($status) = get_headers($uri);
-        if (strpos($status, '200') !== FALSE) {
+        if (strpos($status, '404') !== FALSE) {
+            $uri = "";
+        } else {
             if ($host == $thisHost && strpos($uri,"/html/") !== false)
                 $host = "www." . $host;    
             if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
                 $uri = "";
-        } else
-            $uri = "";
+        } 
     }
     return $uri; 
 }
