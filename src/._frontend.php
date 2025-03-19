@@ -464,10 +464,18 @@ function checkIfSelfUri($uri) {
     if (substr($host, 0, 4) === 'www.') 
         $host = substr($host, 4);
     $thisHost=parse_url(getenv("URI"))['host'];
-    if ($host == $thisHost && strpos($uri,"/html/") !== false)
-        $host = "www." . $host;    
-    if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
+    if(!empty($thisHost) && filter_var($thisHost, FILTER_VALIDATE_IP) !== false) 
         $uri = "";
+    else {
+        list($status) = get_headers($uri);
+        if (strpos($status, '200') !== FALSE) {
+            if ($host == $thisHost && strpos($uri,"/html/") !== false)
+                $host = "www." . $host;    
+            if ($host === $thisHost || (!empty($uri) && !filter_var($uri, FILTER_VALIDATE_URL)))
+                $uri = "";
+        } else
+            $uri = "";
+    }
     return $uri; 
 }
 
