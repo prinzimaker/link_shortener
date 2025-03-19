@@ -24,6 +24,7 @@ function lng($key){
         case "username": return "Nombre de usuario";
         case "daypart": return "Parte del d&iacute;a";
         case "download-data":return "Descargar datos";
+        case "region": return "Regi&oacute;n";
         case "per_fasce_orarie": return "Por franjas horarias";
         case "device": return "Dispositivo";
         case "source": return "Fuente";

@@ -8,7 +8,9 @@
 This web app needs just Apache, PHP (7.4->8.3) and MySQL to work.
 ---------------------------------------------------------------------
 This file contains all the dashboard html page/form generators 
-This was intrroduced in v1,4,2
+This was introduced in v1,4,2
+-
+v1.4.2 - Aldo Prinzi - 17 Mar 2025
 =====================================================================
 */
 
@@ -96,8 +98,8 @@ function getDashboard(){
     // Inizio della sezione HTML
     $content.="
     <section class='accordion'><div class='tab'><input type='radio' name='accordion-1' id='rd1'>
-        <label for='rd1' class='tab__label'>".lng("call_log")."</label><div class='tab__content'>
-            <p><table cellpadding='0' cellspacing='0' class='table table-striped table-bordered table-hover'>
+        <label for='rd1' class='tab__label'>".lng("call_log")."<button class='btn btn-secondary btn-small' onclick='downloadCSV()'>".lng("download-data")."</button></label><div class='tab__content'>
+            <p><table id='callstable' cellpadding='0' cellspacing='0' class='table table-striped table-bordered table-hover'>
             <tr><th>".lng("date")."</th><th>IP</th><th>".lng("city")."</th><th style='display:none'>".lng("region")."</th><th>Country</th><th>".lng("referer")."</th><th>".lng("device")."</th><th>OS</th></tr>
             <tbody>";
 
@@ -321,6 +323,34 @@ function getDashboard(){
                 }
             }
         });
+        function downloadCSV() {
+            const table = document.getElementById('callstable');
+            const rows = table.querySelectorAll('tr');
+            let csvContent = [];
+            const headers = [];
+            const headerCells = rows[0].querySelectorAll('th');
+            headerCells.forEach(header => {
+                headers.push(header.textContent.trim());
+            });
+            csvContent.push(headers.join(','));
+            for (let i = 1; i < rows.length; i++) {
+                const row = [];
+                const cells = rows[i].querySelectorAll('td');
+                cells.forEach(cell => {
+                    row.push(cell.textContent.trim());
+                });
+                csvContent.push(row.join(','));
+            }
+            const csvString = csvContent.join('\\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'call_log_' + new Date().toISOString().slice(0,10) + '.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
     ";
     return $content;

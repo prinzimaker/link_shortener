@@ -250,41 +250,41 @@ function getShortInfoDisplay($cust_id,$puri=""){
         }
     };
     new Chart(sourceCtx, sourceConfig);
-                    // Download csv file
-                        function downloadCSV() {
-                            const headers = ['Date', 'Source', 'City', 'Province', 'Country', 'Device', 'Op.Sys'];
-                            const rows = Array.from(document.querySelectorAll('.tab__content tbody tr'))
-                                .slice(1) // Elimina la prima riga
-                                .map(row => {
-                                    const cells = row.querySelectorAll('td.tdcont');
-                                    const deviceCell = cells[3] ? cells[3].textContent.trim() : ''; // Device row
-                                    let device = '';
-                                    let opSystem = '';
-                                    if (deviceCell) {
-                                        const match = deviceCell.match(/^(.*?)\s*\((.*?)\)$/); // find 'device (op.system)'
-                                        if (match) {
-                                            device = match[1].trim(); // device
-                                            opSystem = match[2].trim(); // op.system
-                                        } else 
-                                            device = deviceCell; 
-                                    }
-                                    const geoParts = cells[2] && cells[2].textContent ? cells[2].textContent.split(',') : ['', '', ''];
-                                    return [cells[0] && cells[0].textContent ? cells[0].textContent.trim() : '', cells[1] && cells[1].textContent ? cells[1].textContent.trim() : '',  geoParts[0] ? geoParts[0].trim() : '', geoParts[1] ? geoParts[1].trim() : '', geoParts[2] ? geoParts[2].trim() : '', device, opSystem];
-                                }
-                            );
-                            let csvContent = headers.map(header => `\""."$"."{header}\"`).join(',') + '\\n'; 
-                            rows.forEach(row => {csvContent += row.join(',') + '\\n';});
-                            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                            const link = document.createElement('a');
-                            const url = URL.createObjectURL(blob);
-                            link.setAttribute('href', url);
-                            link.setAttribute('download', 'PLS_AccessData.csv');
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            URL.revokeObjectURL(url); 
-                        }
-                    </script>";
+    // Download csv file
+    function downloadCSV() {
+        const headers = ['Date', 'Source', 'City', 'Province', 'Country', 'Device', 'Op.Sys'];
+        const rows = Array.from(document.querySelectorAll('.tab__content tbody tr'))
+            .slice(1) // Elimina la prima riga
+            .map(row => {
+                const cells = row.querySelectorAll('td.tdcont');
+                const deviceCell = cells[3] ? cells[3].textContent.trim() : ''; // Device row
+                let device = '';
+                let opSystem = '';
+                if (deviceCell) {
+                    const match = deviceCell.match(/^(.*?)\s*\((.*?)\)$/); // find 'device (op.system)'
+                    if (match) {
+                        device = match[1].trim(); // device
+                        opSystem = match[2].trim(); // op.system
+                    } else 
+                        device = deviceCell; 
+                }
+                const geoParts = cells[2] && cells[2].textContent ? cells[2].textContent.split(',') : ['', '', ''];
+                return [cells[0] && cells[0].textContent ? cells[0].textContent.trim() : '', cells[1] && cells[1].textContent ? cells[1].textContent.trim() : '',  geoParts[0] ? geoParts[0].trim() : '', geoParts[1] ? geoParts[1].trim() : '', geoParts[2] ? geoParts[2].trim() : '', device, opSystem];
+            }
+        );
+        let csvContent = headers.map(header => `\""."$"."{header}\"`).join(',') + '\\n'; 
+        rows.forEach(row => {csvContent += row.join(',') + '\\n';});
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'PLS_AccessData.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url); 
+    }
+</script>";
                     $content.=$content3;
                 }
             }

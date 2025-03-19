@@ -24,6 +24,7 @@ function lng($key){
         case "notte": return "Nacht";
         case "sera": return "Abend";
         case "city": return "Stadt";
+        case "region": return "Region";
         case "users": return "Benutzer";
         case "referer": return "Referer";
         case "call_log": return "Anrufprotokoll";

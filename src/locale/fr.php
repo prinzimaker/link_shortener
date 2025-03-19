@@ -28,6 +28,7 @@ function lng($key){
         case "source": return "Source";
         case "city": return "Ville";
         case "users": return "Utilisateurs";
+        case "region": return "R&eacute;gion";
         case "referer": return "Referer";
         case "call_log": return "Journal d'appels";
         case "per_fasce_orarie": return "Par tranches horaires";

@@ -23,6 +23,7 @@ function lng($key){
         case "preview":return "Anteprima";
         case "username": return "Nome utente";
         case "download-data":return "Scarica i dati";
+        case "region": return "Regione";
         case "daypart": return "Parte del giorno";
         case "per_fasce_orarie": return "Per fasce orarie";
         case "device": return "Dispositivo"; 
