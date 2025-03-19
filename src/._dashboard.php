@@ -96,9 +96,9 @@ function getDashboard(){
     // Inizio della sezione HTML
     $content.="
     <section class='accordion'><div class='tab'><input type='radio' name='accordion-1' id='rd1'>
-        <label for='rd1' class='tab__label'>Call Logs</label><div class='tab__content'>
+        <label for='rd1' class='tab__label'>".lng("call_log")."</label><div class='tab__content'>
             <p><table cellpadding='0' cellspacing='0' class='table table-striped table-bordered table-hover'>
-            <tr><th>Date & Time</th><th>IP</th><th>City</th><th style='display:none'>Region</th><th>Country</th><th>Referer</th><th>Device</th><th>OS</th></tr>
+            <tr><th>".lng("date")."</th><th>IP</th><th>".lng("city")."</th><th style='display:none'>".lng("region")."</th><th>Country</th><th>".lng("referer")."</th><th>".lng("device")."</th><th>OS</th></tr>
             <tbody>";
 
     // Processa ogni riga della tabella calls_log
@@ -253,7 +253,7 @@ function getDashboard(){
                         fill: true, tension: 0.4 
                     },
                     {
-                        label: 'Users',
+                        label: '".lng("users")."',
                         data:".json_encode($users_data).",
                         borderColor: '#93A0FF',
                         backgroundColor: 'rgba(147, 160, 255, 0.2)',

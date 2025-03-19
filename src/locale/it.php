@@ -17,6 +17,9 @@ function lng($key){
         case "giorno": return "Giorno";
         case "notte": return "Notte";
         case "sera": return "Sera";
+        case "city": return "Citt&agrave;";
+        case "referer": return "Referer";
+        case "users": return "Utenti";
         case "preview":return "Anteprima";
         case "username": return "Nome utente";
         case "download-data":return "Scarica i dati";
@@ -24,6 +27,7 @@ function lng($key){
         case "per_fasce_orarie": return "Per fasce orarie";
         case "device": return "Dispositivo"; 
         case "source": return "Fonte";
+        case "call_log": return "Registro chiamate";
         case "register": return "Registrati";
         case "repeat_password": return "Ripeti password";
         case "email": return "Indirizzo e-mail";

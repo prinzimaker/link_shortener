@@ -1,4 +1,5 @@
 .env
+/webroot/sitemap.xml
 /.vscode
 /vendor
 /webroot/html/pages

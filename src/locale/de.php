@@ -23,6 +23,10 @@ function lng($key){
         case "preview":return "Vorschau";
         case "notte": return "Nacht";
         case "sera": return "Abend";
+        case "city": return "Stadt";
+        case "users": return "Benutzer";
+        case "referer": return "Referer";
+        case "call_log": return "Anrufprotokoll";
         case "per_fasce_orarie": return "Nach Zeitfenstern";
         case "device": return "Ger&auml;t";
         case "source": return "Quelle";

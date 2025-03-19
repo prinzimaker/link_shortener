@@ -26,6 +26,10 @@ function lng($key){
         case "sera": return "Soir";
         case "device": return "Appareil";
         case "source": return "Source";
+        case "city": return "Ville";
+        case "users": return "Utilisateurs";
+        case "referer": return "Referer";
+        case "call_log": return "Journal d'appels";
         case "per_fasce_orarie": return "Par tranches horaires";
         case "daypart": return "P&eacute;riode de la journ&eacute;e";
         case "user_registration": return "Inscription utilisateur";
